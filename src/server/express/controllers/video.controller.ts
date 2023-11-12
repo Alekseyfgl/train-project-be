@@ -120,10 +120,8 @@ class VideoController {
             canBeDownloaded = false;
         }
 
-        if (minAgeRestriction !== undefined && typeof minAgeRestriction === 'number') {
-            if (minAgeRestriction < 1 && minAgeRestriction > 18) {
-                errors.errorsMessages.push({ message: 'Invalid minAgeRestriction', field: 'minAgeRestriction' });
-            }
+        if (typeof minAgeRestriction !== 'number' || minAgeRestriction < 1 || minAgeRestriction > 18) {
+            errors.errorsMessages.push({ message: 'Invalid minAgeRestriction', field: 'minAgeRestriction' });
         } else {
             minAgeRestriction = null;
         }
