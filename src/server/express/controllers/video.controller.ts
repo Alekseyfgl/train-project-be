@@ -32,7 +32,8 @@ class VideoController {
         const video = videos.find((v) => v.id === id);
 
         if (!video) {
-            res.status(404).send({ error: 'Not found' });
+            res.status(404).send();
+            // .send({ error: 'Not found' });
             return;
         }
         res.status(200).send(video);
@@ -45,7 +46,7 @@ class VideoController {
             errorsMessages: [],
         };
 
-        if (!title.trim() || title.trim().length > 40) {
+        if (!title || !title.trim() || title.trim().length > 40) {
             errors.errorsMessages.push({ message: 'title is required', field: 'title' });
         }
 
@@ -126,7 +127,8 @@ class VideoController {
 
         const index: -1 | number = videos.findIndex((v) => v.id === id);
         if (index === -1) {
-            res.status(HttpStatusCodes.NOT_FOUND).send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
+            res.status(HttpStatusCodes.NOT_FOUND).send();
+            // .send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
             return;
         }
         const video: VideoType = videos[index];
@@ -164,7 +166,8 @@ class VideoController {
 
         const index = videos.findIndex((v) => v.id === id);
         if (index === -1) {
-            res.status(HttpStatusCodes.NOT_FOUND).send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
+            res.status(HttpStatusCodes.NOT_FOUND).send();
+            // .send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
             return;
         }
 
