@@ -101,7 +101,7 @@ class VideoController {
             errors.errorsMessages.push({ message: 'Invalid title', field: 'title' });
         }
 
-        if (!author.trim() || author.trim().length > 40) {
+        if (!author.trim() || author.trim().length > 20) {
             errors.errorsMessages.push({ message: 'Invalid author', field: 'author' });
         }
 
@@ -128,7 +128,10 @@ class VideoController {
             minAgeRestriction = null;
         }
 
-        console.log(errors);
+        if (typeof publicationDate !== 'string') {
+            errors.errorsMessages.push({ message: 'Invalid publicationDate', field: 'publicationDate' });
+        }
+
         if (errors.errorsMessages.length) {
             res.status(HttpStatusCodes.BAD_REQUEST).send(errors);
             return;
