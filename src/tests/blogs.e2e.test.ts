@@ -6,7 +6,7 @@ import { MongoClient } from 'mongodb';
 
 import { HttpStatusCodes } from '../server/express/common/constans/codes';
 import { Nullable } from '../server/express/common/types/optional.types';
-import { VideoType } from '../server/express/repositories/video.repository';
+import { videos, VideoType } from '../server/express/repositories/video.repository';
 import { app } from '../server/express/settings';
 
 dotenv.config();
@@ -109,5 +109,11 @@ describe('/videos', () => {
 
         const res = await request(app).get('/videos/');
         expect(res.body.length).toBe(0);
+    });
+
+    it('test', async () => {
+        await request(app).delete('/testing/all-data').set('authorization', 'Basic YWRtaW46cXdlcnR5').expect(HttpStatusCodes.NO_CONTENT);
+
+        expect(videos).toHaveLength(0);
     });
 });

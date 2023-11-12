@@ -5,6 +5,11 @@ import { HttpStatusCodes } from '../common/constans/codes';
 import { AddVideoDto, VideoUpdateDto } from '../dto/video.dto';
 
 class VideoController {
+    async test(req: Request, res: Response) {
+        videos.length = 0;
+        res.status(HttpStatusCodes.NO_CONTENT).send(videos);
+    }
+
     async getAllVideo(req: Request, res: Response) {
         res.status(200).send(videos);
     }
@@ -89,7 +94,7 @@ class VideoController {
             errorsMessages: [],
         };
 
-        if (!title.trim() || title.trim().length > 40) {
+        if (!title || !title.trim() || title.trim().length > 40) {
             errors.errorsMessages.push({ message: 'Invalid title', field: 'title' });
         }
 

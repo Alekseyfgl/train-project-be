@@ -12,7 +12,7 @@ const { base, id } = videoPath;
 videoRouter.get('/', (req: Request, res: Response) => {
     res.status(200).send('Hello samurai');
 });
-
+videoRouter.delete(`/testing/all-data`, videoController.test);
 videoRouter.get(`${base}`, videoController.getAllVideo);
 videoRouter.get(`${base}/${id}`, videoController.getVideoById);
 videoRouter.post(`${base}`, videoController.addVideo);
