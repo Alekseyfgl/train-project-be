@@ -15,16 +15,7 @@ const dbName = 'back';
 const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${dbName}`;
 
 describe('/videos', () => {
-    let newVideo: Nullable<VideoType> = {
-        id: 1699810570833,
-        title: 'hello',
-        author: 'alex',
-        canBeDownloaded: false,
-        minAgeRestriction: null,
-        createdAt: '2023-11-12T17:36:10.832Z',
-        publicationDate: '2023-11-13T17:36:10.832Z',
-        availableResolutions: ['P144'],
-    };
+    let newVideo: Nullable<VideoType> = null;
     const client = new MongoClient(mongoURI);
 
     beforeAll(async () => {
@@ -67,29 +58,21 @@ describe('/videos', () => {
                 availableResolutions: ['P144'],
             })
             .expect(HttpStatusCodes.CREATED);
+        newVideo = body;
 
         await request(app)
-            .get('/videos/' + body!.id)
-            .expect(HttpStatusCodes.OK, body);
+            .get('/videos/' + newVideo!.id)
+            .expect(HttpStatusCodes.OK, newVideo);
     });
 
     it('- PUT product by ID with incorrect data', async () => {
-        const { status, body } = await request(app)
-            .post('/videos/')
-            .send({
-                title: 'hello',
-                author: 'alex',
-                availableResolutions: ['P144'],
-            })
-            .expect(HttpStatusCodes.CREATED);
-
         await request(app)
             .put('/videos/' + 1223)
             .send({ title: 'title', author: 'title' })
-            .expect(HttpStatusCodes.BAD_REQUEST);
+            .expect(HttpStatusCodes.NOT_FOUND);
 
         const res = await request(app).get('/videos/');
-        expect(res.body[0]).toEqual(body);
+        expect(res.body[0]).toEqual(newVideo);
     });
 
     it('+ PUT product by ID with correct data', async () => {

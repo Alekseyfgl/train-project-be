@@ -102,15 +102,13 @@ class VideoController {
             if (!result) {
                 errors.errorsMessages.push({ message: 'Invalid availableResolutions', field: 'availableResolutions' });
             }
-        } else {
-            availableResolutions = [];
         }
 
         if (!canBeDownloaded) {
             canBeDownloaded = false;
         }
 
-        if (!minAgeRestriction || (minAgeRestriction < 1 && minAgeRestriction) || minAgeRestriction > 18) {
+        if (minAgeRestriction !== undefined || (typeof minAgeRestriction === 'number' && ((minAgeRestriction < 1 && minAgeRestriction) || minAgeRestriction > 18))) {
             errors.errorsMessages.push({ message: 'Invalid minAgeRestriction', field: 'minAgeRestriction' });
         } else {
             minAgeRestriction = null;
@@ -136,12 +134,38 @@ class VideoController {
             minAgeRestriction: minAgeRestriction,
             createdAt: video.createdAt,
             publicationDate: publicationDate,
-            availableResolutions: availableResolutions,
+            availableResolutions: availableResolutions ? availableResolutions : video.availableResolutions,
         };
 
         videos.splice(index, 1, newVideo);
 
-        res.status(HttpStatusCodes.NO_CONTENT);
+        res.status(HttpStatusCodes.NO_CONTENT).send();
+    }
+
+    async removeVideo(req: Request<{ id: string }>, res: Response) {
+        const errors: ErrorType = {
+            errorsMessages: [],
+        };
+        const id = +req.params.id;
+
+        if (Number.isNaN(id)) {
+            errors.errorsMessages.push({ message: 'Invalid id', field: 'id' });
+        }
+
+        if (errors.errorsMessages.length) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send(errors);
+            return;
+        }
+
+        const index = videos.findIndex((v) => v.id === id);
+        if (index === -1) {
+            res.status(HttpStatusCodes.NOT_FOUND).send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
+            return;
+        }
+
+        videos.splice(index, 1);
+
+        res.status(HttpStatusCodes.NO_CONTENT).send();
     }
 }
 

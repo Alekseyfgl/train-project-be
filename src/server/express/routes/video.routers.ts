@@ -17,3 +17,4 @@ videoRouter.get(`${base}`, videoController.getAllVideo);
 videoRouter.get(`${base}/${id}`, videoController.getVideoById);
 videoRouter.post(`${base}`, videoController.addVideo);
 videoRouter.put(`${base}/${id}`, videoController.updateVideoById);
+videoRouter.delete(`${base}/${id}`, videoController.removeVideo);
