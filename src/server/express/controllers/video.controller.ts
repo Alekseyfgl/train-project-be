@@ -112,6 +112,10 @@ class VideoController {
             }
         }
 
+        if (typeof canBeDownloaded !== 'boolean') {
+            errors.errorsMessages.push({ message: 'Invalid canBeDownloaded', field: 'canBeDownloaded' });
+        }
+
         if (!canBeDownloaded) {
             canBeDownloaded = false;
         }
