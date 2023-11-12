@@ -50,7 +50,7 @@ class VideoController {
             errors.errorsMessages.push({ message: 'title is required', field: 'title' });
         }
 
-        if (!author.trim() || author.trim().length > 40) {
+        if (!author.trim() || author.trim().length > 20) {
             errors.errorsMessages.push({ message: 'author is required', field: 'author' });
         }
 
