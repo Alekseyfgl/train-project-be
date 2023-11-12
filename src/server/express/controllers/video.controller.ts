@@ -56,7 +56,9 @@ class VideoController {
 
         if (Array.isArray(availableResolutions)) {
             const result: boolean = availableResolutions.every((r) => AVAILABLE_RESOLUTIONS.includes(r));
-            console.log(result);
+            if (!result) {
+                errors.errorsMessages.push({ message: 'Invalid availableResolutions', field: 'availableResolutions' });
+            }
         } else {
             availableResolutions = [];
         }
@@ -122,6 +124,7 @@ class VideoController {
             minAgeRestriction = null;
         }
 
+        console.log(errors);
         if (errors.errorsMessages.length) {
             res.status(HttpStatusCodes.BAD_REQUEST).send(errors);
             return;
