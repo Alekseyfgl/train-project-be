@@ -4,10 +4,10 @@ import dotenv from 'dotenv';
 
 import { MongoClient } from 'mongodb';
 
-import { HttpStatusCodes } from '../server/express/common/constans/codes';
 import { Nullable } from '../server/express/common/types/optional.types';
 import { videos, VideoType } from '../server/express/repositories/video.repository';
-import { app } from '../server/express/settings';
+import { app } from '../server/express/app';
+import { HttpStatusCodes } from '../server/express/common/constans/http-status-codes';
 
 dotenv.config();
 

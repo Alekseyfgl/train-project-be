@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { AVAILABLE_RESOLUTIONS, videos, VideoType } from '../repositories/video.repository';
 import { ErrorType } from '../common/types/error.types';
-import { HttpStatusCodes } from '../common/constans/codes';
 import { AddVideoDto, VideoUpdateDto } from '../dto/video.dto';
+import { HttpStatusCodes } from '../common/constans/http-status-codes';
 
 class VideoController {
     async test(req: Request, res: Response) {

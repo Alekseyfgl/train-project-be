@@ -1,4 +1,4 @@
-import { app } from './server/express/settings';
+import { app } from './server/express/app';
 
 require('dotenv').config();
 
