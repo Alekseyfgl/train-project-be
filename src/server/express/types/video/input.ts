@@ -1,5 +1,5 @@
-import { AvailableResolutionsType } from '../repositories/video.repository';
-import { Nullable } from '../common/types/optional.types';
+import { Nullable } from '../../common/interfaces/optional.types';
+import { AvailableResolutionsType } from './output';
 
 export type AddVideoDto = {
     title: string;

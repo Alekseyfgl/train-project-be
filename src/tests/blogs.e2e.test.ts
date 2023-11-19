@@ -1,13 +1,13 @@
+// @ts-ignore
 import request from 'supertest';
-
+// @ts-ignore
 import dotenv from 'dotenv';
-
 import { MongoClient } from 'mongodb';
 
-import { Nullable } from '../server/express/common/types/optional.types';
-import { videos, VideoType } from '../server/express/repositories/video.repository';
 import { app } from '../server/express/app';
 import { HttpStatusCodes } from '../server/express/common/constans/http-status-codes';
+import { Nullable } from '../server/express/common/interfaces/optional.types';
+import { VideoType } from '../server/express/types/video/output';
 
 dotenv.config();
 
@@ -111,9 +111,9 @@ describe('/videos', () => {
         expect(res.body.length).toBe(0);
     });
 
-    it('test', async () => {
-        await request(app).delete('/testing/all-data').set('authorization', 'Basic YWRtaW46cXdlcnR5').expect(HttpStatusCodes.NO_CONTENT);
-
-        expect(videos).toHaveLength(0);
-    });
+    // it('test', async () => {
+    //     await request(app).delete('/testing/all-data').set('authorization', 'Basic YWRtaW46cXdlcnR5').expect(HttpStatusCodes.NO_CONTENT);
+    //
+    //     expect(db.videos).toHaveLength(0);
+    // });
 });

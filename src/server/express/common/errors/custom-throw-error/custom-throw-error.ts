@@ -1,5 +1,5 @@
-import { ErrorType } from './custom-throw-error.interface';
 import { HttpStatusCodes } from '../../constans/http-status-codes';
+import { ErrorType } from '../interface/custom-error.interface';
 
 export class CustomError extends Error {
     public status: number;
