@@ -6,11 +6,6 @@ import { VideoType } from '../types/video/output';
 import { ErrorType } from '../common/errors/interface/custom-error.interface';
 
 class VideoController {
-    async test(req: Request, res: Response) {
-        db.videos.length = 0;
-        res.status(HttpStatusCodes.NO_CONTENT).send(db.videos);
-    }
-
     async getAllVideo(req: Request, res: Response) {
         res.status(200).send(db.videos);
     }
@@ -133,17 +128,18 @@ class VideoController {
             errors.errorsMessages.push({ message: 'Invalid publicationDate', field: 'publicationDate' });
         }
 
-        if (errors.errorsMessages.length) {
-            res.status(HttpStatusCodes.BAD_REQUEST).send(errors);
-            return;
-        }
-
         const index: -1 | number = db.videos.findIndex((v) => v.id === id);
         if (index === -1) {
             res.status(HttpStatusCodes.NOT_FOUND).send();
             // .send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
             return;
         }
+
+        if (errors.errorsMessages.length) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send(errors);
+            return;
+        }
+
         const video: VideoType = db.videos[index];
 
         const newVideo: VideoType = {

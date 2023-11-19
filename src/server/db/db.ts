@@ -22,11 +22,11 @@ export const db: DBType = {
         // },
     ],
     blogs: [
-        {
-            id: '1',
-            name: 'string',
-            description: 'string',
-            websiteUrl: 'string',
-        },
+        // {
+        //     id: '1',
+        //     name: 'string',
+        //     description: 'string',
+        //     websiteUrl: 'string',
+        // },
     ],
 };

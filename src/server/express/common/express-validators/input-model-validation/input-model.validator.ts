@@ -12,8 +12,8 @@ export const inputModelValidator = (req: Request, res: Response, next: NextFunct
 
     if (!errors.isEmpty()) {
         const err = errors.array({ onlyFirstError: true });
-
         res.status(HttpStatusCodes.BAD_REQUEST).send({ errorsMessages: err });
+        return;
     }
 
     next();

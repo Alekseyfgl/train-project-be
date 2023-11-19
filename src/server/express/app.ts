@@ -9,6 +9,13 @@ import { testRouter } from './routes/test.router';
 export const app = express();
 
 app.use(express.json());
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Nodes');
+//     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+//     res.header('Access-Control-Allow-Credentials', 'true');
+//     next();
+// });
 app.use(requestCounterMiddleware);
 
 app.use('', videoRouter, blogRouter, postRouter, testRouter);
