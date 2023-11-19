@@ -1,8 +1,8 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export let requestCounter = 0;
 
-export const requestCounterMiddleware = (req: any, res: Response, next: NextFunction) => {
+export const requestCounterMiddleware = (req: Request, res: Response, next: NextFunction) => {
     requestCounter++;
     next();
 };

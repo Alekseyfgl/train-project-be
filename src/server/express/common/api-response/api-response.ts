@@ -13,4 +13,12 @@ export class ApiResponse {
     notFound() {
         this.res.status(HttpStatusCodes.NOT_FOUND).send(new ErrorCreator().add(HttpExceptionMessages.NOT_FOUND));
     }
+
+    notAuthorized() {
+        this.res.status(HttpStatusCodes.UNAUTHORIZED).send(new ErrorCreator().add(HttpExceptionMessages.UNAUTHORIZED));
+    }
+
+    serverError() {
+        this.res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(new ErrorCreator().add(HttpExceptionMessages.INTERNAL_SERVER_ERROR));
+    }
 }
