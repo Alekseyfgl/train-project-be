@@ -1,17 +1,13 @@
 import { Request, Response } from 'express';
-import { AVAILABLE_RESOLUTIONS, videos, VideoType } from '../repositories/video.repository';
-import { ErrorType } from '../common/types/error.types';
-import { AddVideoDto, VideoUpdateDto } from '../dto/video.dto';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
+import { AVAILABLE_RESOLUTIONS, db } from '../../db/db';
+import { AddVideoDto, VideoUpdateDto } from '../types/video/input';
+import { VideoType } from '../types/video/output';
+import { ErrorType } from '../common/errors/interface/custom-error.interface';
 
 class VideoController {
-    async test(req: Request, res: Response) {
-        videos.length = 0;
-        res.status(HttpStatusCodes.NO_CONTENT).send(videos);
-    }
-
     async getAllVideo(req: Request, res: Response) {
-        res.status(200).send(videos);
+        res.status(200).send(db.videos);
     }
 
     async getVideoById(req: Request<{ id: string }>, res: Response) {
@@ -29,7 +25,7 @@ class VideoController {
             return;
         }
 
-        const video = videos.find((v) => v.id === id);
+        const video = db.videos.find((v) => v.id === id);
 
         if (!video) {
             res.status(404).send();
@@ -84,7 +80,7 @@ class VideoController {
             availableResolutions,
         };
 
-        videos.push(newVideo);
+        db.videos.push(newVideo);
 
         res.status(201).send(newVideo);
     }
@@ -132,18 +128,19 @@ class VideoController {
             errors.errorsMessages.push({ message: 'Invalid publicationDate', field: 'publicationDate' });
         }
 
-        if (errors.errorsMessages.length) {
-            res.status(HttpStatusCodes.BAD_REQUEST).send(errors);
-            return;
-        }
-
-        const index: -1 | number = videos.findIndex((v) => v.id === id);
+        const index: -1 | number = db.videos.findIndex((v) => v.id === id);
         if (index === -1) {
             res.status(HttpStatusCodes.NOT_FOUND).send();
             // .send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
             return;
         }
-        const video: VideoType = videos[index];
+
+        if (errors.errorsMessages.length) {
+            res.status(HttpStatusCodes.BAD_REQUEST).send(errors);
+            return;
+        }
+
+        const video: VideoType = db.videos[index];
 
         const newVideo: VideoType = {
             id,
@@ -156,7 +153,7 @@ class VideoController {
             availableResolutions: availableResolutions ? availableResolutions : video.availableResolutions,
         };
 
-        videos.splice(index, 1, newVideo);
+        db.videos.splice(index, 1, newVideo);
 
         res.status(HttpStatusCodes.NO_CONTENT).send();
     }
@@ -176,14 +173,14 @@ class VideoController {
             return;
         }
 
-        const index = videos.findIndex((v) => v.id === id);
+        const index = db.videos.findIndex((v) => v.id === id);
         if (index === -1) {
             res.status(HttpStatusCodes.NOT_FOUND).send();
             // .send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
             return;
         }
 
-        videos.splice(index, 1);
+        db.videos.splice(index, 1);
 
         res.status(HttpStatusCodes.NO_CONTENT).send();
     }
