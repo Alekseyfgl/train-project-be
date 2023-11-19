@@ -16,7 +16,7 @@ export const testRouter: Router = Router();
 
 testRouter.get(`${base}`, testController.getRequestCounter);
 
-testRouter.get(`${base}/${all_data}`, (req: any, res: Response, next: NextFunction) => {
+testRouter.delete(`${base}/${all_data}`, (req: any, res: Response, next: NextFunction) => {
     db.blogs.length = 0;
     db.videos.length = 0;
     new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);
