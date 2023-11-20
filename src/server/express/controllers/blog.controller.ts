@@ -4,7 +4,7 @@ import { IBlog } from '../types/blog/output';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable } from '../common/interfaces/optional.types';
 import { ApiResponse } from '../common/api-response/api-response';
-import { AddBlogDto } from '../types/blog/input';
+import { AddBlogDto, UpdateBlogDto } from '../types/blog/input';
 
 class BlogController {
     async getAllBlogs(req: Request, res: Response, next: NextFunction) {
@@ -23,6 +23,18 @@ class BlogController {
     async addBlogByOne(req: Request<{}, {}, AddBlogDto>, res: Response, next: NextFunction) {
         const newBlog: IBlog = new BlogRepository().createNewBlog(req.body);
         new ApiResponse(res).send(HttpStatusCodes.CREATED, newBlog);
+    }
+
+    async updateBlogById(req: Request<{ id: string }, {}, UpdateBlogDto>, res: Response, next: NextFunction) {
+        const isUpdated: boolean = new BlogRepository().updateBlogById(req.params.id, req.body);
+        const response = new ApiResponse(res);
+        isUpdated ? response.send(HttpStatusCodes.NO_CONTENT) : response.notFound();
+    }
+
+    async removeBlogById(req: Request<{ id: string }>, res: Response, next: NextFunction) {
+        const isRemoved: boolean = new BlogRepository().removeBlogById(req.params.id);
+        const response = new ApiResponse(res);
+        isRemoved ? response.send(HttpStatusCodes.NO_CONTENT) : response.notFound();
     }
 }
 

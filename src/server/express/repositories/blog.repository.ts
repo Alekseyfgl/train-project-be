@@ -1,5 +1,5 @@
 import { db } from '../../db/db';
-import { Nullable } from '../common/interfaces/optional.types';
+import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IBlog } from '../types/blog/output';
 import { AddBlogDto } from '../types/blog/input';
 
@@ -22,5 +22,24 @@ export class BlogRepository {
         };
         db.blogs.push(newBlog);
         return newBlog;
+    }
+
+    updateBlogById(id: string, dto: AddBlogDto): boolean {
+        const { name, description, websiteUrl } = dto;
+        const blog: Optional<IBlog> = db.blogs.find((blog) => blog.id === id);
+        if (!blog) return false;
+
+        blog.name = name;
+        blog.description = description;
+        blog.websiteUrl = websiteUrl;
+
+        return true;
+    }
+
+    removeBlogById(id: string) {
+        const index = db.blogs.findIndex((blog) => blog.id === id);
+        if (index === -1) return false;
+        db.blogs.splice(index, 1);
+        return true;
     }
 }

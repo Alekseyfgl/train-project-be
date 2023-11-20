@@ -6,13 +6,14 @@ import { IBlog } from '../../../../server/express/types/blog/output';
 import { app } from '../../../../server/express/app';
 import { HttpStatusCodes } from '../../../../server/express/common/constans/http-status-codes';
 import { addMockBlogDto_valid, createBlogMock } from '../../mock/blog/createBlog/createBlog.mock';
+import { authorizationHeader } from '../../mock/base-token/base-token.mock';
 
 dotenv.config();
 
 const dbName = 'back';
 const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${dbName}`;
 
-describe('/videos', () => {
+describe('/blogs', () => {
     let newBlog: Nullable<IBlog> = null;
     const client = new MongoClient(mongoURI);
 
@@ -25,15 +26,22 @@ describe('/videos', () => {
         await client.close();
     });
 
-    it('get not existing blog', async () => {
-        await request(app).post(`/blogs/${1234}`).expect(HttpStatusCodes.NOT_FOUND);
+    it('+ create 1 blog with correct data', async () => {
+        const res = await createBlogMock(addMockBlogDto_valid);
+        expect(res.status).toBe(HttpStatusCodes.CREATED);
+        expect(res.body).not.toBeNull();
+        expect(res.body).not.toBeUndefined();
+
+        newBlog = res.body;
+
+        await request(app).delete(`/blogs/${newBlog!.id}`).set('authorization', authorizationHeader).expect(HttpStatusCodes.NO_CONTENT);
     });
 
-    it('get existing blog', async () => {
-        const createdBlog = await createBlogMock(addMockBlogDto_valid);
-        expect(createdBlog.status).toBe(HttpStatusCodes.CREATED);
-        newBlog = createdBlog.body;
+    it('- remove not exist blog', async () => {
+        await request(app).delete(`/blogs/${newBlog!.id}`).set('authorization', authorizationHeader).expect(HttpStatusCodes.NOT_FOUND);
+    });
 
-        await request(app).get(`/blogs/${newBlog!.id}`).expect(HttpStatusCodes.OK, newBlog);
+    it('- remove for unnaturalized user', async () => {
+        await request(app).delete(`/blogs/${newBlog!.id}`).expect(HttpStatusCodes.UNAUTHORIZED);
     });
 });

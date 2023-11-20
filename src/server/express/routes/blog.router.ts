@@ -12,3 +12,5 @@ export const blogRouter = Router({});
 blogRouter.get(`${base}`, blogController.getAllBlogs);
 blogRouter.get(`${base}/${id}`, blogController.getBlogById);
 blogRouter.post(`${base}`, authMiddleware, blogPostValidation(), blogController.addBlogByOne);
+blogRouter.put(`${base}/${id}`, authMiddleware, blogPostValidation(), blogController.updateBlogById);
+blogRouter.delete(`${base}/${id}`, authMiddleware, blogController.removeBlogById);
