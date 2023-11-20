@@ -1,11 +1,13 @@
 import { VideoType } from '../express/types/video/output';
 import { IBlog } from '../express/types/blog/output';
+import { IPost } from '../express/types/post/output';
 
 export const AVAILABLE_RESOLUTIONS = ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'] as const;
 
 type DBType = {
     videos: VideoType[];
     blogs: IBlog[];
+    posts: IPost[];
 };
 
 export const db: DBType = {
@@ -29,4 +31,5 @@ export const db: DBType = {
         //     websiteUrl: 'string',
         // },
     ],
+    posts: [],
 };
