@@ -24,4 +24,4 @@ const titleValidator = body('title').isString().trim().isLength({ min: 1, max: 3
 const shortDescriptionValidator = body('shortDescription').isString().trim().isLength({ min: 1, max: 100 });
 const contentValidator = body('content').isString().trim().isLength({ min: 1, max: 1000 });
 
-export const postValidation = () => [blogIdValidator, idValidator, titleValidator, shortDescriptionValidator, contentValidator, inputModelValidator];
+export const postValidation = () => [idValidator, titleValidator, shortDescriptionValidator, contentValidator, inputModelValidator];
