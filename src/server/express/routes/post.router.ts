@@ -4,7 +4,7 @@ import { postController } from '../controllers/post.controller';
 import { postValidation } from '../common/express-validators/post.validator';
 
 export const postPath = {
-    base: '/post',
+    base: '/posts',
     id: ':id',
 };
 const { base, id } = postPath;
