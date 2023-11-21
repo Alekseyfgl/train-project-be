@@ -1,6 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { IBlog } from '../types/blog/output';
-import { BlogRepository } from '../repositories/blog.repository';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable } from '../common/interfaces/optional.types';
@@ -10,7 +8,7 @@ import { AddPostDto, UpdatePostDto } from '../types/post/input';
 
 class PostController {
     async getAll(req: Request, res: Response, next: NextFunction) {
-        const posts: IBlog[] = BlogRepository.getAllBlogs();
+        const posts: IPost[] = PostRepository.getAll();
 
         new ApiResponse(res).send(HttpStatusCodes.OK, posts);
     }

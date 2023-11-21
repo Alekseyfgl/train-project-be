@@ -5,14 +5,15 @@ import { Nullable } from '../../../../server/express/common/interfaces/optional.
 import { IBlog } from '../../../../server/express/types/blog/output';
 import { app } from '../../../../server/express/app';
 import { HttpStatusCodes } from '../../../../server/express/common/constans/http-status-codes';
-import { addMockBlogDto_valid, createBlogMock } from '../../mock/createBlog/createBlog.mock';
+import { postPath } from '../../../../server/express/routes/post.router';
+import { addMockPostDto_valid, createPostMock } from '../../mock/createPost/createPost.mock';
 
 dotenv.config();
 
 const dbName = 'back';
 const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${dbName}`;
-
-describe('/videos', () => {
+const { base } = postPath;
+describe('/posts', () => {
     let newBlog: Nullable<IBlog> = null;
     const client = new MongoClient(mongoURI);
 
@@ -25,15 +26,15 @@ describe('/videos', () => {
         await client.close();
     });
 
-    it('get not existing blog', async () => {
-        await request(app).post(`/blogs/${1234}`).expect(HttpStatusCodes.NOT_FOUND);
+    it('get not existing post', async () => {
+        await request(app).post(`${base}/${1234}`).expect(HttpStatusCodes.NOT_FOUND);
     });
 
-    it('get existing blog', async () => {
-        const createdBlog = await createBlogMock(addMockBlogDto_valid);
-        expect(createdBlog.status).toBe(HttpStatusCodes.CREATED);
-        newBlog = createdBlog.body;
+    it('get existing post', async () => {
+        const createdPost = await createPostMock(addMockPostDto_valid);
+        expect(createdPost.status).toBe(HttpStatusCodes.CREATED);
+        newBlog = createdPost.body;
 
-        await request(app).get(`/blogs/${newBlog!.id}`).expect(HttpStatusCodes.OK, newBlog);
+        await request(app).get(`${base}/${newBlog!.id}`).expect(HttpStatusCodes.OK, newBlog);
     });
 });

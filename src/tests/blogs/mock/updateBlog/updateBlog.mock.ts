@@ -1,7 +1,7 @@
 import request from 'supertest';
-import { app } from '../../../../../server/express/app';
-import { authorizationHeader } from '../../base-token/base-token.mock';
-import { UpdateBlogDto } from '../../../../../server/express/types/blog/input';
+import { app } from '../../../../server/express/app';
+import { authorizationHeader } from '../base-token/base-token.mock';
+import { UpdateBlogDto } from '../../../../server/express/types/blog/input';
 
 export const updateBlogDto_valid: UpdateBlogDto = {
     name: 'string',

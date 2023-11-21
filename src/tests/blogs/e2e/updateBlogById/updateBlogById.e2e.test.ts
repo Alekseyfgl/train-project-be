@@ -3,8 +3,8 @@ import { MongoClient } from 'mongodb';
 import { Nullable } from '../../../../server/express/common/interfaces/optional.types';
 import { IBlog } from '../../../../server/express/types/blog/output';
 import { HttpStatusCodes } from '../../../../server/express/common/constans/http-status-codes';
-import { addMockBlogDto_valid, createBlogMock } from '../../mock/blog/createBlog/createBlog.mock';
-import { updateBlogDto_valid, updateBlogMock } from '../../mock/blog/updateBlog/updateBlog.mock';
+import { addMockBlogDto_valid, createBlogMock } from '../../mock/createBlog/createBlog.mock';
+import { updateBlogDto_valid, updateBlogMock } from '../../mock/updateBlog/updateBlog.mock';
 import { db } from '../../../../server/db/db';
 
 dotenv.config();

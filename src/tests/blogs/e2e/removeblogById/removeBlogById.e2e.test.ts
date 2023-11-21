@@ -5,7 +5,7 @@ import { Nullable } from '../../../../server/express/common/interfaces/optional.
 import { IBlog } from '../../../../server/express/types/blog/output';
 import { app } from '../../../../server/express/app';
 import { HttpStatusCodes } from '../../../../server/express/common/constans/http-status-codes';
-import { addMockBlogDto_valid, createBlogMock } from '../../mock/blog/createBlog/createBlog.mock';
+import { addMockBlogDto_valid, createBlogMock } from '../../mock/createBlog/createBlog.mock';
 import { authorizationHeader } from '../../mock/base-token/base-token.mock';
 
 dotenv.config();
