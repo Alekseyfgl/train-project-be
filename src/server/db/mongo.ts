@@ -51,7 +51,7 @@ export class MongooseInstance {
                     connectTimeoutMS: 5000,
                     serverSelectionTimeoutMS: 5000,
                 });
-                await this.connectManager();
+                this.connectManager();
             } catch (e) {
                 console.error(e);
             }
@@ -59,7 +59,7 @@ export class MongooseInstance {
         return this.instance;
     }
 
-    private static async connectManager() {
+    private static connectManager() {
         const inst: Optional<Connection> = MongooseInstance.instance?.connection;
 
         inst?.on('connected', (error) => {
