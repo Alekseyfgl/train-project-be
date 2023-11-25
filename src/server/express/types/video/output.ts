@@ -1,5 +1,5 @@
 import { Nullable } from '../../common/interfaces/optional.types';
-import { AVAILABLE_RESOLUTIONS } from '../../../db/db';
+import { AVAILABLE_RESOLUTIONS } from '../../../db/mongo';
 
 export type AvailableResolutionsType = (typeof AVAILABLE_RESOLUTIONS)[number];
 export type VideoType = {

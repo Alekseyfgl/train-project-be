@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
-import { AVAILABLE_RESOLUTIONS, db } from '../../db/db';
+import { AVAILABLE_RESOLUTIONS, mongo } from '../../db/mongo';
 import { AddVideoDto, VideoUpdateDto } from '../types/video/input';
 import { VideoType } from '../types/video/output';
 import { ErrorType } from '../common/errors/interface/custom-error.interface';
 
 class VideoController {
     async getAllVideo(req: Request, res: Response) {
-        res.status(200).send(db.videos);
+        res.status(200).send(mongo.videos);
     }
 
     async getVideoById(req: Request<{ id: string }>, res: Response) {
@@ -25,7 +25,7 @@ class VideoController {
             return;
         }
 
-        const video = db.videos.find((v) => v.id === id);
+        const video = mongo.videos.find((v) => v.id === id);
 
         if (!video) {
             res.status(404).send();
@@ -80,7 +80,7 @@ class VideoController {
             availableResolutions,
         };
 
-        db.videos.push(newVideo);
+        mongo.videos.push(newVideo);
 
         res.status(201).send(newVideo);
     }
@@ -128,7 +128,7 @@ class VideoController {
             errors.errorsMessages.push({ message: 'Invalid publicationDate', field: 'publicationDate' });
         }
 
-        const index: -1 | number = db.videos.findIndex((v) => v.id === id);
+        const index: -1 | number = mongo.videos.findIndex((v) => v.id === id);
         if (index === -1) {
             res.status(HttpStatusCodes.NOT_FOUND).send();
             // .send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
@@ -140,7 +140,7 @@ class VideoController {
             return;
         }
 
-        const video: VideoType = db.videos[index];
+        const video: VideoType = mongo.videos[index];
 
         const newVideo: VideoType = {
             id,
@@ -153,7 +153,7 @@ class VideoController {
             availableResolutions: availableResolutions ? availableResolutions : video.availableResolutions,
         };
 
-        db.videos.splice(index, 1, newVideo);
+        mongo.videos.splice(index, 1, newVideo);
 
         res.status(HttpStatusCodes.NO_CONTENT).send();
     }
@@ -173,14 +173,14 @@ class VideoController {
             return;
         }
 
-        const index = db.videos.findIndex((v) => v.id === id);
+        const index = mongo.videos.findIndex((v) => v.id === id);
         if (index === -1) {
             res.status(HttpStatusCodes.NOT_FOUND).send();
             // .send({ errorMessages: [{ messages: 'Not Found', field: '' }] });
             return;
         }
 
-        db.videos.splice(index, 1);
+        mongo.videos.splice(index, 1);
 
         res.status(HttpStatusCodes.NO_CONTENT).send();
     }

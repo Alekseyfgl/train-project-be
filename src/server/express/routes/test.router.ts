@@ -1,7 +1,7 @@
 import { NextFunction, Response, Router } from 'express';
 import { requestCounter } from '../common/middlewares/reques-counter/request-counter.middleware';
 import { testController } from '../controllers/test.controller';
-import { db } from '../../db/db';
+import { mongo } from '../../db/mongo';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 
@@ -17,8 +17,8 @@ export const testRouter: Router = Router();
 testRouter.get(`${base}`, testController.getRequestCounter);
 
 testRouter.delete(`${base}/${all_data}`, (req: any, res: Response, next: NextFunction) => {
-    db.blogs.length = 0;
-    db.videos.length = 0;
+    mongo.blogs.length = 0;
+    mongo.videos.length = 0;
     new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);
 });
 

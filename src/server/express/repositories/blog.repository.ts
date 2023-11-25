@@ -1,15 +1,15 @@
-import { db } from '../../db/db';
+import { mongo } from '../../db/mongo';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IBlog } from '../types/blog/output';
 import { AddBlogDto } from '../types/blog/input';
 
 export class BlogRepository {
     static getAllBlogs(): IBlog[] {
-        return db.blogs;
+        return mongo.blogs;
     }
 
     static findBlockById(id: string): Nullable<IBlog> {
-        const blog = db.blogs.find((blog) => blog.id === id);
+        const blog = mongo.blogs.find((blog) => blog.id === id);
         return blog ? blog : null;
     }
 
@@ -20,13 +20,13 @@ export class BlogRepository {
             description: dto.description,
             websiteUrl: dto.websiteUrl,
         };
-        db.blogs.push(newBlog);
+        mongo.blogs.push(newBlog);
         return newBlog;
     }
 
     updateBlogById(id: string, dto: AddBlogDto): boolean {
         const { name, description, websiteUrl } = dto;
-        const blog: Optional<IBlog> = db.blogs.find((blog) => blog.id === id);
+        const blog: Optional<IBlog> = mongo.blogs.find((blog) => blog.id === id);
         if (!blog) return false;
 
         blog.name = name;
@@ -37,9 +37,9 @@ export class BlogRepository {
     }
 
     removeBlogById(id: string) {
-        const index = db.blogs.findIndex((blog) => blog.id === id);
+        const index = mongo.blogs.findIndex((blog) => blog.id === id);
         if (index === -1) return false;
-        db.blogs.splice(index, 1);
+        mongo.blogs.splice(index, 1);
         return true;
     }
 }

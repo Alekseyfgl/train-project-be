@@ -1,15 +1,15 @@
 import { AddPostDto, UpdatePostDto } from '../types/post/input';
-import { db } from '../../db/db';
+import { mongo } from '../../db/mongo';
 import { IPost } from '../types/post/output';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 
 export class PostRepository {
     static getAll() {
-        return db.posts;
+        return mongo.posts;
     }
 
     static findById(id: string): Nullable<IPost> {
-        const post = db.posts.find((post) => post.id === id);
+        const post = mongo.posts.find((post) => post.id === id);
         return post ? post : null;
     }
 
@@ -22,13 +22,13 @@ export class PostRepository {
             shortDescription: dto.shortDescription,
             blogName: 'blogName',
         };
-        db.posts.push(post);
+        mongo.posts.push(post);
         return post;
     }
 
     updateById(id: string, dto: UpdatePostDto): boolean {
         const { title, blogId, content, shortDescription } = dto;
-        const post: Optional<IPost> = db.posts.find((post) => post.id === id);
+        const post: Optional<IPost> = mongo.posts.find((post) => post.id === id);
         if (!post) return false;
 
         post.blogId = blogId;
@@ -39,9 +39,9 @@ export class PostRepository {
     }
 
     removeById(id: string): boolean {
-        const index = db.posts.findIndex((post) => post.id === id);
+        const index = mongo.posts.findIndex((post) => post.id === id);
         if (index === -1) return false;
-        db.posts.splice(index, 1);
+        mongo.posts.splice(index, 1);
         return true;
     }
 }
