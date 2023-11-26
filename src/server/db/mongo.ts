@@ -41,7 +41,8 @@ export const mongo: DBType = {
 
 export class MongooseInstance {
     private static instance: Nullable<Mongoose> = null;
-    private static uri: string = process.env.NODE_ENV === 'production' ? (process.env.MONGODB_URI_PRODUCTION as string) : (process.env.MONGODB_URI_LOCAL as string);
+    // private static uri: string = process.env.NODE_ENV === 'production' ? (process.env.MONGODB_URI_PRODUCTION as string) : (process.env.MONGODB_URI_LOCAL as string);
+    private static uri: string = process.env.MONGODB_URI as string;
 
     private constructor() {}
 
