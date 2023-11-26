@@ -49,8 +49,8 @@ export class MongooseInstance {
         if (!this.instance) {
             try {
                 this.instance = await mongoose.connect(MongooseInstance.uri, {
-                    connectTimeoutMS: 5000,
-                    serverSelectionTimeoutMS: 5000,
+                    // connectTimeoutMS: 5000,
+                    // serverSelectionTimeoutMS: 5000,
                 });
                 this.connectManager();
             } catch (e) {
