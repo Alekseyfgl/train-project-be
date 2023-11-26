@@ -1,33 +1,32 @@
 import * as dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
 import { Nullable } from '../../../../../src/server/express/common/interfaces/optional.types';
-import { IBlog } from '../../../../../src/server/express/types/blog/output';
+import { IBlogModel } from '../../../../../src/server/express/types/blog/output';
 import { HttpStatusCodes } from '../../../../../src/server/express/common/constans/http-status-codes';
 import { addMockBlogDto_valid, createBlogMock } from '../../mock/createBlog/createBlog.mock';
 import { updateBlogDto_valid, updateBlogMock } from '../../mock/updateBlog/updateBlog.mock';
-import { mongo } from '../../../../../src/server/db/mongo';
+import mongoose from 'mongoose';
+import { clearMongoCollections } from '../../../../common/clearMongoCollections/clearMongoCollections';
+import { blogPath } from '../../../../../src/server/express/routes/blog.router';
+import { mockNotExistMongoId } from '../../../../common/notExistMongoId/notExistMongoId';
 
 dotenv.config();
 
-const dbName = 'back';
-const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${dbName}`;
+const mongoURI = process.env.MONGODB_URI_TEST as string;
+const { base, id } = blogPath;
 
-describe('/blogs', () => {
-    let newBlog: Nullable<IBlog> = null;
-
-    const client = new MongoClient(mongoURI);
+describe(`${base}`, () => {
+    let newBlog: Nullable<IBlogModel> = null;
 
     beforeAll(async () => {
-        await client.connect();
-        //  await request(app).delete('/testing/all-data').expect(HttpStatusCodes.NO_CONTENT);
+        await mongoose.connect(mongoURI);
     });
 
     afterAll(async () => {
-        await client.close();
+        await mongoose.disconnect();
     });
 
-    beforeEach(() => {
-        mongo.blogs = [];
+    beforeEach(async () => {
+        await clearMongoCollections();
     });
 
     it('+ update blog with correct data', async () => {
@@ -44,7 +43,7 @@ describe('/blogs', () => {
     });
 
     it('- update not existing blog', async () => {
-        const { status } = await updateBlogMock('1234', updateBlogDto_valid);
+        const { status } = await updateBlogMock(mockNotExistMongoId, updateBlogDto_valid);
         expect(status).toBe(HttpStatusCodes.NOT_FOUND);
     });
 
@@ -70,7 +69,7 @@ describe('/blogs', () => {
             const { status } = await updateBlogMock(`${newBlog!.id}`, {
                 description: 'string',
                 websiteUrl: 'https://www.guru99.com/',
-            });
+            } as any);
             expect(status).toBe(HttpStatusCodes.BAD_REQUEST);
         }
     });
@@ -97,7 +96,7 @@ describe('/blogs', () => {
             const { status } = await updateBlogMock(`${newBlog!.id}`, {
                 name: 'string',
                 websiteUrl: 'https://www.guru99.com/',
-            });
+            } as any);
             expect(status).toBe(HttpStatusCodes.BAD_REQUEST);
         }
     });
@@ -124,7 +123,7 @@ describe('/blogs', () => {
             const { status } = await updateBlogMock(`${newBlog!.id}`, {
                 name: 'string',
                 description: 'description',
-            });
+            } as any);
             expect(status).toBe(HttpStatusCodes.BAD_REQUEST);
         }
     });

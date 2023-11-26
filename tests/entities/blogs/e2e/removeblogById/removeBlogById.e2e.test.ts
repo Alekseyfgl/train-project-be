@@ -1,29 +1,33 @@
 import request from 'supertest';
 import * as dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
 import { Nullable } from '../../../../../src/server/express/common/interfaces/optional.types';
-import { IBlog } from '../../../../../src/server/express/types/blog/output';
+import { IBlogModel } from '../../../../../src/server/express/types/blog/output';
 import { app } from '../../../../../src/server/express/app';
 import { HttpStatusCodes } from '../../../../../src/server/express/common/constans/http-status-codes';
 import { addMockBlogDto_valid, createBlogMock } from '../../mock/createBlog/createBlog.mock';
-import { authorizationHeader } from '../../mock/common/base-token/base-token.mock';
+import { blogPath } from '../../../../../src/server/express/routes/blog.router';
+import mongoose from 'mongoose';
+import { clearMongoCollections } from '../../../../common/clearMongoCollections/clearMongoCollections';
+import { authorizationHeader } from '../../../../common/base-token/base-token.mock';
 
 dotenv.config();
 
-const dbName = 'back';
-const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${dbName}`;
+const mongoURI = process.env.MONGODB_URI_TEST as string;
+const { base, id } = blogPath;
 
-describe('/blogs', () => {
-    let newBlog: Nullable<IBlog> = null;
-    const client = new MongoClient(mongoURI);
+describe(`${base}`, () => {
+    let newBlog: Nullable<IBlogModel> = null;
 
     beforeAll(async () => {
-        await client.connect();
-        //  await request(app).delete('/testing/all-data').expect(HttpStatusCodes.NO_CONTENT);
+        await mongoose.connect(mongoURI);
     });
 
     afterAll(async () => {
-        await client.close();
+        await mongoose.disconnect();
+    });
+
+    beforeEach(async () => {
+        await clearMongoCollections();
     });
 
     it('+ create 1 blog with correct data', async () => {
@@ -34,14 +38,14 @@ describe('/blogs', () => {
 
         newBlog = res.body;
 
-        await request(app).delete(`/blogs/${newBlog!.id}`).set('authorization', authorizationHeader).expect(HttpStatusCodes.NO_CONTENT);
+        await request(app).delete(`${base}/${newBlog!.id}`).set('authorization', authorizationHeader).expect(HttpStatusCodes.NO_CONTENT);
     });
 
     it('- remove not exist blog', async () => {
-        await request(app).delete(`/blogs/${newBlog!.id}`).set('authorization', authorizationHeader).expect(HttpStatusCodes.NOT_FOUND);
+        await request(app).delete(`${base}/${newBlog!.id}`).set('authorization', authorizationHeader).expect(HttpStatusCodes.NOT_FOUND);
     });
 
     it('- remove for unnaturalized user', async () => {
-        await request(app).delete(`/blogs/${newBlog!.id}`).expect(HttpStatusCodes.UNAUTHORIZED);
+        await request(app).delete(`${base}/${newBlog!.id}`).expect(HttpStatusCodes.UNAUTHORIZED);
     });
 });

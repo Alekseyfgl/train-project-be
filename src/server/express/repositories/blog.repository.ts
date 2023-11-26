@@ -10,7 +10,7 @@ export class BlogRepository {
         try {
             return await BlogModel.find({});
         } catch (e) {
-            console.error(e);
+            console.error('[findAll]', e);
             return [];
         }
     }
@@ -20,7 +20,7 @@ export class BlogRepository {
             const blog: Nullable<IBlogModel> = await BlogModel.findById(id);
             return blog;
         } catch (e) {
-            console.error(e);
+            console.error('[findById]', e);
             return null;
         }
     }
@@ -29,7 +29,7 @@ export class BlogRepository {
         try {
             return await BlogModel.create(dto);
         } catch (err) {
-            console.error('Произошла ошибка при создании блога:', err);
+            console.error('[create]', err);
             return null;
         }
     }
@@ -39,7 +39,7 @@ export class BlogRepository {
             const result: UpdateWriteOpResult = await BlogModel.updateOne({ _id: id }, dto);
             return !!result.matchedCount;
         } catch (e) {
-            console.error('Произошла ошибка при создании блога:', e);
+            console.error('[updateById]', e);
             return false;
         }
     }
@@ -49,7 +49,7 @@ export class BlogRepository {
             const result: DeleteResult = await BlogModel.deleteOne({ _id: id });
             return !!result.deletedCount;
         } catch (e) {
-            console.error(e);
+            console.error('[removeById]', e);
             return false;
         }
     }

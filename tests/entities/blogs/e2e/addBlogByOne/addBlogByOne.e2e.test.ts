@@ -1,31 +1,28 @@
 import request from 'supertest';
 import * as dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
 import { Nullable } from '../../../../../src/server/express/common/interfaces/optional.types';
 import { IBlogModel } from '../../../../../src/server/express/types/blog/output';
 import { app } from '../../../../../src/server/express/app';
 import { HttpStatusCodes } from '../../../../../src/server/express/common/constans/http-status-codes';
 import { addMockBlogDto_valid, createBlogMock } from '../../mock/createBlog/createBlog.mock';
 import { blogPath } from '../../../../../src/server/express/routes/blog.router';
-import { init } from '../../../../../src/server/express/init';
 import { clearMongoCollections } from '../../../../common/clearMongoCollections/clearMongoCollections';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
-const dbName = 'back';
 const mongoURI = process.env.MONGODB_URI_TEST as string;
 const { base, id } = blogPath;
 
-describe('/blogs', () => {
+describe(`${base}`, () => {
     let newBlog: Nullable<IBlogModel> = null;
-    const client = new MongoClient(mongoURI);
 
     beforeAll(async () => {
-        init.start().then((r) => (r ? console.log('Initialization was successfully') : console.error('Initialization was rejected')));
+        await mongoose.connect(mongoURI);
     });
 
     afterAll(async () => {
-        await client.close();
+        await mongoose.disconnect();
     });
 
     beforeEach(async () => {
