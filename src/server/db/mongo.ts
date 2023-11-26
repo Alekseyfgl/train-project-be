@@ -1,6 +1,6 @@
 import { VideoType } from '../express/types/video/output';
 import { IBlog } from '../express/types/blog/output';
-import { IPost } from '../express/types/post/output';
+import { IPostModel } from '../express/types/post/output';
 import * as mongoose from 'mongoose';
 import { Connection, Mongoose } from 'mongoose';
 import { Nullable, Optional } from '../express/common/interfaces/optional.types';
@@ -11,7 +11,7 @@ export const AVAILABLE_RESOLUTIONS = ['P144', 'P240', 'P360', 'P480', 'P720', 'P
 type DBType = {
     videos: VideoType[];
     blogs: IBlog[];
-    posts: IPost[];
+    posts: IPostModel[];
 };
 
 export const mongo: DBType = {

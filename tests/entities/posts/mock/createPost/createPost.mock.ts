@@ -4,13 +4,14 @@ import { authorizationHeader } from '../../../../common/base-token/base-token.mo
 import { postPath } from '../../../../../src/server/express/routes/post.router';
 import { AddPostDto } from '../../../../../src/server/express/types/post/input';
 
-export const addMockPostDto_valid: AddPostDto = {
-    blogId: 'blogId',
-    title: 'title',
-    shortDescription: 'shortDescription',
-    content: 'content',
-};
 const { base, id } = postPath;
-export const createPostMock = async (postData: AddPostDto) => {
-    return request(app).post(`${base}`).set('authorization', authorizationHeader).send(postData);
+export const createPostMock = async (toBlogId: string) => {
+    const addMockPostDto_valid: AddPostDto = {
+        blogId: toBlogId,
+        title: 'title',
+        shortDescription: 'shortDescription',
+        content: 'content',
+    };
+
+    return request(app).post(`${base}`).set('authorization', authorizationHeader).send(addMockPostDto_valid);
 };

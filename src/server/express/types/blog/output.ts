@@ -10,6 +10,7 @@ export interface IBlogModel extends Document {
     name: string;
     description: string;
     websiteUrl: string;
-    createdAt: string;
     isMembership: boolean;
+    createdAt: string;
+    updatedAt: string;
 }

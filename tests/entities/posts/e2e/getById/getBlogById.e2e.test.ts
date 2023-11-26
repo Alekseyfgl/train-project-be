@@ -1,37 +1,47 @@
 import request from 'supertest';
 import * as dotenv from 'dotenv';
-import { MongoClient } from 'mongodb';
 import { Nullable } from '../../../../../src/server/express/common/interfaces/optional.types';
-import { IBlog } from '../../../../../src/server/express/types/blog/output';
+import { IBlogModel } from '../../../../../src/server/express/types/blog/output';
 import { app } from '../../../../../src/server/express/app';
 import { HttpStatusCodes } from '../../../../../src/server/express/common/constans/http-status-codes';
 import { postPath } from '../../../../../src/server/express/routes/post.router';
-import { addMockPostDto_valid, createPostMock } from '../../mock/createPost/createPost.mock';
+import { createPostMock } from '../../mock/createPost/createPost.mock';
+import mongoose from 'mongoose';
+import { clearMongoCollections } from '../../../../common/clearMongoCollections/clearMongoCollections';
+import { addMockBlogDto_valid, createBlogMock } from '../../../blogs/mock/createBlog/createBlog.mock';
+import { mockNotExistMongoId } from '../../../../common/notExistMongoId/notExistMongoId';
 
 dotenv.config();
 
-const dbName = 'back';
-const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${dbName}`;
+const mongoURI = process.env.MONGODB_URI_TEST as string;
 const { base } = postPath;
-describe('/posts', () => {
-    let newBlog: Nullable<IBlog> = null;
-    const client = new MongoClient(mongoURI);
+
+describe(`${base}`, () => {
+    let newBlog: Nullable<IBlogModel> = null; // first create blog
 
     beforeAll(async () => {
-        await client.connect();
-        //  await request(app).delete('/testing/all-data').expect(HttpStatusCodes.NO_CONTENT);
+        await mongoose.connect(mongoURI);
     });
 
     afterAll(async () => {
-        await client.close();
+        await mongoose.disconnect();
+    });
+
+    beforeEach(async () => {
+        await clearMongoCollections();
+        newBlog = (await createBlogMock(addMockBlogDto_valid)).body;
+    });
+
+    afterEach(async () => {
+        await clearMongoCollections();
     });
 
     it('get not existing post', async () => {
-        await request(app).post(`${base}/${1234}`).expect(HttpStatusCodes.NOT_FOUND);
+        await request(app).post(`${base}/${mockNotExistMongoId}`).expect(HttpStatusCodes.NOT_FOUND);
     });
 
     it('get existing post', async () => {
-        const createdPost = await createPostMock(addMockPostDto_valid);
+        const createdPost = await createPostMock(newBlog!.id);
         expect(createdPost.status).toBe(HttpStatusCodes.CREATED);
         newBlog = createdPost.body;
 

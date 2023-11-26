@@ -1,9 +1,9 @@
 import { NextFunction, Response, Router } from 'express';
 import { requestCounter } from '../common/middlewares/reques-counter/request-counter.middleware';
 import { testController } from '../controllers/test.controller';
-import { mongo } from '../../db/mongo';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
+import { clearMongoCollections } from '../../../../tests/common/clearMongoCollections/clearMongoCollections';
 
 export const videoPath = {
     base: '/testing',
@@ -16,9 +16,8 @@ export const testRouter: Router = Router();
 
 testRouter.get(`${base}`, testController.getRequestCounter);
 
-testRouter.delete(`${base}/${all_data}`, (req: any, res: Response, next: NextFunction) => {
-    mongo.blogs.length = 0;
-    mongo.videos.length = 0;
+testRouter.delete(`${base}/${all_data}`, async (req: any, res: Response, next: NextFunction) => {
+    await clearMongoCollections();
     new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);
 });
 

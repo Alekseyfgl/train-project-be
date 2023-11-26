@@ -1,47 +1,55 @@
 import { AddPostDto, UpdatePostDto } from '../types/post/input';
-import { mongo } from '../../db/mongo';
-import { IPost } from '../types/post/output';
-import { Nullable, Optional } from '../common/interfaces/optional.types';
+import { IPostModel } from '../types/post/output';
+import { PromiseNull } from '../common/interfaces/optional.types';
+import { PostModel } from '../models/post.model';
+import { DeleteResult } from 'mongodb';
+import { UpdateWriteOpResult } from 'mongoose';
 
 export class PostRepository {
-    static getAll() {
-        return mongo.posts;
+    static async getAll(): Promise<IPostModel[]> {
+        try {
+            return await PostModel.find({});
+        } catch (e) {
+            console.log('[getAll]', e);
+            return [];
+        }
     }
 
-    static findById(id: string): Nullable<IPost> {
-        const post = mongo.posts.find((post) => post.id === id);
-        return post ? post : null;
+    static async findById(id: string): PromiseNull<IPostModel> {
+        try {
+            return await PostModel.findById(id);
+        } catch (e) {
+            console.log('[findById]', e);
+            return null;
+        }
     }
 
-    addPost(dto: AddPostDto): IPost {
-        const post: IPost = {
-            id: (+new Date()).toString(),
-            blogId: dto.blogId,
-            title: dto.title,
-            content: dto.content,
-            shortDescription: dto.shortDescription,
-            blogName: 'blogName',
-        };
-        mongo.posts.push(post);
-        return post;
+    static async create(dto: AddPostDto): PromiseNull<IPostModel> {
+        try {
+            return await PostModel.create(dto);
+        } catch (e) {
+            console.error('[addPost]', e);
+            return null;
+        }
     }
 
-    updateById(id: string, dto: UpdatePostDto): boolean {
-        const { title, blogId, content, shortDescription } = dto;
-        const post: Optional<IPost> = mongo.posts.find((post) => post.id === id);
-        if (!post) return false;
-
-        post.blogId = blogId;
-        post.title = title;
-        post.content = content;
-        post.shortDescription = shortDescription;
-        return true;
+    static async updateById(id: string, dto: UpdatePostDto): Promise<boolean> {
+        try {
+            const result: UpdateWriteOpResult = await PostModel.updateOne({ _id: id }, dto);
+            return !!result.matchedCount;
+        } catch (e) {
+            console.error('[updateById]', e);
+            return false;
+        }
     }
 
-    removeById(id: string): boolean {
-        const index = mongo.posts.findIndex((post) => post.id === id);
-        if (index === -1) return false;
-        mongo.posts.splice(index, 1);
-        return true;
+    static async removeById(id: string): Promise<boolean> {
+        try {
+            const result: DeleteResult = await PostModel.deleteOne({ _id: id });
+            return !!result.deletedCount;
+        } catch (e) {
+            console.error('[removeById]', e);
+            return false;
+        }
     }
 }
