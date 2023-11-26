@@ -8,8 +8,9 @@ const PostSchema: Schema = new Schema(
         shortDescription: { type: String, required: true },
         content: { type: String, required: true },
         blogName: { type: String, required: false, default: 'string' },
+        createdAt: { type: Date, default: Date.now }, // добавлено поле createdAt
     },
-    { timestamps: true },
+    {},
 );
 
 //изменили _id на одекватный id

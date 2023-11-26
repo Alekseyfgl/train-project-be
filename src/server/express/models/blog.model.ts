@@ -9,8 +9,9 @@ const BlogSchema: Schema = new Schema(
         name: { type: String, required: true },
         description: { type: String, required: true },
         websiteUrl: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now }, // добавлено поле createdAt
     },
-    { timestamps: true },
+    {},
 );
 
 //изменили _id на одекватный id
