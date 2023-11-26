@@ -9,6 +9,6 @@ export const addMockBlogDto_valid: AddBlogDto = {
     websiteUrl: 'https://www.guru99.com/',
 };
 
-export const createBlogMock = async (blogData: any) => {
+export const createBlogMock = async (blogData: AddBlogDto) => {
     return request(app).post('/blogs').set('authorization', authorizationHeader).send(blogData);
 };

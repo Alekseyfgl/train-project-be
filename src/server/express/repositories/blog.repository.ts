@@ -1,45 +1,56 @@
-import { mongo } from '../../db/mongo';
-import { Nullable, Optional } from '../common/interfaces/optional.types';
-import { IBlog } from '../types/blog/output';
+import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import { AddBlogDto } from '../types/blog/input';
+import { UpdateWriteOpResult } from 'mongoose';
+import { IBlogModel } from '../types/blog/output';
+import { BlogModel } from '../models/blog.model';
+import { DeleteResult } from 'mongodb';
 
 export class BlogRepository {
-    static getAllBlogs(): IBlog[] {
-        return mongo.blogs;
+    static async findAll(): Promise<IBlogModel[]> {
+        try {
+            return await BlogModel.find({});
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
     }
 
-    static findBlockById(id: string): Nullable<IBlog> {
-        const blog = mongo.blogs.find((blog) => blog.id === id);
-        return blog ? blog : null;
+    static async findById(id: string): PromiseNull<IBlogModel> {
+        try {
+            const blog: Nullable<IBlogModel> = await BlogModel.findById(id);
+            return blog;
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
     }
 
-    createNewBlog(dto: AddBlogDto): IBlog {
-        const newBlog: IBlog = {
-            id: (+new Date()).toString(),
-            name: dto.name,
-            description: dto.description,
-            websiteUrl: dto.websiteUrl,
-        };
-        mongo.blogs.push(newBlog);
-        return newBlog;
+    static async create(dto: AddBlogDto): PromiseNull<IBlogModel> {
+        try {
+            return await BlogModel.create(dto);
+        } catch (err) {
+            console.error('Произошла ошибка при создании блога:', err);
+            return null;
+        }
     }
 
-    updateBlogById(id: string, dto: AddBlogDto): boolean {
-        const { name, description, websiteUrl } = dto;
-        const blog: Optional<IBlog> = mongo.blogs.find((blog) => blog.id === id);
-        if (!blog) return false;
-
-        blog.name = name;
-        blog.description = description;
-        blog.websiteUrl = websiteUrl;
-
-        return true;
+    static async updateById(id: string, dto: AddBlogDto): Promise<boolean> {
+        try {
+            const result: UpdateWriteOpResult = await BlogModel.updateOne({ _id: id }, dto);
+            return !!result.matchedCount;
+        } catch (e) {
+            console.error('Произошла ошибка при создании блога:', e);
+            return false;
+        }
     }
 
-    removeBlogById(id: string) {
-        const index = mongo.blogs.findIndex((blog) => blog.id === id);
-        if (index === -1) return false;
-        mongo.blogs.splice(index, 1);
-        return true;
+    static async removeById(id: string): Promise<boolean> {
+        try {
+            const result: DeleteResult = await BlogModel.deleteOne({ _id: id });
+            return !!result.deletedCount;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
     }
 }

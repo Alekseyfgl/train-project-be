@@ -62,7 +62,7 @@ export class MongooseInstance {
     private static connectManager() {
         const inst: Optional<Connection> = MongooseInstance.instance?.connection;
 
-        inst?.on('connected', (error) => {
+        inst?.on('connected', () => {
             console.log('Mongo was connected successfully, after disconnected');
         });
         inst?.on('disconnected', () => {

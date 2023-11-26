@@ -4,11 +4,11 @@ import { authorizationHeader } from '../base-token/base-token.mock';
 import { UpdateBlogDto } from '../../../../src/server/express/types/blog/input';
 
 export const updateBlogDto_valid: UpdateBlogDto = {
-    name: 'string',
-    description: 'string',
+    name: 'Hello',
+    description: 'Hello samurai!!!',
     websiteUrl: 'https://www.guru99.com/',
 };
 
-export const updateBlogMock = (id: string, dto: any) => {
+export const updateBlogMock = async (id: string, dto: UpdateBlogDto) => {
     return request(app).put(`/blogs/${id}`).set('authorization', authorizationHeader).send(dto);
 };

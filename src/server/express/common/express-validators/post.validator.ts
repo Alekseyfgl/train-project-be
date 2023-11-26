@@ -1,18 +1,19 @@
 import { body } from 'express-validator';
 import { BlogRepository } from '../../repositories/blog.repository';
-import { IBlog } from '../../types/blog/output';
+import { IBlogModel } from '../../types/blog/output';
 import { Nullable } from '../interfaces/optional.types';
 import { inputModelValidator } from './input-model-validation/input-model.validator';
 
 const blogIdValidator = body('blogId')
     .isString()
     .trim()
-    .custom((value) => {
-        const blog: Nullable<IBlog> = BlogRepository.findBlockById(value);
+    .custom(async (value) => {
+        const blog: Nullable<IBlogModel> = await BlogRepository.findById(value);
 
         if (!blog) {
             // return false
-            throw new Error('Incorrect blogId');
+            // throw new Error('Incorrect blogId');
+            return Promise.reject(new Error('Некорректный blogId'));
         }
 
         return true;

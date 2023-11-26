@@ -2,18 +2,20 @@ import request from 'supertest';
 import * as dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
 import { Nullable } from '../../../../src/server/express/common/interfaces/optional.types';
-import { IBlog } from '../../../../src/server/express/types/blog/output';
+import { IBlogModel } from '../../../../src/server/express/types/blog/output';
 import { app } from '../../../../src/server/express/app';
 import { HttpStatusCodes } from '../../../../src/server/express/common/constans/http-status-codes';
 import { addMockBlogDto_valid, createBlogMock } from '../../mock/createBlog/createBlog.mock';
+import { blogPath } from '../../../../src/server/express/routes/blog.router';
 
 dotenv.config();
 
 const dbName = 'back';
 const mongoURI = process.env.mongoURI || `mongodb://0.0.0.0:27017/${dbName}`;
+const { base, id } = blogPath;
 
-describe('/videos', () => {
-    let newBlog: Nullable<IBlog> = null;
+describe('/blogs', () => {
+    let newBlog: Nullable<IBlogModel> = null;
     const client = new MongoClient(mongoURI);
 
     beforeAll(async () => {
