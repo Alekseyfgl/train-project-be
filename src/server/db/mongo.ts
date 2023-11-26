@@ -4,8 +4,9 @@ import { IPostModel } from '../express/types/post/output';
 import * as mongoose from 'mongoose';
 import { Connection, Mongoose } from 'mongoose';
 import { Nullable, Optional } from '../express/common/interfaces/optional.types';
+import * as dotenv from 'dotenv';
 
-require('dotenv').config();
+dotenv.config();
 export const AVAILABLE_RESOLUTIONS = ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'] as const;
 
 type DBType = {
