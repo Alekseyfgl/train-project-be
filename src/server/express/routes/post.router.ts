@@ -8,7 +8,7 @@ export const postPath = {
     id: ':id',
 };
 const { base, id } = postPath;
-export const postRouter = Router({});
+export const postRouter = Router();
 postRouter.get(`${base}`, postController.getAll);
 postRouter.get(`${base}/${id}`, postController.getById);
 postRouter.post(`${base}`, authMiddleware, postValidation(), postController.addByOne);

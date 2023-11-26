@@ -3,9 +3,11 @@ import { MongooseInstance } from '../db/mongo';
 class Init {
     public async start(): Promise<boolean> {
         const initial: boolean[] = [];
+        // ----- for init -------
         //init Mongo
         initial.push(await this.initMongoDb());
 
+        // ===== for init ========
         //return result init
         return initial.every(Boolean);
     }

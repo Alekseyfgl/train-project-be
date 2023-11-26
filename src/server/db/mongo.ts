@@ -53,6 +53,7 @@ export class MongooseInstance {
                 });
                 this.connectManager();
             } catch (e) {
+                await mongoose.disconnect();
                 console.error(e);
             }
         }

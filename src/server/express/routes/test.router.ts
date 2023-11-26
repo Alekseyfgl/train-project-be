@@ -3,7 +3,7 @@ import { requestCounter } from '../common/middlewares/reques-counter/request-cou
 import { testController } from '../controllers/test.controller';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
-import { clearMongoCollections } from '../../../../tests/common/clearMongoCollections/clearMongoCollections';
+import { clearMongoCollections } from '../../../tests/common/clearMongoCollections/clearMongoCollections';
 
 export const videoPath = {
     base: '/testing',

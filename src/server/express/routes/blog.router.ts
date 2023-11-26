@@ -8,7 +8,7 @@ export const blogPath = {
     id: ':id',
 };
 const { base, id } = blogPath;
-export const blogRouter = Router({});
+export const blogRouter = Router();
 blogRouter.get(`${base}`, blogController.getAllBlogs);
 blogRouter.get(`${base}/${id}`, blogController.getBlogById);
 blogRouter.post(`${base}`, authMiddleware, blogValidation(), blogController.addBlogByOne);
