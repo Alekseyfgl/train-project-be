@@ -1,6 +1,3 @@
-import { VideoType } from '../express/types/video/output';
-import { IBlog } from '../express/types/blog/output';
-import { IPostModel } from '../express/types/post/output';
 import * as mongoose from 'mongoose';
 import { Connection, Mongoose } from 'mongoose';
 import { Nullable, Optional } from '../express/common/interfaces/optional.types';
@@ -9,40 +6,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 export const AVAILABLE_RESOLUTIONS = ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'] as const;
 
-type DBType = {
-    videos: VideoType[];
-    blogs: IBlog[];
-    posts: IPostModel[];
-};
-
-export const mongo: DBType = {
-    videos: [
-        // {
-        //     id: 1,
-        //     title: 'string',
-        //     author: 'string',
-        //     canBeDownloaded: true,
-        //     minAgeRestriction: null,
-        //     createdAt: '2023-11-12T11:37:53.947Z',
-        //     publicationDate: '2023-11-12T11:37:53.947Z',
-        //     availableResolutions: ['P144'],
-        // },
-    ],
-    blogs: [
-        // {
-        //     id: '1',
-        //     name: 'string',
-        //     description: 'string',
-        //     websiteUrl: 'string',
-        // },
-    ],
-    posts: [],
-};
-
+const uri = (process.env.MONGODB_URI as string) || 'mongodb://localhost:27017/train_project_be_local';
 export class MongooseInstance {
     private static instance: Nullable<Mongoose> = null;
-    // private static uri: string = process.env.NODE_ENV === 'production' ? (process.env.MONGODB_URI_PRODUCTION as string) : (process.env.MONGODB_URI_LOCAL as string);
-    private static uri: string = process.env.MONGODB_URI as string;
+    private static uri: string = uri;
 
     private constructor() {}
 
