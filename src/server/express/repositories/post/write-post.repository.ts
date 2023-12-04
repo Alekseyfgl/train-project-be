@@ -1,29 +1,11 @@
-import { AddPostDto, UpdatePostDto } from '../types/post/input';
-import { IPostModel } from '../types/post/output';
-import { PromiseNull } from '../common/interfaces/optional.types';
-import { PostModel } from '../models/post.model';
-import { DeleteResult } from 'mongodb';
+import { AddPostDto, UpdatePostDto } from '../../types/post/input';
+import { PromiseNull } from '../../common/interfaces/optional.types';
+import { IPostModel } from '../../types/post/output';
+import { PostModel } from '../../models/post.model';
 import { UpdateWriteOpResult } from 'mongoose';
+import { DeleteResult } from 'mongodb';
 
-export class PostRepository {
-    static async getAll(): Promise<IPostModel[]> {
-        try {
-            return await PostModel.find({});
-        } catch (e) {
-            console.log('[getAll]', e);
-            return [];
-        }
-    }
-
-    static async findById(id: string): PromiseNull<IPostModel> {
-        try {
-            return await PostModel.findById(id);
-        } catch (e) {
-            console.log('[findById]', e);
-            return null;
-        }
-    }
-
+export class WritePostRepository {
     static async create(dto: AddPostDto): PromiseNull<IPostModel> {
         try {
             return await PostModel.create(dto);

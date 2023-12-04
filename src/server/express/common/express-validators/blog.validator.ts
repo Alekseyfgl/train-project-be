@@ -1,9 +1,9 @@
 import { body } from 'express-validator';
 import { inputModelValidator } from './input-model-validation/input-model.validator';
 import mongoose from 'mongoose';
-import { BlogRepository } from '../../repositories/blog.repository';
 import { Nullable } from '../interfaces/optional.types';
 import { IBlogModel } from '../../types/blog/output';
+import { ReadBlogRepository } from '../../repositories/blog/read-blog.repository';
 
 const nameValidator = body('name').isString().trim().isLength({ min: 1, max: 15 }).withMessage('Incorrect name!');
 const descriptionValidator = body('description').isString().trim().isLength({ min: 1, max: 500 }).withMessage('Incorrect description!');
@@ -13,7 +13,7 @@ const idValidator = body('_id')
         const isValid: boolean = mongoose.Types.ObjectId.isValid(value);
         if (!isValid) return Promise.reject(new Error('Incorrect _id'));
 
-        const blog: Nullable<IBlogModel> = await BlogRepository.findById(value);
+        const blog: Nullable<IBlogModel> = await ReadBlogRepository.findById(value);
         if (!blog) return Promise.reject(new Error('Incorrect _id'));
     })
     .withMessage('Invalid MongoDB _id!');

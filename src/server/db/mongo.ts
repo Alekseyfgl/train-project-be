@@ -4,7 +4,6 @@ import { Nullable, Optional } from '../express/common/interfaces/optional.types'
 import * as dotenv from 'dotenv';
 
 dotenv.config();
-export const AVAILABLE_RESOLUTIONS = ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'] as const;
 
 const uri = (process.env.MONGODB_URI as string) || 'mongodb://localhost:27017/train_project_be_local';
 export class MongooseInstance {
