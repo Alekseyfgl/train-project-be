@@ -46,7 +46,7 @@ describe('[POST] /posts', () => {
         expect(body.title).toBe('title');
         expect(body.content).toBe('content');
         expect(body.shortDescription).toBe('shortDescription');
-        expect(Object.keys(body!)).toHaveLength(8);
+        expect(Object.keys(body!)).toHaveLength(7);
     });
 
     it('- create post without auth', async () => {

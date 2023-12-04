@@ -6,7 +6,6 @@ import { app } from '../../../../../server/express/app';
 import { HttpStatusCodes } from '../../../../../server/express/common/constans/http-status-codes';
 import { authorizationHeader } from '../../../../common/base-token/base-token.mock';
 import { postPath } from '../../../../../server/express/routes/post.router';
-import { mongo } from '../../../../../server/db/mongo';
 import { addMockBlogDto_valid, createBlogMock } from '../../../blogs/mock/createBlog/createBlog.mock';
 import { createPostMock } from '../../mock/createPost/createPost.mock';
 import mongoose from 'mongoose';
@@ -36,11 +35,6 @@ describe('/posts', () => {
 
     afterEach(async () => {
         await clearMongoCollections();
-    });
-
-    afterEach(() => {
-        mongo.blogs = [];
-        mongo.posts = [];
     });
 
     it('+ remove exists post', async () => {
