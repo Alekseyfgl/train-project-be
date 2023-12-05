@@ -14,3 +14,11 @@ export interface IBlogModel extends Document {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface IBlogModelOut {
+    pagesCount: number;
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    items: IBlogModel[];
+}

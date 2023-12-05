@@ -1,15 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
-import { IBlogModel } from '../types/blog/output';
+import { IBlogModel, IBlogModelOut } from '../types/blog/output';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
-import { Nullable } from '../common/interfaces/optional.types';
+import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { ApiResponse } from '../common/api-response/api-response';
-import { AddBlogDto, UpdateBlogDto } from '../types/blog/input';
+import { AddBlogDto, BlogQueryType, UpdateBlogDto } from '../types/blog/input';
 import { BlogService } from '../domain/blog.service';
 import { ReadBlogRepository } from '../repositories/blog/read-blog.repository';
 
 class BlogController {
-    async getAllBlogs(req: Request, res: Response, next: NextFunction) {
-        const blogs = await ReadBlogRepository.findAll();
+    async getAllBlogs(req: Request<{}, {}, {}, BlogQueryType>, res: Response, next: NextFunction) {
+        const sortData = {
+            searchNameTerm: req.query.searchNameTerm,
+            sortBy: req.query.sortBy,
+            sortDirection: req.query.sortDirection,
+            pageNumber: req.query.pageNumber,
+            pageSize: req.query.pageSize,
+        };
+
+        const blogs: Optional<IBlogModelOut> = await ReadBlogRepository.findAll(sortData);
 
         new ApiResponse(res).send(HttpStatusCodes.OK, blogs);
     }
