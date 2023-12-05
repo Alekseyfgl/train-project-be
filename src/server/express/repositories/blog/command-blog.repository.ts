@@ -5,7 +5,7 @@ import { DeleteResult } from 'mongodb';
 import { PromiseNull } from '../../common/interfaces/optional.types';
 import { IBlogModel } from '../../types/blog/output';
 
-export class WriteBlogRepository {
+export class CommandBlogRepository {
     static async updateById(id: string, dto: UpdateBlogDto): Promise<boolean> {
         try {
             const result: UpdateWriteOpResult = await BlogModel.updateOne({ _id: id }, dto);

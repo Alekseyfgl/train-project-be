@@ -4,7 +4,7 @@ import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { BlogQueryType } from '../../types/blog/input';
 import { pageBlogMapper } from '../../mappers/blog.mapper';
 
-export class ReadBlogRepository {
+export class QueryBlogRepository {
     static async findAll(query: BlogQueryType): PromiseNull<IBlogModelOut> {
         const sortDirection = query.sortDirection ?? 'desc';
         const sortBy = query.sortBy ?? 'createdAt';

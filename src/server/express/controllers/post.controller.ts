@@ -4,18 +4,18 @@ import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable } from '../common/interfaces/optional.types';
 import { IPostModel } from '../types/post/output';
 import { AddPostDto, UpdatePostDto } from '../types/post/input';
-import { ReadPostRepository } from '../repositories/post/read-post.repository';
+import { QueryPostRepository } from '../repositories/post/query-post.repository';
 import { PostService } from '../domain/post.service';
 
 class PostController {
     async getAll(req: Request, res: Response, next: NextFunction) {
-        const posts: IPostModel[] = await ReadPostRepository.getAll();
+        const posts: IPostModel[] = await QueryPostRepository.getAll();
         new ApiResponse(res).send(HttpStatusCodes.OK, posts);
     }
 
     async getById(req: Request<{ id: string }>, res: Response, next: NextFunction) {
         const id = req.params.id;
-        const post: Nullable<IPostModel> = await ReadPostRepository.findById(id);
+        const post: Nullable<IPostModel> = await QueryPostRepository.findById(id);
 
         post ? new ApiResponse(res).send(HttpStatusCodes.OK, post) : new ApiResponse(res).notFound();
     }

@@ -2,13 +2,13 @@ import { body } from 'express-validator';
 import { IBlogModel } from '../../types/blog/output';
 import { Nullable } from '../interfaces/optional.types';
 import { inputModelValidator } from './input-model-validation/input-model.validator';
-import { ReadBlogRepository } from '../../repositories/blog/read-blog.repository';
+import { QueryBlogRepository } from '../../repositories/blog/query-blog.repository';
 
 const blogIdValidator = body('blogId')
     .isString()
     .trim()
     .custom(async (value) => {
-        const blog: Nullable<IBlogModel> = await ReadBlogRepository.findById(value);
+        const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(value);
 
         if (!blog) {
             // return false

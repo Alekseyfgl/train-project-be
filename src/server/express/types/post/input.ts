@@ -11,3 +11,9 @@ export interface UpdatePostDto {
     content: string;
     blogId: string;
 }
+
+export interface IPostToBlogDto {
+    title: string;
+    shortDescription: string;
+    content: string;
+}

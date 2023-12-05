@@ -1,18 +1,21 @@
 import { AddPostDto, UpdatePostDto } from '../types/post/input';
-import { WritePostRepository } from '../repositories/post/write-post.repository';
-import { PromiseNull } from '../common/interfaces/optional.types';
+import { CommandPostRepository } from '../repositories/post/command-post.repository';
+import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import { IPostModel } from '../types/post/output';
+import { QueryPostRepository } from '../repositories/post/query-post.repository';
 
 export class PostService {
     static async create(dto: AddPostDto): PromiseNull<IPostModel> {
-        return WritePostRepository.create(dto);
+        const createdPostId: Nullable<string> = await CommandPostRepository.create(dto);
+        if (!createdPostId) return null;
+        return QueryPostRepository.findById(createdPostId);
     }
 
     static async updateById(id: string, dto: UpdatePostDto) {
-        return WritePostRepository.updateById(id, dto);
+        return CommandPostRepository.updateById(id, dto);
     }
 
     static async removeById(id: string) {
-        return WritePostRepository.removeById(id);
+        return CommandPostRepository.removeById(id);
     }
 }

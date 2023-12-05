@@ -2,7 +2,7 @@ import { IPostModel } from '../../types/post/output';
 import { PostModel } from '../../models/post.model';
 import { PromiseNull } from '../../common/interfaces/optional.types';
 
-export class ReadPostRepository {
+export class QueryPostRepository {
     static async getAll(): Promise<IPostModel[]> {
         try {
             return await PostModel.find({});
