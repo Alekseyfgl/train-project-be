@@ -1,7 +1,9 @@
 import { app } from './server/express/app';
 import { init } from './server/express/init';
 
-require('dotenv').config();
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const port = process.env.SERVER_PORT || 3000;
 
