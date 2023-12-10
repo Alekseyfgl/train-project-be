@@ -38,7 +38,7 @@ export class QueryPostRepository {
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize);
 
-            const totalCount: number = await PostModel.countDocuments();
+            const totalCount: number = await PostModel.countDocuments({ blogId: blogId });
             const pagesCount: number = Math.ceil(totalCount / pageSize);
             return pagePostMapper({ posts, totalCount, pageNumber, pagesCount, pageSize });
         } catch (e) {
