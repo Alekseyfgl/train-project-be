@@ -39,7 +39,7 @@ export class QueryBlogRepository {
             const blog: Nullable<IBlogModel> = await BlogModel.findById(id);
             return blog;
         } catch (e) {
-            console.error('[findById]', e);
+            console.error('[BLOG,findById]', e);
             return null;
         }
     }

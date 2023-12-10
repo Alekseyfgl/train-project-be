@@ -27,6 +27,7 @@ class BlogController {
     }
 
     async getBlogById(req: Request<{ id: string }>, res: Response, next: NextFunction) {
+        console.log('!!!!===>getBlogById');
         const id = req.params.id;
         const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(id);
 
@@ -34,17 +35,20 @@ class BlogController {
     }
 
     async addBlogByOne(req: Request<{}, {}, AddBlogDto>, res: Response, next: NextFunction) {
+        console.log('!!!!===>addBlogByOne');
         const newBlog: Nullable<IBlogModel> = await BlogService.create(req.body);
         new ApiResponse(res).send(HttpStatusCodes.CREATED, newBlog);
     }
 
     async updateBlogById(req: Request<{ id: string }, {}, UpdateBlogDto>, res: Response, next: NextFunction) {
+        console.log('!!!!===>updateBlogById');
         const isUpdated: boolean = await BlogService.updateById(req.params.id, req.body);
         const response = new ApiResponse(res);
         isUpdated ? response.send(HttpStatusCodes.NO_CONTENT) : response.notFound();
     }
 
     async removeBlogById(req: Request<{ id: string }>, res: Response, next: NextFunction) {
+        console.log('!!!!===>removeBlogById');
         const isRemoved: boolean = await BlogService.removeById(req.params.id);
         const response = new ApiResponse(res);
         isRemoved ? response.send(HttpStatusCodes.NO_CONTENT) : response.notFound();
@@ -52,14 +56,14 @@ class BlogController {
 
     async createPostToBlog(req: Request<{ id: string }, {}, IPostToBlogDto>, res: Response, next: NextFunction) {
         const id = req.params.id;
-
-        const response = new ApiResponse(res);
-
+        console.log('!!!!===>createPostToBlog');
         const createdPost: Nullable<IPostModel> = await BlogService.createPostToBlog(id, req.body);
+        const response = new ApiResponse(res);
         createdPost ? response.send(HttpStatusCodes.CREATED, createdPost) : response.notFound();
     }
 
     async getAllPostsByBlogId(req: Request<{ id: string }, {}, {}, PostsByBlogQueryOptional>, res: Response) {
+        console.log('!!!!===>getAllPostsByBlogId');
         const blogId = req.params.id;
         const query: PostsByBlogQuery = postsByBlogQueryMapper(req.query);
 
