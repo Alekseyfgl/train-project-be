@@ -1,8 +1,10 @@
 import { IPostModel, IPostModelOut } from '../../types/post/output';
 import { PostModel } from '../../models/post.model';
-import { PromiseNull } from '../../common/interfaces/optional.types';
+import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { PostsByBlogQuery } from '../../types/blog/input';
 import { pagePostMapper } from '../../mappers/post.mapper';
+import { QueryBlogRepository } from '../blog/query-blog.repository';
+import { IBlogModel } from '../../types/blog/output';
 
 export class QueryPostRepository {
     static async getAll(query: PostsByBlogQuery): Promise<IPostModelOut> {
@@ -24,11 +26,13 @@ export class QueryPostRepository {
         }
     }
 
-    static async findAllPostsByBlogId(blogId: string, query: PostsByBlogQuery): Promise<IPostModelOut> {
+    static async findAllPostsByBlogId(blogId: string, query: PostsByBlogQuery): PromiseNull<IPostModelOut> {
         const { pageSize, pageNumber, sortDirection, sortBy } = query;
         const direction = sortDirection === 'desc' ? -1 : 1;
 
         try {
+            const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(blogId);
+            if (!blog) return null;
             const posts: IPostModel[] = await PostModel.find({ blogId: blogId })
                 .sort({ sortBy: direction })
                 .skip((pageNumber - 1) * pageSize)

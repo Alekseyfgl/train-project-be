@@ -63,7 +63,6 @@ class BlogController {
     }
 
     async getAllPostsByBlogId(req: Request<{ id: string }, {}, {}, PostsByBlogQueryOptional>, res: Response) {
-        console.log('!!!!===>getAllPostsByBlogId');
         const blogId = req.params.id;
         const query: PostsByBlogQuery = postsByBlogQueryMapper(req.query);
 
