@@ -15,5 +15,5 @@ blogRouter.get(`${base}/${id}`, blogController.getBlogById);
 blogRouter.post(`${base}`, authMiddleware, blogValidation(), blogController.addBlogByOne);
 blogRouter.put(`${base}/${id}`, authMiddleware, blogValidation(), blogController.updateBlogById);
 blogRouter.post(`${base}/${id}/posts`, authMiddleware, postValidation(), blogController.createPostToBlog);
-blogRouter.get(`${base}/${id}/posts`, authMiddleware, blogController.getAllPostsByBlogId);
+blogRouter.get(`${base}/${id}/posts`, blogController.getAllPostsByBlogId);
 blogRouter.delete(`${base}/${id}`, authMiddleware, blogController.removeBlogById);
