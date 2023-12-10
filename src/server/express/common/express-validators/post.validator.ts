@@ -23,11 +23,11 @@ const blogIdParamValidator = param('id')
     .isString()
     .trim()
     .custom(async (value) => {
-        const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(value);
-
-        if (!blog) {
-            return Promise.reject('Incorrect id');
-        }
+        // const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(value);
+        //
+        // if (!blog) {
+        //     return Promise.reject('Incorrect id');
+        // }
 
         return true;
     })

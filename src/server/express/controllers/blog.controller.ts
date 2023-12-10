@@ -56,7 +56,7 @@ class BlogController {
 
     async createPostToBlog(req: Request<{ id: string }, {}, IPostToBlogDto>, res: Response, next: NextFunction) {
         const id = req.params.id;
-        console.log('!!!!===>createPostToBlog');
+
         const createdPost: Nullable<IPostModel> = await BlogService.createPostToBlog(id, req.body);
         const response = new ApiResponse(res);
         createdPost ? response.send(HttpStatusCodes.CREATED, createdPost) : response.notFound();
