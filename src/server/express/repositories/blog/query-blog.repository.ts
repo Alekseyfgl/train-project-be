@@ -21,7 +21,7 @@ export class QueryBlogRepository {
 
         try {
             const blogs = await BlogModel.find(filter)
-                .sort({ sortBy: direction })
+                .sort({ [query.sortBy ?? 'createdAt']: direction })
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize);
 
