@@ -2,14 +2,18 @@ import { NextFunction, Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable } from '../common/interfaces/optional.types';
-import { IPostModel } from '../types/post/output';
+import { IPostModel, IPostModelOut } from '../types/post/output';
 import { AddPostDto, UpdatePostDto } from '../types/post/input';
 import { QueryPostRepository } from '../repositories/post/query-post.repository';
 import { PostService } from '../domain/post.service';
+import { PostsByBlogQuery, PostsByBlogQueryOptional } from '../types/blog/input';
+import { postsByBlogQueryMapper } from '../mappers/post.mapper';
 
 class PostController {
-    async getAll(req: Request, res: Response, next: NextFunction) {
-        const posts: IPostModel[] = await QueryPostRepository.getAll();
+    async getAll(req: Request<{}, {}, {}, PostsByBlogQueryOptional>, res: Response, next: NextFunction) {
+        const query: PostsByBlogQuery = postsByBlogQueryMapper(req.query);
+        const posts: IPostModelOut = await QueryPostRepository.getAll(query);
+
         new ApiResponse(res).send(HttpStatusCodes.OK, posts);
     }
 

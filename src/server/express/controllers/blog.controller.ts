@@ -3,14 +3,16 @@ import { IBlogModel, IBlogModelOut } from '../types/blog/output';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { ApiResponse } from '../common/api-response/api-response';
-import { AddBlogDto, BlogQueryType, UpdateBlogDto } from '../types/blog/input';
+import { AddBlogDto, BlogQueryTypeOptional, PostsByBlogQuery, PostsByBlogQueryOptional, UpdateBlogDto } from '../types/blog/input';
 import { BlogService } from '../domain/blog.service';
 import { QueryBlogRepository } from '../repositories/blog/query-blog.repository';
 import { IPostToBlogDto } from '../types/post/input';
-import { IPostModel } from '../types/post/output';
+import { IPostModel, IPostModelOut } from '../types/post/output';
+import { postsByBlogQueryMapper } from '../mappers/post.mapper';
+import { QueryPostRepository } from '../repositories/post/query-post.repository';
 
 class BlogController {
-    async getAllBlogs(req: Request<{}, {}, {}, BlogQueryType>, res: Response, next: NextFunction) {
+    async getAllBlogs(req: Request<{}, {}, {}, BlogQueryTypeOptional>, res: Response, next: NextFunction) {
         const sortData = {
             searchNameTerm: req.query.searchNameTerm,
             sortBy: req.query.sortBy,
@@ -55,6 +57,16 @@ class BlogController {
 
         const createdPost: Nullable<IPostModel> = await BlogService.createPostToBlog(id, req.body);
         createdPost ? response.send(HttpStatusCodes.CREATED, createdPost) : response.notFound();
+    }
+
+    async getAllPostsByBlogId(req: Request<{ id: string }, {}, {}, PostsByBlogQueryOptional>, res: Response) {
+        const blogId = req.params.id;
+        const query: PostsByBlogQuery = postsByBlogQueryMapper(req.query);
+
+        const blogWithPosts: Nullable<IPostModelOut> = await QueryPostRepository.findAllPostsByBlogId(blogId, query);
+
+        const response = new ApiResponse(res);
+        blogWithPosts ? response.send(HttpStatusCodes.OK, blogWithPosts) : response.notFound();
     }
 }
 

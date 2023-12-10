@@ -1,11 +1,11 @@
 import { IBlogModel, IBlogModelOut } from '../../types/blog/output';
 import { BlogModel } from '../../models/blog.model';
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
-import { BlogQueryType } from '../../types/blog/input';
+import { BlogQueryTypeOptional } from '../../types/blog/input';
 import { pageBlogMapper } from '../../mappers/blog.mapper';
 
 export class QueryBlogRepository {
-    static async findAll(query: BlogQueryType): PromiseNull<IBlogModelOut> {
+    static async findAll(query: BlogQueryTypeOptional): PromiseNull<IBlogModelOut> {
         const sortDirection = query.sortDirection ?? 'desc';
         const sortBy = query.sortBy ?? 'createdAt';
         const pageNumber = query.pageNumber ? +query.pageNumber : 1;

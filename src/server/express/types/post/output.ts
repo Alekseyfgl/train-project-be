@@ -8,3 +8,11 @@ export interface IPostModel extends Document {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface IPostModelOut {
+    pagesCount: number;
+    page: number;
+    pageSize: number;
+    totalCount: number;
+    items: IPostModel[];
+}

@@ -3,8 +3,6 @@ import { IBlogModel } from '../types/blog/output';
 
 const BlogSchema: Schema = new Schema(
     {
-        // id: { type: String, required: false },
-        // createdAt: { type: String, required: false },
         isMembership: { type: Boolean, required: false, default: false },
         name: { type: String, required: true },
         description: { type: String, required: true },

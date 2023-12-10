@@ -11,11 +11,19 @@ export interface UpdateBlogDto {
     websiteUrl: string;
 }
 
-export interface BlogQuery {
+interface BlogQuery {
     searchNameTerm: string;
     sortBy: string;
     sortDirection: 'asc' | 'desc';
     pageNumber: number;
     pageSize: number;
 }
-export type BlogQueryType = Partial<BlogQuery>;
+export type BlogQueryTypeOptional = Partial<BlogQuery>;
+
+export interface PostsByBlogQuery {
+    sortBy: string;
+    sortDirection: 'asc' | 'desc';
+    pageNumber: number;
+    pageSize: number;
+}
+export type PostsByBlogQueryOptional = Partial<PostsByBlogQuery>;
