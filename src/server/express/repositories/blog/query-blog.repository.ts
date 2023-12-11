@@ -24,7 +24,7 @@ export class QueryBlogRepository {
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize);
 
-            const totalCount = await BlogModel.countDocuments();
+            const totalCount = await BlogModel.countDocuments(filter);
             const pagesCount = Math.ceil(totalCount / pageSize);
             return pageBlogMapper({ blogs, pagesCount, totalCount, pageSize, pageNumber });
         } catch (e) {
