@@ -12,9 +12,10 @@ export class QueryPostRepository {
         const { pageSize, pageNumber, sortDirection, sortBy } = query;
         const direction = sortDirection === 'desc' ? -1 : 1;
 
+        const filter: any = sortBy !== 'createdAt' ? { [sortBy]: direction, ['createdAt']: 1 } : { [sortBy]: direction };
         try {
             const posts: IPostModel[] = await PostModel.find({})
-                .sort({ [sortBy]: direction, ['createdAt']: 1 })
+                .sort(filter)
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize);
 
