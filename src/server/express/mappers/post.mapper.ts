@@ -1,7 +1,7 @@
 import { IPostModel, IPostModelOut } from '../types/post/output';
-import { PostsByBlogQuery, PostsByBlogQueryOptional } from '../types/blog/input';
+import { PostsByBlogQuery, PostsByBlogQueryOptional } from '../types/post/input';
 
-export const postsByBlogQueryMapper = (query: PostsByBlogQueryOptional): PostsByBlogQuery => {
+export const postsGetAllQueryMapper = (query: PostsByBlogQueryOptional): PostsByBlogQuery => {
     const { pageSize, pageNumber, sortDirection, sortBy } = query;
     return {
         pageSize: pageSize ? +pageSize : 10,

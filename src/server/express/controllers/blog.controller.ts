@@ -3,31 +3,24 @@ import { IBlogModel, IBlogModelOut } from '../types/blog/output';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { ApiResponse } from '../common/api-response/api-response';
-import { AddBlogDto, BlogQueryTypeOptional, PostsByBlogQuery, PostsByBlogQueryOptional, UpdateBlogDto } from '../types/blog/input';
+import { AddBlogDto, BlogQuery, BlogQueryTypeOptional, UpdateBlogDto } from '../types/blog/input';
 import { BlogService } from '../domain/blog.service';
 import { QueryBlogRepository } from '../repositories/blog/query-blog.repository';
-import { IPostToBlogDto } from '../types/post/input';
+import { IPostToBlogDto, PostsByBlogQuery, PostsByBlogQueryOptional } from '../types/post/input';
 import { IPostModel, IPostModelOut } from '../types/post/output';
-import { postsByBlogQueryMapper } from '../mappers/post.mapper';
+import { postsGetAllQueryMapper } from '../mappers/post.mapper';
 import { QueryPostRepository } from '../repositories/post/query-post.repository';
+import { blogGetAllQueryMapper } from '../mappers/blog.mapper';
 
 class BlogController {
     async getAllBlogs(req: Request<{}, {}, {}, BlogQueryTypeOptional>, res: Response, next: NextFunction) {
-        const sortData = {
-            searchNameTerm: req.query.searchNameTerm,
-            sortBy: req.query.sortBy,
-            sortDirection: req.query.sortDirection,
-            pageNumber: req.query.pageNumber,
-            pageSize: req.query.pageSize,
-        };
-
-        const blogs: Optional<IBlogModelOut> = await QueryBlogRepository.findAll(sortData);
+        const query: BlogQuery = blogGetAllQueryMapper(req.query);
+        const blogs: Optional<IBlogModelOut> = await QueryBlogRepository.findAll(query);
 
         new ApiResponse(res).send(HttpStatusCodes.OK, blogs);
     }
 
     async getBlogById(req: Request<{ id: string }>, res: Response, next: NextFunction) {
-        console.log('!!!!===>getBlogById');
         const id = req.params.id;
         const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(id);
 
@@ -35,20 +28,17 @@ class BlogController {
     }
 
     async addBlogByOne(req: Request<{}, {}, AddBlogDto>, res: Response, next: NextFunction) {
-        console.log('!!!!===>addBlogByOne');
         const newBlog: Nullable<IBlogModel> = await BlogService.create(req.body);
         new ApiResponse(res).send(HttpStatusCodes.CREATED, newBlog);
     }
 
     async updateBlogById(req: Request<{ id: string }, {}, UpdateBlogDto>, res: Response, next: NextFunction) {
-        console.log('!!!!===>updateBlogById');
         const isUpdated: boolean = await BlogService.updateById(req.params.id, req.body);
         const response = new ApiResponse(res);
         isUpdated ? response.send(HttpStatusCodes.NO_CONTENT) : response.notFound();
     }
 
     async removeBlogById(req: Request<{ id: string }>, res: Response, next: NextFunction) {
-        console.log('!!!!===>removeBlogById');
         const isRemoved: boolean = await BlogService.removeById(req.params.id);
         const response = new ApiResponse(res);
         isRemoved ? response.send(HttpStatusCodes.NO_CONTENT) : response.notFound();
@@ -64,7 +54,7 @@ class BlogController {
 
     async getAllPostsByBlogId(req: Request<{ id: string }, {}, {}, PostsByBlogQueryOptional>, res: Response) {
         const blogId = req.params.id;
-        const query: PostsByBlogQuery = postsByBlogQueryMapper(req.query);
+        const query: PostsByBlogQuery = postsGetAllQueryMapper(req.query);
 
         const blogWithPosts: Nullable<IPostModelOut> = await QueryPostRepository.findAllPostsByBlogId(blogId, query);
 

@@ -1,3 +1,5 @@
+import { Nullable } from '../../common/interfaces/optional.types';
+
 export interface AddBlogDto {
     name: string;
     description: string;
@@ -11,19 +13,11 @@ export interface UpdateBlogDto {
     websiteUrl: string;
 }
 
-interface BlogQuery {
-    searchNameTerm: string;
+export interface BlogQuery {
+    searchNameTerm: Nullable<string>;
     sortBy: string;
     sortDirection: 'asc' | 'desc';
     pageNumber: number;
     pageSize: number;
 }
 export type BlogQueryTypeOptional = Partial<BlogQuery>;
-
-export interface PostsByBlogQuery {
-    sortBy: string;
-    sortDirection: 'asc' | 'desc';
-    pageNumber: number;
-    pageSize: number;
-}
-export type PostsByBlogQueryOptional = Partial<PostsByBlogQuery>;

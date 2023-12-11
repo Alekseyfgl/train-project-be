@@ -1,26 +1,30 @@
 import { IPostModel, IPostModelOut } from '../../types/post/output';
 import { PostModel } from '../../models/post.model';
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
-import { PostsByBlogQuery } from '../../types/blog/input';
 import { pagePostMapper } from '../../mappers/post.mapper';
 import { QueryBlogRepository } from '../blog/query-blog.repository';
 import { IBlogModel } from '../../types/blog/output';
+import { PostsByBlogQuery } from '../../types/post/input';
+import { offsetPagination } from '../../common/utils/offset-for-pagination/offset-for-pagination';
+import { countTotalPages } from '../../common/utils/count-total-pages/count-total-pages';
 
 export class QueryPostRepository {
     static async getAll(query: PostsByBlogQuery): Promise<IPostModelOut> {
-        console.log(query);
         const { pageSize, pageNumber, sortDirection, sortBy } = query;
         const direction = sortDirection === 'desc' ? -1 : 1;
 
-        const filter: any = sortBy !== 'createdAt' ? { [sortBy]: direction, ['createdAt']: 1 } : { [sortBy]: direction };
+        const filter: any =
+            sortBy !== 'createdAt'
+                ? {
+                      [sortBy]: direction,
+                      ['createdAt']: 1,
+                  }
+                : { [sortBy]: direction };
         try {
-            const posts: IPostModel[] = await PostModel.find({})
-                .sort(filter)
-                .skip((pageNumber - 1) * pageSize)
-                .limit(pageSize);
+            const posts: IPostModel[] = await PostModel.find({}).sort(filter).skip(offsetPagination(pageNumber, pageSize)).limit(pageSize);
 
             const totalCount: number = await PostModel.countDocuments();
-            const pagesCount: number = Math.ceil(totalCount / pageSize);
+            const pagesCount: number = countTotalPages(totalCount, pageSize);
             return pagePostMapper({ posts, totalCount, pageNumber, pagesCount, pageSize });
         } catch (e) {
             console.log('[getAll]', e);
@@ -37,11 +41,11 @@ export class QueryPostRepository {
             if (!blog) return null;
             const posts: IPostModel[] = await PostModel.find({ blogId: blogId })
                 .sort({ [sortBy]: direction })
-                .skip((pageNumber - 1) * pageSize)
+                .skip(offsetPagination(pageNumber, pageSize))
                 .limit(pageSize);
 
             const totalCount: number = await PostModel.countDocuments({ blogId: blogId });
-            const pagesCount: number = Math.ceil(totalCount / pageSize);
+            const pagesCount: number = countTotalPages(totalCount, pageSize);
             return pagePostMapper({ posts, totalCount, pageNumber, pagesCount, pageSize });
         } catch (e) {
             console.log('[getAll]', e);

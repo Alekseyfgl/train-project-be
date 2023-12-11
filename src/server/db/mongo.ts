@@ -5,10 +5,9 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const uri = (process.env.MONGODB_URI as string) || 'mongodb://localhost:27017/train_project_be_local';
 export class MongooseInstance {
     private static instance: Nullable<Mongoose> = null;
-    private static uri: string = uri;
+    private static uri: string = (process.env.MONGODB_URI as string) || 'mongodb://localhost:27017/train_project_be_local';
 
     private constructor() {}
 
@@ -16,13 +15,15 @@ export class MongooseInstance {
         if (!this.instance) {
             try {
                 this.instance = await mongoose.connect(MongooseInstance.uri, {
-                    // connectTimeoutMS: 5000,
-                    // serverSelectionTimeoutMS: 5000,
+                    connectTimeoutMS: 3000,
+                    serverSelectionTimeoutMS: 3000,
                 });
                 this.connectManager();
+                return true;
             } catch (e) {
                 await mongoose.disconnect();
                 console.error(e);
+                return false;
             }
         }
         return this.instance;
@@ -42,10 +43,3 @@ export class MongooseInstance {
         });
     }
 }
-
-// export const rowQueryForMongoWithMongoose = async () => {
-//     const collections = mongoose.connection.db.collection('movies');
-//
-//     const r = await collections.find({}).toArray();
-//     console.log(r);
-// };

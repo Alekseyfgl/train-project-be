@@ -17,3 +17,11 @@ export interface IPostToBlogDto {
     shortDescription: string;
     content: string;
 }
+
+export interface PostsByBlogQuery {
+    sortBy: string;
+    sortDirection: 'asc' | 'desc';
+    pageNumber: number;
+    pageSize: number;
+}
+export type PostsByBlogQueryOptional = Partial<PostsByBlogQuery>;
