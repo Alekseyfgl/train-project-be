@@ -6,7 +6,6 @@ export interface IPostModel extends Document {
     blogId: string;
     blogName: string;
     createdAt: string;
-    updatedAt: string;
 }
 
 export interface IPostModelOut {
