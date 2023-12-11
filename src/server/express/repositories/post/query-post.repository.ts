@@ -13,7 +13,7 @@ export class QueryPostRepository {
 
         try {
             const posts: IPostModel[] = await PostModel.find({})
-                .sort({ sortBy: direction })
+                .sort({ [sortBy]: direction })
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize);
 
