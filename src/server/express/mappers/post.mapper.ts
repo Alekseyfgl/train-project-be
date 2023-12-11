@@ -2,12 +2,12 @@ import { IPostModel, IPostModelOut } from '../types/post/output';
 import { PostsByBlogQuery, PostsByBlogQueryOptional } from '../types/blog/input';
 
 export const postsByBlogQueryMapper = (query: PostsByBlogQueryOptional): PostsByBlogQuery => {
-    const { pageSize, pageNumber, sortDirection = 'desc', sortBy = 'createdAt' } = query;
+    const { pageSize, pageNumber, sortDirection, sortBy } = query;
     return {
         pageSize: pageSize ? +pageSize : 10,
         pageNumber: pageNumber ? +pageNumber : 1,
-        sortDirection,
-        sortBy,
+        sortDirection: sortDirection || 'desc',
+        sortBy: sortBy || 'createdAt',
     };
 };
 

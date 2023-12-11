@@ -8,6 +8,7 @@ import { IBlogModel } from '../../types/blog/output';
 
 export class QueryPostRepository {
     static async getAll(query: PostsByBlogQuery): Promise<IPostModelOut> {
+        console.log(query);
         const { pageSize, pageNumber, sortDirection, sortBy } = query;
         const direction = sortDirection === 'desc' ? -1 : 1;
 
