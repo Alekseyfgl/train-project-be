@@ -14,14 +14,13 @@ export class QueryBlogRepository {
 
         let filter = {};
         if (searchNameTerm) {
-            // filter = { name: { $regex: searchNameTerm, $options: 'i' } };
             filter = new RegExp(searchNameTerm, 'i');
         }
         const direction = sortDirection === 'desc' ? -1 : 1;
 
         try {
             const blogs = await BlogModel.find(filter)
-                .sort({ [query.sortBy ?? 'createdAt']: direction })
+                .sort({ [sortBy]: direction })
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize);
 
@@ -30,7 +29,7 @@ export class QueryBlogRepository {
             return pageBlogMapper({ blogs, pagesCount, totalCount, pageSize, pageNumber });
         } catch (e) {
             console.error('[findAll]', e);
-            return null;
+            return pageBlogMapper({ blogs: [], pagesCount: 0, totalCount: 0, pageSize, pageNumber });
         }
     }
 

@@ -34,7 +34,7 @@ export class QueryPostRepository {
             const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(blogId);
             if (!blog) return null;
             const posts: IPostModel[] = await PostModel.find({ blogId: blogId })
-                .sort({ [query.sortBy ?? 'createdAt']: direction })
+                .sort({ [sortBy]: direction })
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize);
 
