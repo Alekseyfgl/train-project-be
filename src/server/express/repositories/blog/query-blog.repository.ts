@@ -12,9 +12,9 @@ export class QueryBlogRepository {
         const pageSize = query.pageSize ? +query.pageSize : 10;
         const searchNameTerm = query.searchNameTerm ?? null;
 
-        let filter = {};
+        let filter: { name?: { $regex: RegExp } } = {};
         if (searchNameTerm) {
-            filter = new RegExp(searchNameTerm, 'i');
+            filter.name = { $regex: new RegExp(searchNameTerm, 'i') };
         }
         const direction = sortDirection === 'desc' ? -1 : 1;
 
