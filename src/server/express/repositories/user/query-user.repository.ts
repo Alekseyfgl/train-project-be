@@ -1,4 +1,3 @@
-import { BlogModel } from '../../models/blog.model';
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { offsetPagination } from '../../common/utils/offset-for-pagination/offset-for-pagination';
 import { countTotalPages } from '../../common/utils/count-total-pages/count-total-pages';
@@ -32,7 +31,7 @@ export class QueryUserRepository {
                 .skip(offsetPagination(pageNumber, pageSize))
                 .limit(pageSize);
 
-            const totalCount: number = await BlogModel.countDocuments(filter);
+            const totalCount: number = await UserModel.countDocuments(filter);
             const pagesCount: number = countTotalPages(totalCount, pageSize);
             return pageUsersMapper({ users, pagesCount, totalCount, pageSize, pageNumber });
         } catch (e) {
