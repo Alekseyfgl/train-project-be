@@ -5,6 +5,7 @@ import { postRouter } from './routes/post.router';
 import { blogRouter } from './routes/blog.router';
 import { testRouter } from './routes/test.router';
 import { logRequestsMiddleware } from './common/middlewares/log-requests/log-requests';
+import { userRouter } from './routes/user.router';
 
 export const app = express();
 
@@ -19,7 +20,7 @@ app.use(express.json());
 app.use(requestCounterMiddleware);
 app.use(logRequestsMiddleware);
 
-app.use('', blogRouter, postRouter, testRouter);
+app.use('', blogRouter, postRouter, userRouter, testRouter);
 // app.use('/videos', videoRouter);
 // app.use('/blogs', blogRouter);
 // app.use('/posts', postRouter);
