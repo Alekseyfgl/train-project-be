@@ -13,8 +13,8 @@ export const userMapper = (user: IUserModel): IUser => {
 
 export const createFilterGetAllUsersMapper = (query: UserPaginationQueryOptional): UserPaginationQuery => {
     return {
-        pageNumber: query.pageNumber || 1,
-        pageSize: query.pageSize || 10,
+        pageSize: query.pageSize ? +query.pageSize : 10,
+        pageNumber: query.pageNumber ? +query.pageNumber : 1,
         sortBy: query.sortBy || 'createdAt',
         sortDirection: query.sortDirection || 'desc',
         searchEmailTerm: query.searchEmailTerm || null,
