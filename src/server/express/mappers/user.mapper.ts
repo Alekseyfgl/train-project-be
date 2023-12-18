@@ -29,6 +29,6 @@ export const pageUsersMapper = (data: { totalCount: number; pagesCount: number; 
         page: pageNumber,
         pageSize,
         totalCount,
-        items: users,
+        items: users.map((user) => ({ id: user.id, email: user.email, login: user.login, createdAt: user.createdAt })),
     };
 };

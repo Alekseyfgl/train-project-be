@@ -26,7 +26,7 @@ export class QueryUserRepository {
         const direction: 1 | -1 = sortDirection === 'desc' ? -1 : 1;
 
         try {
-            const users = await UserModel.find(filter)
+            const users: IUserModel[] = await UserModel.find(filter)
                 .sort({ [sortBy]: direction })
                 .skip(offsetPagination(pageNumber, pageSize))
                 .limit(pageSize);
