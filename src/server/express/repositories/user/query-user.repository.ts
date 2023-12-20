@@ -50,4 +50,16 @@ export class QueryUserRepository {
             return null;
         }
     }
+
+    static async findByLogin(login: string): PromiseNull<IUserModel> {
+        try {
+            const condition: RegExp = new RegExp('^' + login + '$', 'i');
+            const user: IUserModel | null = await UserModel.findOne({ login: condition });
+            if (!user) return null;
+            return user;
+        } catch (e) {
+            console.error('[BLOG,findById]', e);
+            return null;
+        }
+    }
 }
