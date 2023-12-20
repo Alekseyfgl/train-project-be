@@ -6,8 +6,8 @@ import { AuthService } from '../domain/auth.service';
 
 class AuthController {
     async login(req: Request<{}, {}, LoginDto>, res: Response) {
-        const response = new ApiResponse(res);
         const isLogin = await AuthService.login(req.body);
+        const response = new ApiResponse(res);
         isLogin ? response.send(HttpStatusCodes.NO_CONTENT) : response.notAuthorized();
     }
 }
