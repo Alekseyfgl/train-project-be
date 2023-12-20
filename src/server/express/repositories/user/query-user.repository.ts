@@ -53,11 +53,8 @@ export class QueryUserRepository {
 
     static async findByLoginOrEmail(loginOrEmail: string): PromiseNull<IUserModel> {
         try {
-            const condition: RegExp = new RegExp('^' + loginOrEmail.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '$', 'i');
-            const user: IUserModel | null = await UserModel.findOne({
-                $or: [{ login: condition }, { email: condition }],
-            });
-            console.log(user);
+            const condition: RegExp = new RegExp('^' + loginOrEmail + '$', 'i');
+            const user: IUserModel | null = await UserModel.findOne({ $or: [{ login: condition }, { email: condition }] });
             if (!user) return null;
             return user;
         } catch (e) {
