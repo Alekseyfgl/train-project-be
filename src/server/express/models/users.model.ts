@@ -10,8 +10,8 @@ export interface IUserModel extends Document {
 
 const UserSchema: Schema = new Schema(
     {
-        login: { type: String, required: true, unique: true, index: true },
-        email: { type: String, required: true, unique: true, index: true },
+        login: { type: String, required: true },
+        email: { type: String, required: true },
         password: { type: String, required: true },
         createdAt: { type: Date, default: Date.now }, // добавлено поле createdAt
     },
