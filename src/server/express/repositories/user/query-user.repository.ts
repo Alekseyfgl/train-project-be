@@ -15,11 +15,11 @@ export class QueryUserRepository {
         if (searchEmailTerm || searchLoginTerm) {
             filter.$or = [];
             if (searchEmailTerm) {
-                const filterByEmail: { email: { $regex: RegExp } } = { email: { $regex: new RegExp(searchEmailTerm) } };
+                const filterByEmail: { email: { $regex: RegExp } } = { email: { $regex: new RegExp(searchEmailTerm, 'i') } };
                 filter.$or.push(filterByEmail);
             }
             if (searchLoginTerm) {
-                const filterByLogin: { login: { $regex: RegExp } } = { login: { $regex: new RegExp(searchLoginTerm) } };
+                const filterByLogin: { login: { $regex: RegExp } } = { login: { $regex: new RegExp(searchLoginTerm, 'i') } };
                 filter.$or.push(filterByLogin);
             }
         }
