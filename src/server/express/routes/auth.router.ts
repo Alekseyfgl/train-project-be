@@ -10,4 +10,4 @@ export const authPath = {
 };
 const { base, login, id } = authPath;
 export const authRouter = Router();
-authRouter.post(`${base}/${login}`, authMiddleware, loginValidation, userController.login);
+authRouter.post(`${base}/${login}`, authMiddleware, loginValidation(), userController.login);

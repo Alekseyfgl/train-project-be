@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 export class AuthService {
     static async login(dto: LoginDto): Promise<boolean> {
         const { loginOrEmail, password } = dto;
-        const user: Nullable<IUserModel> = await QueryUserRepository.findByLogin(loginOrEmail);
+        const user: Nullable<IUserModel> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
         if (!user) return false;
 
         return this.checkPassword(password, user.password);
