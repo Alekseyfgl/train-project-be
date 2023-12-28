@@ -15,7 +15,7 @@ export class AuthService {
         const user: Nullable<IUserModel> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
         if (!user) return null;
 
-        const isPasswordCorrect = this.checkPassword(password, user.password);
+        const isPasswordCorrect: boolean = await this.checkPassword(password, user.password);
         if (!isPasswordCorrect) return null;
 
         const newToken: string = await this.createJwt(user);
