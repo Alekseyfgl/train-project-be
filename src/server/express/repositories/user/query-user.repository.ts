@@ -5,6 +5,8 @@ import { IUserModel, UserModel } from '../../models/users.model';
 import { pageUsersMapper, userMapper } from '../../mappers/user.mapper';
 import { IUser, IUserPaginationOut } from '../../types/user/output';
 import { UserPaginationQuery } from '../../types/user/input';
+import { meMapper } from '../../mappers/auth.mapper';
+import { IMe } from '../../types/auth/output';
 
 export class QueryUserRepository {
     static async findAll(query: UserPaginationQuery): Promise<IUserPaginationOut> {
@@ -46,7 +48,7 @@ export class QueryUserRepository {
             if (!user) return null;
             return userMapper(user);
         } catch (e) {
-            console.error('[BLOG,findById]', e);
+            console.error('[user,findById]', e);
             return null;
         }
     }
@@ -58,7 +60,18 @@ export class QueryUserRepository {
             if (!user) return null;
             return user;
         } catch (e) {
-            console.error('[BLOG,findById]', e);
+            console.error('[user,findByLoginOrEmail]', e);
+            return null;
+        }
+    }
+
+    static async findMe(userId: string): PromiseNull<IMe> {
+        try {
+            const user: Nullable<IUserModel> = await UserModel.findById(userId);
+            if (!user) return null;
+            return meMapper(user);
+        } catch (e) {
+            console.error('[user,findMe]', e);
             return null;
         }
     }

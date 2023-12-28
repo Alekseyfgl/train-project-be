@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
-import { Optional } from '../../interfaces/optional.types';
+
+import { Nullable, Optional } from '../../interfaces/optional.types';
 import { ApiResponse } from '../../api-response/api-response';
+import { AuthService } from '../../../domain/auth.service';
+import { IJwtPayload } from '../../../types/auth/input';
 
 const login = 'admin';
 const password = 'qwerty';
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: any, res: Response, next: NextFunction) => {
     const auth: Optional<string> = req.headers['authorization'];
 
     if (!auth) {
@@ -29,5 +32,22 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         return;
     }
 
+    next();
+};
+
+export const authMiddleware_jwt = async (req: Request, res: Response, next: NextFunction) => {
+    const token: Optional<string> = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        new ApiResponse(res).notAuthorized();
+        return;
+    }
+
+    const userPayload: Nullable<IJwtPayload> = await AuthService.verifyToken(token);
+    if (!userPayload) {
+        new ApiResponse(res).notAuthorized();
+        return;
+    }
+
+    req.user = userPayload;
     next();
 };
