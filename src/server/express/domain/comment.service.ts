@@ -24,13 +24,20 @@ export class CommentService {
     static async update(dto: UpdateCommentDto, commentId: string, userId: string): Promise<HttpStatusCodes> {
         const commentById: Nullable<ICommentModel> = await QueryCommentRepository.findById(commentId);
         if (!commentById) return HttpStatusCodes.NOT_FOUND;
-        console.log({
-            one: commentById.userId,
-            two: userId,
-        });
+
         if (commentById.userId !== userId) return HttpStatusCodes.FORBIDDEN;
 
         const iscCommentUpdated: boolean = await CommandCommentRepository.updateById(commentId, dto);
+        return iscCommentUpdated ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.NOT_FOUND;
+    }
+
+    static async delete(commentId: string, userId: string): Promise<HttpStatusCodes> {
+        const commentById: Nullable<ICommentModel> = await QueryCommentRepository.findById(commentId);
+        if (!commentById) return HttpStatusCodes.NOT_FOUND;
+
+        if (commentById.userId !== userId) return HttpStatusCodes.FORBIDDEN;
+
+        const iscCommentUpdated: boolean = await CommandCommentRepository.deleteById(commentId);
         return iscCommentUpdated ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.NOT_FOUND;
     }
 }

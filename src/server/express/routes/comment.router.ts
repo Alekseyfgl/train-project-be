@@ -12,3 +12,4 @@ export const commentRouter = Router();
 
 commentRouter.get(`${base}/${id}`, commentController.getById);
 commentRouter.put(`${base}/${id}`, authMiddleware_jwt, commentToPostValidation(), commentController.update);
+commentRouter.delete(`${base}/${id}`, authMiddleware_jwt, commentController.delete);

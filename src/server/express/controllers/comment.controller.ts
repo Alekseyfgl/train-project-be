@@ -39,6 +39,25 @@ class CommentController {
                 return response.notFound();
         }
     }
+    async delete(req: Request<{ id: string }>, res: Response) {
+        const commentId = req.params.id;
+        const userId: Optional<string> = req?.user?.userId;
+        if (!userId) return new ApiResponse(res).notAuthorized();
+
+        const result: HttpStatusCodes = await CommentService.delete(commentId, userId);
+        const response = new ApiResponse(res);
+
+        switch (result) {
+            case HttpStatusCodes.NO_CONTENT:
+                return response.send(HttpStatusCodes.NO_CONTENT);
+            case HttpStatusCodes.FORBIDDEN:
+                return response.send(HttpStatusCodes.FORBIDDEN, new ErrorCreator().add(HttpExceptionMessages.FORBIDDEN, 'content'));
+            case HttpStatusCodes.NOT_FOUND:
+                return response.notFound();
+            default:
+                return response.notFound();
+        }
+    }
 }
 
 export const commentController = new CommentController();
