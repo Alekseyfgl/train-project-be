@@ -1,7 +1,7 @@
 import request from 'supertest';
 import * as dotenv from 'dotenv';
 import { Nullable } from '../../../../../server/express/common/interfaces/optional.types';
-import { IBlogModel } from '../../../../../server/express/types/blog/output';
+import { IBlogSchema } from '../../../../../server/express/types/blog/output';
 import { app } from '../../../../../server/express/app';
 import { HttpStatusCodes } from '../../../../../server/express/common/constans/http-status-codes';
 import { postPath } from '../../../../../server/express/routes/post.router';
@@ -17,7 +17,7 @@ const mongoURI = process.env.MONGODB_URI_TEST as string;
 const { base } = postPath;
 
 describe(`${base}`, () => {
-    let newBlog: Nullable<IBlogModel> = null; // first create blog
+    let newBlog: Nullable<IBlogSchema> = null; // first create blog
 
     beforeAll(async () => {
         await mongoose.connect(mongoURI);

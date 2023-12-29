@@ -1,11 +1,11 @@
 import { AddPostDto, UpdatePostDto } from '../types/post/input';
 import { CommandPostRepository } from '../repositories/post/command-post.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
-import { IPostModel } from '../types/post/output';
+import { PostSchema } from '../types/post/output';
 import { QueryPostRepository } from '../repositories/post/query-post.repository';
 
 export class PostService {
-    static async create(dto: AddPostDto): PromiseNull<IPostModel> {
+    static async create(dto: AddPostDto): PromiseNull<PostSchema> {
         const createdPostId: Nullable<string> = await CommandPostRepository.create(dto);
         if (!createdPostId) return null;
         return QueryPostRepository.findById(createdPostId);

@@ -1,14 +1,16 @@
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
-import { IComment, ICommentModel } from '../../types/comment/output';
+import { CommentSchema, IComment, ICommentModel } from '../../types/comment/output';
 import { CommentModel } from '../../models/comment.model';
 import { QueryUserRepository } from '../user/query-user.repository';
 import { IUser } from '../../types/user/output';
-import { commentMapper } from '../../mappers/comment.mapper';
+import { clearCommentMapper, commentMapper } from '../../mappers/comment.mapper';
 
 export class QueryCommentRepository {
     static async findById(commentId: string): PromiseNull<ICommentModel> {
         try {
-            return CommentModel.findById(commentId);
+            const comment: Nullable<CommentSchema> = await CommentModel.findById(commentId);
+            if (!comment) return null;
+            return clearCommentMapper(comment);
         } catch (e) {
             console.log('[findById]', e);
             return null;

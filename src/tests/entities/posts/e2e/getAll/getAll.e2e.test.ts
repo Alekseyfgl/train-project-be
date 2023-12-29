@@ -1,12 +1,12 @@
 import request from 'supertest';
 import * as dotenv from 'dotenv';
 import { Nullable } from '../../../../../server/express/common/interfaces/optional.types';
-import { IBlogModel } from '../../../../../server/express/types/blog/output';
+import { IBlogSchema } from '../../../../../server/express/types/blog/output';
 import { app } from '../../../../../server/express/app';
 import { HttpStatusCodes } from '../../../../../server/express/common/constans/http-status-codes';
 import { postPath } from '../../../../../server/express/routes/post.router';
 import { createPostMock } from '../../mock/createPost/createPost.mock';
-import { IPostModel } from '../../../../../server/express/types/post/output';
+import { PostSchema } from '../../../../../server/express/types/post/output';
 import { UpdatePostDto } from '../../../../../server/express/types/post/input';
 import { addMockBlogDto_valid, createBlogMock } from '../../../blogs/mock/createBlog/createBlog.mock';
 import mongoose from 'mongoose';
@@ -18,8 +18,8 @@ const mongoURI = process.env.MONGODB_URI_TEST as string;
 
 const { base, id } = postPath;
 describe(`${base}`, () => {
-    let newBlog: Nullable<IBlogModel> = null; // first create blog
-    let newPost: Nullable<IPostModel> = null; // posts for blog
+    let newBlog: Nullable<IBlogSchema> = null; // first create blog
+    let newPost: Nullable<PostSchema> = null; // posts for blog
 
     let correctPostDto: Nullable<UpdatePostDto> = null;
 

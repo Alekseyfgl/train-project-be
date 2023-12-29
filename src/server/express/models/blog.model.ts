@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { IBlogModel } from '../types/blog/output';
+import { IBlogSchema } from '../types/blog/output';
 
 const BlogSchema: Schema = new Schema(
     {
@@ -26,4 +26,4 @@ BlogSchema.set('toJSON', {
 //     virtuals: true,
 // });
 
-export const BlogModel = mongoose.model<IBlogModel>('Blog', BlogSchema);
+export const BlogModel = mongoose.model<IBlogSchema>('Blog', BlogSchema);

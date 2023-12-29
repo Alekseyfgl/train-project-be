@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { IPostModel } from '../types/post/output';
+import { PostSchema } from '../types/post/output';
 
 const PostSchema: Schema = new Schema(
     {
@@ -22,4 +22,4 @@ PostSchema.set('toJSON', {
     },
 });
 
-export const PostModel = mongoose.model<IPostModel>('Post', PostSchema);
+export const PostModel = mongoose.model<PostSchema>('Post', PostSchema);

@@ -24,6 +24,10 @@ export class CommentService {
     static async update(dto: UpdateCommentDto, commentId: string, userId: string): Promise<HttpStatusCodes> {
         const commentById: Nullable<ICommentModel> = await QueryCommentRepository.findById(commentId);
         if (!commentById) return HttpStatusCodes.NOT_FOUND;
+        console.log({
+            one: commentById.userId,
+            two: userId,
+        });
         if (commentById.userId !== userId) return HttpStatusCodes.FORBIDDEN;
 
         const iscCommentUpdated: boolean = await CommandCommentRepository.updateById(commentId, dto);

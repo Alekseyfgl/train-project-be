@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import { Nullable } from '../../../../../server/express/common/interfaces/optional.types';
-import { IBlogModel } from '../../../../../server/express/types/blog/output';
+import { IBlogSchema } from '../../../../../server/express/types/blog/output';
 import { HttpStatusCodes } from '../../../../../server/express/common/constans/http-status-codes';
 import { addMockBlogDto_valid, createBlogMock } from '../../../blogs/mock/createBlog/createBlog.mock';
 import { AddPostDto } from '../../../../../server/express/types/post/input';
@@ -19,7 +19,7 @@ const mongoURI = process.env.MONGODB_URI_TEST as string;
 
 const { base } = postPath;
 describe('[POST] /posts', () => {
-    let newBlog: Nullable<IBlogModel> = null; // first create blog
+    let newBlog: Nullable<IBlogSchema> = null; // first create blog
 
     beforeAll(async () => {
         await mongoose.connect(mongoURI);

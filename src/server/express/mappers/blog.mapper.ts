@@ -1,7 +1,7 @@
-import { IBlogModel, IBlogModelOut } from '../types/blog/output';
+import { IBlogModelOut, IBlogSchema } from '../types/blog/output';
 import { BlogQuery, BlogQueryTypeOptional } from '../types/blog/input';
 
-export const pageBlogMapper = (data: { totalCount: number; pagesCount: number; pageSize: number; pageNumber: number; blogs: IBlogModel[] }): IBlogModelOut => {
+export const pageBlogMapper = (data: { totalCount: number; pagesCount: number; pageSize: number; pageNumber: number; blogs: IBlogSchema[] }): IBlogModelOut => {
     const { pageSize, pageNumber, pagesCount, totalCount, blogs } = data;
     return {
         pagesCount,

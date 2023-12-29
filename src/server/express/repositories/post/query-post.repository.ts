@@ -1,9 +1,9 @@
-import { IPostModel, IPostModelOut } from '../../types/post/output';
+import { IPostModelOut, PostSchema } from '../../types/post/output';
 import { PostModel } from '../../models/post.model';
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { pagePostMapper } from '../../mappers/post.mapper';
 import { QueryBlogRepository } from '../blog/query-blog.repository';
-import { IBlogModel } from '../../types/blog/output';
+import { IBlogSchema } from '../../types/blog/output';
 import { PostsByBlogQuery } from '../../types/post/input';
 import { offsetPagination } from '../../common/utils/offset-for-pagination/offset-for-pagination';
 import { countTotalPages } from '../../common/utils/count-total-pages/count-total-pages';
@@ -21,7 +21,7 @@ export class QueryPostRepository {
                   }
                 : { [sortBy]: direction };
         try {
-            const posts: IPostModel[] = await PostModel.find({}).sort(filter).skip(offsetPagination(pageNumber, pageSize)).limit(pageSize);
+            const posts: PostSchema[] = await PostModel.find({}).sort(filter).skip(offsetPagination(pageNumber, pageSize)).limit(pageSize);
 
             const totalCount: number = await PostModel.countDocuments();
             const pagesCount: number = countTotalPages(totalCount, pageSize);
@@ -37,9 +37,9 @@ export class QueryPostRepository {
         const direction = sortDirection === 'desc' ? -1 : 1;
 
         try {
-            const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(blogId);
+            const blog: Nullable<IBlogSchema> = await QueryBlogRepository.findById(blogId);
             if (!blog) return null;
-            const posts: IPostModel[] = await PostModel.find({ blogId: blogId })
+            const posts: PostSchema[] = await PostModel.find({ blogId: blogId })
                 .sort({ [sortBy]: direction })
                 .skip(offsetPagination(pageNumber, pageSize))
                 .limit(pageSize);
@@ -53,7 +53,7 @@ export class QueryPostRepository {
         }
     }
 
-    static async findById(id: string): PromiseNull<IPostModel> {
+    static async findById(id: string): PromiseNull<PostSchema> {
         try {
             return await PostModel.findById(id);
         } catch (e) {
@@ -63,6 +63,6 @@ export class QueryPostRepository {
     }
 
     static async getPostWithComments(postId: string) {
-        const post: Nullable<IPostModel> = await this.findById(postId);
+        const post: Nullable<PostSchema> = await this.findById(postId);
     }
 }

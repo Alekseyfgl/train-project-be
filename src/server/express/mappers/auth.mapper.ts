@@ -1,7 +1,7 @@
-import { IUserModel } from '../models/user.model';
 import { IMe } from '../types/auth/output';
+import { UserSchema } from '../types/user/output';
 
-export const meMapper = (user: IUserModel): IMe => {
+export const meMapper = (user: UserSchema): IMe => {
     return {
         email: user.email,
         login: user.login,

@@ -3,7 +3,7 @@ import { UpdateWriteOpResult } from 'mongoose';
 import { BlogModel } from '../../models/blog.model';
 import { DeleteResult } from 'mongodb';
 import { PromiseNull } from '../../common/interfaces/optional.types';
-import { IBlogModel } from '../../types/blog/output';
+import { IBlogSchema } from '../../types/blog/output';
 
 export class CommandBlogRepository {
     static async updateById(id: string, dto: UpdateBlogDto): Promise<boolean> {
@@ -26,7 +26,7 @@ export class CommandBlogRepository {
         }
     }
 
-    static async create(dto: AddBlogDto): PromiseNull<IBlogModel> {
+    static async create(dto: AddBlogDto): PromiseNull<IBlogSchema> {
         try {
             return await BlogModel.create(dto);
         } catch (err) {

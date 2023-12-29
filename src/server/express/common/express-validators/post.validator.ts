@@ -1,5 +1,5 @@
 import { body, param } from 'express-validator';
-import { IBlogModel } from '../../types/blog/output';
+import { IBlogSchema } from '../../types/blog/output';
 import { Nullable } from '../interfaces/optional.types';
 import { inputModelValidator } from './input-model-validation/input-model.validator';
 import { QueryBlogRepository } from '../../repositories/blog/query-blog.repository';
@@ -8,7 +8,7 @@ const blogIdValidator = body('blogId')
     .isString()
     .trim()
     .custom(async (value) => {
-        const blog: Nullable<IBlogModel> = await QueryBlogRepository.findById(value);
+        const blog: Nullable<IBlogSchema> = await QueryBlogRepository.findById(value);
 
         if (!blog) {
             // return false

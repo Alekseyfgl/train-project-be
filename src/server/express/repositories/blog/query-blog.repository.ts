@@ -1,4 +1,4 @@
-import { IBlogModel, IBlogModelOut } from '../../types/blog/output';
+import { IBlogModelOut, IBlogSchema } from '../../types/blog/output';
 import { BlogModel } from '../../models/blog.model';
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { BlogQuery } from '../../types/blog/input';
@@ -31,9 +31,9 @@ export class QueryBlogRepository {
         }
     }
 
-    static async findById(id: string): PromiseNull<IBlogModel> {
+    static async findById(id: string): PromiseNull<IBlogSchema> {
         try {
-            const blog: Nullable<IBlogModel> = await BlogModel.findById(id);
+            const blog: Nullable<IBlogSchema> = await BlogModel.findById(id);
             return blog;
         } catch (e) {
             console.error('[BLOG,findById]', e);

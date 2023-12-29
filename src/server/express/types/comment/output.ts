@@ -1,4 +1,12 @@
-export interface ICommentModel extends Document {
+export interface CommentSchema extends Document {
+    id: string;
+    postId: Object;
+    userId: Object;
+    content: string;
+    createdAt: string;
+}
+
+export interface ICommentModel {
     id: string;
     postId: string;
     userId: string;

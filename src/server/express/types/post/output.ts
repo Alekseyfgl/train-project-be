@@ -1,4 +1,4 @@
-export interface IPostModel extends Document {
+export interface PostSchema extends Document {
     id: string;
     title: string;
     shortDescription: string;
@@ -13,5 +13,5 @@ export interface IPostModelOut {
     page: number;
     pageSize: number;
     totalCount: number;
-    items: IPostModel[];
+    items: PostSchema[];
 }

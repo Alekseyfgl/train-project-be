@@ -1,9 +1,8 @@
 import { IJwtPayload, LoginDto } from '../types/auth/input';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
-import { IUserModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
-import { IUser } from '../types/user/output';
+import { IUser, UserSchema } from '../types/user/output';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
@@ -12,7 +11,7 @@ dotenv.config();
 export class AuthService {
     static async login(dto: LoginDto): PromiseNull<{ accessToken: string }> {
         const { loginOrEmail, password } = dto;
-        const user: Nullable<IUserModel> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
+        const user: Nullable<UserSchema> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
         if (!user) return null;
 
         const isPasswordCorrect: boolean = await this.checkPassword(password, user.password);

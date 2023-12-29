@@ -1,8 +1,7 @@
-import { IUserModel } from '../models/user.model';
-import { IUser, IUserPaginationOut } from '../types/user/output';
+import { IUser, IUserPaginationOut, UserSchema } from '../types/user/output';
 import { UserPaginationQuery, UserPaginationQueryOptional } from '../types/user/input';
 
-export const userMapper = (user: IUserModel): IUser => {
+export const userMapper = (user: UserSchema): IUser => {
     return {
         id: user.id,
         email: user.email,

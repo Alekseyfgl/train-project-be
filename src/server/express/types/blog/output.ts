@@ -5,7 +5,7 @@ export interface IBlog {
     websiteUrl: string;
 }
 
-export interface IBlogModel extends Document {
+export interface IBlogSchema extends Document {
     id: string;
     name: string;
     description: string;
@@ -20,5 +20,5 @@ export interface IBlogModelOut {
     page: number;
     pageSize: number;
     totalCount: number;
-    items: IBlogModel[];
+    items: IBlogSchema[];
 }

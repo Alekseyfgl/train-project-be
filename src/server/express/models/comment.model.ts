@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { ICommentModel } from '../types/comment/output';
+import { CommentSchema } from '../types/comment/output';
 
 const CommentSchema: Schema = new Schema(
     {
@@ -17,7 +17,8 @@ CommentSchema.set('toJSON', {
     versionKey: false,
     transform: (doc, ret) => {
         delete ret._id;
+        delete ret._id;
     },
 });
 
-export const CommentModel = mongoose.model<ICommentModel>('Comment', CommentSchema);
+export const CommentModel = mongoose.model<CommentSchema>('Comment', CommentSchema);

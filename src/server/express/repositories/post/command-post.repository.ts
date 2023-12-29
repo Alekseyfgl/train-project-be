@@ -1,6 +1,6 @@
 import { AddPostDto, UpdatePostDto } from '../../types/post/input';
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
-import { IPostModel } from '../../types/post/output';
+import { PostSchema } from '../../types/post/output';
 import { PostModel } from '../../models/post.model';
 import { UpdateWriteOpResult } from 'mongoose';
 import { DeleteResult } from 'mongodb';
@@ -8,7 +8,7 @@ import { DeleteResult } from 'mongodb';
 export class CommandPostRepository {
     static async create(dto: AddPostDto): PromiseNull<string> {
         try {
-            const createdPost: Nullable<IPostModel> = await PostModel.create(dto);
+            const createdPost: Nullable<PostSchema> = await PostModel.create(dto);
             return createdPost.id;
         } catch (e) {
             console.error('[addPost]', e);

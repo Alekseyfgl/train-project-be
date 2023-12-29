@@ -1,12 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-
-export interface IUserModel extends Document {
-    id: string;
-    login: string;
-    email: string;
-    password: string;
-    createdAt: string;
-}
+import { UserSchema } from '../types/user/output';
 
 const UserSchema: Schema = new Schema(
     {
@@ -27,4 +20,4 @@ UserSchema.set('toJSON', {
     },
 });
 
-export const UserModel = mongoose.model<IUserModel>('User', UserSchema);
+export const UserModel = mongoose.model<UserSchema>('User', UserSchema);
