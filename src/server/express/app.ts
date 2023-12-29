@@ -7,6 +7,7 @@ import { testRouter } from './routes/test.router';
 import { logRequestsMiddleware } from './common/middlewares/log-requests/log-requests';
 import { userRouter } from './routes/user.router';
 import { authRouter } from './routes/auth.router';
+import { commentRouter } from './routes/comment.router';
 
 export const app = express();
 
@@ -21,7 +22,7 @@ app.use(express.json());
 app.use(requestCounterMiddleware);
 app.use(logRequestsMiddleware);
 
-app.use('', blogRouter, postRouter, userRouter, authRouter, testRouter);
+app.use('', blogRouter, postRouter, userRouter, authRouter, commentRouter, testRouter);
 // app.use('/videos', videoRouter);
 // app.use('/blogs', blogRouter);
 // app.use('/posts', postRouter);

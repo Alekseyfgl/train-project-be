@@ -1,7 +1,7 @@
 import { IJwtPayload, LoginDto } from '../types/auth/input';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
-import { IUserModel } from '../models/users.model';
+import { IUserModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
 import { IUser } from '../types/user/output';
 import jwt from 'jsonwebtoken';

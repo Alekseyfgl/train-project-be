@@ -1,6 +1,6 @@
 import { PromiseNull } from '../../common/interfaces/optional.types';
 import { AddUserDto } from '../../types/user/input';
-import { IUserModel, UserModel } from '../../models/users.model';
+import { IUserModel, UserModel } from '../../models/user.model';
 import { DeleteResult } from 'mongodb';
 
 export class CommandUserRepository {

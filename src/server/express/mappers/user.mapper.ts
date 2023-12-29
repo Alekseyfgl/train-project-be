@@ -1,4 +1,4 @@
-import { IUserModel } from '../models/users.model';
+import { IUserModel } from '../models/user.model';
 import { IUser, IUserPaginationOut } from '../types/user/output';
 import { UserPaginationQuery, UserPaginationQueryOptional } from '../types/user/input';
 

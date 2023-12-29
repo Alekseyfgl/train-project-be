@@ -1,4 +1,4 @@
-import { IUserModel } from '../models/users.model';
+import { IUserModel } from '../models/user.model';
 import { IMe } from '../types/auth/output';
 
 export const meMapper = (user: IUserModel): IMe => {

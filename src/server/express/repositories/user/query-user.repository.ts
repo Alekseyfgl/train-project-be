@@ -1,7 +1,7 @@
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { offsetPagination } from '../../common/utils/offset-for-pagination/offset-for-pagination';
 import { countTotalPages } from '../../common/utils/count-total-pages/count-total-pages';
-import { IUserModel, UserModel } from '../../models/users.model';
+import { IUserModel, UserModel } from '../../models/user.model';
 import { pageUsersMapper, userMapper } from '../../mappers/user.mapper';
 import { IUser, IUserPaginationOut } from '../../types/user/output';
 import { UserPaginationQuery } from '../../types/user/input';
