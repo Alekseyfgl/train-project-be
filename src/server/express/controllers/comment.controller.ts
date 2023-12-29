@@ -1,12 +1,15 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { QueryCommentRepository } from '../repositories/comments/query-comment.repository';
 import { IComment } from '../types/comment/output';
+import { CommentService } from '../domain/comment.service';
+import { ErrorCreator } from '../common/errors/error-creator/error-creator';
+import { HttpExceptionMessages } from '../common/constans/http-exception-messages';
 
 class CommentController {
-    async getById(req: Request<{ id: string }>, res: Response, next: NextFunction) {
+    async getById(req: Request<{ id: string }>, res: Response) {
         const commentId = req.params.id;
         const userId: Optional<string> = req?.user?.userId;
         if (!userId) return new ApiResponse(res).notAuthorized();
@@ -15,6 +18,26 @@ class CommentController {
 
         const response = new ApiResponse(res);
         commentWithAuthor ? response.send(HttpStatusCodes.OK, commentWithAuthor) : new ApiResponse(res).notFound();
+    }
+
+    async update(req: Request<{ id: string }>, res: Response) {
+        const commentId = req.params.id;
+        const userId: Optional<string> = req?.user?.userId;
+        if (!userId) return new ApiResponse(res).notAuthorized();
+
+        const result: HttpStatusCodes = await CommentService.update(req.body, commentId, userId);
+        const response = new ApiResponse(res);
+
+        switch (result) {
+            case HttpStatusCodes.NO_CONTENT:
+                return response.send(HttpStatusCodes.NO_CONTENT);
+            case HttpStatusCodes.FORBIDDEN:
+                return response.send(HttpStatusCodes.FORBIDDEN, new ErrorCreator().add(HttpExceptionMessages.FORBIDDEN, 'content'));
+            case HttpStatusCodes.NOT_FOUND:
+                return response.notFound();
+            default:
+                return response.notFound();
+        }
     }
 }
 
