@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 
 import { Nullable, Optional } from '../../interfaces/optional.types';
 import { ApiResponse } from '../../api-response/api-response';
-import { AuthService } from '../../../domain/auth.service';
 import { IJwtPayload } from '../../../types/auth/input';
+import { AuthService } from '../../../service/auth.service';
 
 const login = 'admin';
 const password = 'qwerty';

@@ -5,11 +5,11 @@ import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IPostModelOut, PostSchema } from '../types/post/output';
 import { AddPostDto, PostsByBlogQuery, PostsByBlogQueryOptional, UpdatePostDto } from '../types/post/input';
 import { QueryPostRepository } from '../repositories/post/query-post.repository';
-import { PostService } from '../domain/post.service';
 import { postsGetAllQueryMapper } from '../mappers/post.mapper';
 import { AddCommentDto } from '../types/comment/input';
-import { CommentService } from '../domain/comment.service';
 import { IComment } from '../types/comment/output';
+import { PostService } from '../service/post.service';
+import { CommentService } from '../service/comment.service';
 
 class PostController {
     async getAll(req: Request<{}, {}, {}, PostsByBlogQueryOptional>, res: Response, next: NextFunction) {

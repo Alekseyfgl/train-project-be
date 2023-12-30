@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { UserService } from '../domain/user.service';
 import { AddUserDto, UserPaginationQuery } from '../types/user/input';
 import { IUser } from '../types/user/output';
 import { Nullable } from '../common/interfaces/optional.types';
@@ -7,6 +6,7 @@ import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { createFilterGetAllUsersMapper } from '../mappers/user.mapper';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
+import { UserService } from '../service/user.service';
 
 class UserController {
     /**

@@ -4,13 +4,13 @@ import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { ApiResponse } from '../common/api-response/api-response';
 import { AddBlogDto, BlogQuery, BlogQueryTypeOptional, UpdateBlogDto } from '../types/blog/input';
-import { BlogService } from '../domain/blog.service';
 import { QueryBlogRepository } from '../repositories/blog/query-blog.repository';
 import { IPostToBlogDto, PostsByBlogQuery, PostsByBlogQueryOptional } from '../types/post/input';
 import { IPostModelOut, PostSchema } from '../types/post/output';
 import { postsGetAllQueryMapper } from '../mappers/post.mapper';
 import { QueryPostRepository } from '../repositories/post/query-post.repository';
 import { blogGetAllQueryMapper } from '../mappers/blog.mapper';
+import { BlogService } from '../service/blog.service';
 
 class BlogController {
     async getAllBlogs(req: Request<{}, {}, {}, BlogQueryTypeOptional>, res: Response, next: NextFunction) {

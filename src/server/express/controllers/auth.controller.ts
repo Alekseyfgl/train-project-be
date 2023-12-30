@@ -2,10 +2,10 @@ import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { LoginDto } from '../types/auth/input';
-import { AuthService } from '../domain/auth.service';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IMe } from '../types/auth/output';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
+import { AuthService } from '../service/auth.service';
 
 class AuthController {
     async login(req: Request<{}, {}, LoginDto>, res: Response) {
