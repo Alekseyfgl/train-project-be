@@ -11,8 +11,6 @@ import { CommentService } from '../service/comment.service';
 class CommentController {
     async getById(req: Request<{ id: string }>, res: Response) {
         const commentId = req.params.id;
-        const userId: Optional<string> = req?.user?.userId;
-        if (!userId) return new ApiResponse(res).notAuthorized();
 
         const commentWithAuthor: Nullable<IComment> = await QueryCommentRepository.getCommentByIdWithAuthor(commentId);
 

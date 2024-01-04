@@ -36,7 +36,6 @@ export const getAllCommentsByPostIdQueryMapper = (query: CommentsByPostQueryOpti
 
 export const getAllCommentByIdPagination = (data: { totalCount: number; pagesCount: number; pageSize: number; pageNumber: number; items: ICommentWithAuthorDB[] }): ICommentPaginationOut => {
     const { pageSize, pageNumber, pagesCount, totalCount, items } = data;
-    console.log('data!!!!', data);
     return {
         pagesCount,
         page: pageNumber,
