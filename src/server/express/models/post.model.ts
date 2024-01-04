@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { PostSchema } from '../types/post/output';
+import { CommentModel } from './comment.model';
 
 const PostSchema: Schema = new Schema(
     {
@@ -20,6 +21,12 @@ PostSchema.set('toJSON', {
     transform: (doc, ret) => {
         delete ret._id;
     },
+});
+
+PostSchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await CommentModel.deleteMany({ postId: doc._id });
+    }
 });
 
 export const PostModel = mongoose.model<PostSchema>('Post', PostSchema);
