@@ -23,10 +23,10 @@ PostSchema.set('toJSON', {
     },
 });
 
-PostSchema.post('deleteOne', async function (doc) {
+PostSchema.post('findOneAndDelete', async function (doc) {
     if (doc) {
-        await CommentModel.deleteMany({ postId: doc._id });
+        console.log(doc);
+        await CommentModel.deleteMany({ postId: doc._id.toString() });
     }
 });
-
 export const PostModel = mongoose.model<PostSchema>('Post', PostSchema);

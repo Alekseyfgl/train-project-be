@@ -3,7 +3,6 @@ import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { PostSchema } from '../../types/post/output';
 import { PostModel } from '../../models/post.model';
 import { UpdateWriteOpResult } from 'mongoose';
-import { DeleteResult } from 'mongodb';
 
 export class CommandPostRepository {
     static async create(dto: AddPostDto): PromiseNull<string> {
@@ -28,8 +27,8 @@ export class CommandPostRepository {
 
     static async removeById(id: string): Promise<boolean> {
         try {
-            const result: DeleteResult = await PostModel.deleteOne({ _id: id });
-            return !!result.deletedCount;
+            const result = await PostModel.findOneAndDelete({ _id: id });
+            return !!result;
         } catch (e) {
             console.error('[removeById]', e);
             return false;
