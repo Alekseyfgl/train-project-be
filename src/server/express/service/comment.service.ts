@@ -14,10 +14,13 @@ dotenv.config();
 export class CommentService {
     static async create(dto: AddCommentDto, postId: string, userId: string): PromiseNull<IComment> {
         const newComment = { postId, userId, content: dto.content };
+
         const createdComment: Nullable<ICommentModel> = await CommandCommentRepository.create(newComment);
         if (!createdComment) return null;
+
         const author: Nullable<IUser> = await QueryUserRepository.findById(userId);
         if (!author) return null;
+
         return commentMapper(createdComment, author);
     }
 

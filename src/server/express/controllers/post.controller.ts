@@ -52,6 +52,7 @@ class PostController {
         if (!userId) return new ApiResponse(res).notAuthorized();
 
         const result: Nullable<IComment> = await CommentService.create(req.body, postId, userId);
+
         const response = new ApiResponse(res);
         result ? response.send(HttpStatusCodes.CREATED, result) : response.notFound();
     }
@@ -59,7 +60,9 @@ class PostController {
     async getAllCommentsByPostId(req: Request<{ id: string }, {}, {}, CommentsByPostQueryOptional>, res: Response) {
         const postId = req.params.id;
         const query: CommentsByPostQuery = getAllCommentsByPostIdQueryMapper(req.query);
+
         const result: Nullable<ICommentPaginationOut> = await QueryCommentRepository.getAllCommentsByPostId(postId, query);
+
         const response = new ApiResponse(res);
         result ? response.send(HttpStatusCodes.OK, result) : response.notFound();
     }
