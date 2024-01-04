@@ -1,9 +1,11 @@
+import { Types } from 'mongoose';
+
 export interface PostSchema extends Document {
     id: string;
+    blogId: Types.ObjectId;
     title: string;
     shortDescription: string;
     content: string;
-    blogId: string;
     blogName: string;
     createdAt: string;
 }

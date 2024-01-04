@@ -5,6 +5,6 @@ export const meMapper = (user: UserSchema): IMe => {
     return {
         email: user.email,
         login: user.login,
-        userId: user.id,
+        userId: user._id.toString(),
     };
 };

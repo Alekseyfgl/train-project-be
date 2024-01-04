@@ -18,7 +18,7 @@ export class CommandUserRepository {
     static async create(dto: AddUserDto): PromiseNull<string> {
         try {
             const createdUser: UserSchema = await UserModel.create(dto);
-            return createdUser.id;
+            return createdUser._id.toString();
         } catch (err) {
             console.error('CommandUserRepository [create]', err);
             return null;

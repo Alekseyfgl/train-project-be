@@ -15,5 +15,6 @@ postRouter.get(`${base}`, postController.getAll);
 postRouter.get(`${base}/${id}`, postController.getById);
 postRouter.post(`${base}`, authMiddleware, postValidation(), postController.addByOne);
 postRouter.post(`${base}/${id}/${comments}`, authMiddleware_jwt, commentToPostValidation(), postController.addCommentToPost);
+postRouter.get(`${base}/${id}/${comments}`, postController.getAllCommentsByPostId);
 postRouter.put(`${base}/${id}`, authMiddleware, postValidation(), postController.updateById);
 postRouter.delete(`${base}/${id}`, authMiddleware, postController.removeById);

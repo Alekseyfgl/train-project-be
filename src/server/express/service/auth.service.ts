@@ -2,16 +2,17 @@ import { IJwtPayload, LoginDto } from '../types/auth/input';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import bcrypt from 'bcrypt';
-import { IUser, UserSchema } from '../types/user/output';
+import { IUser } from '../types/user/output';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { userWithPasswordMapper } from '../mappers/user.mapper';
 
 dotenv.config();
 
 export class AuthService {
     static async login(dto: LoginDto): PromiseNull<{ accessToken: string }> {
         const { loginOrEmail, password } = dto;
-        const user: Nullable<UserSchema> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
+        const user: Nullable<ReturnType<typeof userWithPasswordMapper>> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
         if (!user) return null;
 
         const isPasswordCorrect: boolean = await this.checkPassword(password, user.password);
@@ -33,7 +34,9 @@ export class AuthService {
 
     static async verifyToken(token: string): PromiseNull<IJwtPayload> {
         try {
-            return jwt.verify(token, process.env.JWT_SECRET as string) as IJwtPayload;
+            const dataFromToken = (await jwt.verify(token, process.env.JWT_SECRET as string)) as IJwtPayload;
+
+            return dataFromToken;
         } catch (e) {
             console.log('[getUserIdByToken]', e);
             return null;

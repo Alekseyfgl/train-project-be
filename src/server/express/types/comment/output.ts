@@ -1,7 +1,10 @@
+import { Types } from 'mongoose';
+import { UserSchema } from '../user/output';
+
 export interface CommentSchema extends Document {
-    id: string;
-    postId: Object;
-    userId: Object;
+    _id: Types.ObjectId;
+    postId: Types.ObjectId;
+    userId: Types.ObjectId;
     content: string;
     createdAt: string;
 }
@@ -22,6 +25,10 @@ export interface IComment {
         userLogin: string;
     };
     createdAt: string;
+}
+
+export interface ICommentWithAuthorDB extends CommentSchema {
+    user: UserSchema;
 }
 
 export interface ICommentPaginationOut {

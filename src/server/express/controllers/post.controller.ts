@@ -6,10 +6,12 @@ import { IPostModelOut, PostSchema } from '../types/post/output';
 import { AddPostDto, PostsByBlogQuery, PostsByBlogQueryOptional, UpdatePostDto } from '../types/post/input';
 import { QueryPostRepository } from '../repositories/post/query-post.repository';
 import { postsGetAllQueryMapper } from '../mappers/post.mapper';
-import { AddCommentDto } from '../types/comment/input';
+import { AddCommentDto, CommentsByPostQuery, CommentsByPostQueryOptional } from '../types/comment/input';
 import { IComment } from '../types/comment/output';
 import { PostService } from '../service/post.service';
 import { CommentService } from '../service/comment.service';
+import { getAllCommentsByPostIdQueryMapper } from '../mappers/comment.mapper';
+import { QueryCommentRepository } from '../repositories/comments/query-comment.repository';
 
 class PostController {
     async getAll(req: Request<{}, {}, {}, PostsByBlogQueryOptional>, res: Response, next: NextFunction) {
@@ -45,7 +47,6 @@ class PostController {
     }
 
     async addCommentToPost(req: Request<{ id: string }, {}, AddCommentDto>, res: Response) {
-        console.log('addCommentToPost');
         const postId = req.params.id;
         const userId: Optional<string> = req?.user?.userId;
         if (!userId) return new ApiResponse(res).notAuthorized();
@@ -53,6 +54,14 @@ class PostController {
         const result: Nullable<IComment> = await CommentService.create(req.body, postId, userId);
         const response = new ApiResponse(res);
         result ? response.send(HttpStatusCodes.CREATED, result) : response.notFound();
+    }
+
+    async getAllCommentsByPostId(req: Request<{ id: string }, {}, {}, CommentsByPostQueryOptional>, res: Response) {
+        const postId = req.params.id;
+        const query: CommentsByPostQuery = getAllCommentsByPostIdQueryMapper(req.query);
+        const result = await QueryCommentRepository.getAllCommentsByPostId(postId, query);
+        const response = new ApiResponse(res);
+        response.send(HttpStatusCodes.OK, result);
     }
 }
 

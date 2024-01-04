@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { CommentSchema } from '../types/comment/output';
+import { UserModel } from './user.model';
 
 const CommentSchema: Schema = new Schema(
     {
@@ -11,14 +12,62 @@ const CommentSchema: Schema = new Schema(
     {},
 );
 
-//изменили _id на одекватный id
-CommentSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: (doc, ret) => {
-        delete ret._id;
-        delete ret._id;
-    },
+CommentSchema.pre('save', async function (next) {
+    const comment = this;
+    try {
+        // Проверяем, существует ли пользователь с userId, связанным с комментарием
+        const userExists = await UserModel.findOne({ _id: comment.userId });
+        if (!userExists) {
+            // Если пользователь не найден, передаем ошибку в next()
+            return next(new Error('Не удается добавить комментарий к несуществующему пользователю'));
+        }
+        // Если пользователь существует, продолжаем сохранение комментария
+        next();
+    } catch (error: any) {
+        next(error);
+    }
+});
+
+CommentSchema.pre('updateOne', async function (next) {
+    const comment = this;
+    try {
+        // Получаем ID комментария из условия запроса
+        const commentId = comment.getQuery()._id;
+        // Находим комментарий и проверяем, существует ли связанный пользователь
+        const existingComment = await CommentModel.findById(commentId).populate('userId');
+        if (!existingComment) {
+            return next(new Error('Комментарий не найден'));
+        }
+        if (!existingComment.userId) {
+            // Если пользователь не найден, передаем ошибку в next()
+            return next(new Error('Не удается удалить комментарий для несуществующего пользователя'));
+        }
+        // Если пользователь существует, продолжаем удаление комментария
+        next();
+    } catch (error: any) {
+        next(error);
+    }
+});
+
+CommentSchema.pre('deleteOne', async function (next) {
+    const comment = this;
+    try {
+        // Получаем ID комментария из условия запроса
+        const commentId = comment.getQuery()._id;
+        // Находим комментарий и проверяем, существует ли связанный пользователь
+        const existingComment = await CommentModel.findById(commentId).populate('userId');
+        if (!existingComment) {
+            return next(new Error('Комментарий не найден'));
+        }
+        if (!existingComment.userId) {
+            // Если пользователь не найден, передаем ошибку в next()
+            return next(new Error('Не удается удалить комментарий для несуществующего пользователя'));
+        }
+        // Если пользователь существует, продолжаем удаление комментария
+        next();
+    } catch (error: any) {
+        next(error);
+    }
 });
 
 export const CommentModel = mongoose.model<CommentSchema>('Comment', CommentSchema);

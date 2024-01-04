@@ -2,7 +2,7 @@ import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { offsetPagination } from '../../common/utils/offset-for-pagination/offset-for-pagination';
 import { countTotalPages } from '../../common/utils/count-total-pages/count-total-pages';
 import { UserModel } from '../../models/user.model';
-import { pageUsersMapper, userMapper } from '../../mappers/user.mapper';
+import { pageUsersMapper, userMapper, userWithPasswordMapper } from '../../mappers/user.mapper';
 import { IUser, IUserPaginationOut, UserSchema } from '../../types/user/output';
 import { UserPaginationQuery } from '../../types/user/input';
 import { meMapper } from '../../mappers/auth.mapper';
@@ -53,12 +53,12 @@ export class QueryUserRepository {
         }
     }
 
-    static async findByLoginOrEmail(loginOrEmail: string): PromiseNull<UserSchema> {
+    static async findByLoginOrEmail(loginOrEmail: string): PromiseNull<ReturnType<typeof userWithPasswordMapper>> {
         try {
             const condition: RegExp = new RegExp('^' + loginOrEmail + '$', 'i');
             const user: UserSchema | null = await UserModel.findOne({ $or: [{ login: condition }, { email: condition }] });
             if (!user) return null;
-            return user;
+            return userWithPasswordMapper(user);
         } catch (e) {
             console.error('[user,findByLoginOrEmail]', e);
             return null;

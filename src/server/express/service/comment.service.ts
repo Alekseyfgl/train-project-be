@@ -1,13 +1,13 @@
 import dotenv from 'dotenv';
 import { AddCommentDto, UpdateCommentDto } from '../types/comment/input';
 import { CommandCommentRepository } from '../repositories/comments/command-comment.repository';
-import { commentMapper } from '../mappers/comment.mapper';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import { IComment, ICommentModel } from '../types/comment/output';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { IUser } from '../types/user/output';
 import { QueryCommentRepository } from '../repositories/comments/query-comment.repository';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
+import { commentMapper } from '../mappers/comment.mapper';
 
 dotenv.config();
 
