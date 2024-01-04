@@ -1,6 +1,7 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { CommentSchema } from '../types/comment/output';
 import { UserModel } from './user.model';
+import { PostModel } from './post.model';
 
 const CommentSchema: Schema = new Schema(
     {
@@ -22,6 +23,22 @@ CommentSchema.pre('save', async function (next) {
             return next(new Error('Не удается добавить комментарий к несуществующему пользователю'));
         }
         // Если пользователь существует, продолжаем сохранение комментария
+        next();
+    } catch (error: any) {
+        next(error);
+    }
+});
+
+CommentSchema.pre('save', async function (next) {
+    const comment = this;
+    try {
+        // Проверяем, существует ли пост с postId, связанным с комментарием
+        const postExists = await PostModel.findOne({ _id: comment.postId });
+        if (!postExists) {
+            // Если пост не найден, передаем ошибку в next()
+            return next(new Error('Нельзя добавить комментарий к несуществующему посту'));
+        }
+        // Если пост существует, продолжаем сохранение комментария
         next();
     } catch (error: any) {
         next(error);
