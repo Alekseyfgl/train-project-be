@@ -5,7 +5,6 @@ import { QueryUserRepository } from '../user/query-user.repository';
 import { IUser } from '../../types/user/output';
 import { clearCommentMapper, commentMapper, getAllCommentByIdPagination } from '../../mappers/comment.mapper';
 import { CommentsByPostQuery } from '../../types/comment/input';
-import { PostModel } from '../../models/post.model';
 import { countTotalPages } from '../../common/utils/count-total-pages/count-total-pages';
 import { Types } from 'mongoose';
 import { offsetPagination } from '../../common/utils/offset-for-pagination/offset-for-pagination';
@@ -57,7 +56,7 @@ export class QueryCommentRepository {
                 { $limit: pageSize }, // Ограничиваем количество комментариев
             ]);
 
-            const totalCount: number = await PostModel.countDocuments({ postId: new Types.ObjectId(postId) });
+            const totalCount: number = await CommentModel.countDocuments({ postId: postId });
             const pagesCount: number = countTotalPages(totalCount, pageSize);
 
             return getAllCommentByIdPagination({ pageNumber, pageSize, items: comments, pagesCount, totalCount });
