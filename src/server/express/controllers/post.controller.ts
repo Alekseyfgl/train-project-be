@@ -7,7 +7,7 @@ import { AddPostDto, PostsByBlogQuery, PostsByBlogQueryOptional, UpdatePostDto }
 import { QueryPostRepository } from '../repositories/post/query-post.repository';
 import { postsGetAllQueryMapper } from '../mappers/post.mapper';
 import { AddCommentDto, CommentsByPostQuery, CommentsByPostQueryOptional } from '../types/comment/input';
-import { IComment } from '../types/comment/output';
+import { IComment, ICommentPaginationOut } from '../types/comment/output';
 import { PostService } from '../service/post.service';
 import { CommentService } from '../service/comment.service';
 import { getAllCommentsByPostIdQueryMapper } from '../mappers/comment.mapper';
@@ -59,9 +59,9 @@ class PostController {
     async getAllCommentsByPostId(req: Request<{ id: string }, {}, {}, CommentsByPostQueryOptional>, res: Response) {
         const postId = req.params.id;
         const query: CommentsByPostQuery = getAllCommentsByPostIdQueryMapper(req.query);
-        const result = await QueryCommentRepository.getAllCommentsByPostId(postId, query);
+        const result: Nullable<ICommentPaginationOut> = await QueryCommentRepository.getAllCommentsByPostId(postId, query);
         const response = new ApiResponse(res);
-        response.send(HttpStatusCodes.OK, result);
+        result ? response.send(HttpStatusCodes.OK, result) : response.notFound();
     }
 }
 

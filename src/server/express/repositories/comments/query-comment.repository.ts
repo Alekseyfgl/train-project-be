@@ -1,5 +1,5 @@
 import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
-import { CommentSchema, IComment, ICommentModel, ICommentWithAuthorDB } from '../../types/comment/output';
+import { CommentSchema, IComment, ICommentModel, ICommentPaginationOut, ICommentWithAuthorDB } from '../../types/comment/output';
 import { CommentModel } from '../../models/comment.model';
 import { QueryUserRepository } from '../user/query-user.repository';
 import { IUser } from '../../types/user/output';
@@ -30,7 +30,7 @@ export class QueryCommentRepository {
         return commentMapper(comment, author);
     }
 
-    static async getAllCommentsByPostId(postId: string, query: CommentsByPostQuery) {
+    static async getAllCommentsByPostId(postId: string, query: CommentsByPostQuery): PromiseNull<ICommentPaginationOut> {
         const { pageSize, pageNumber, sortDirection, sortBy } = query;
         const direction = sortDirection === 'desc' ? -1 : 1;
 
@@ -56,19 +56,15 @@ export class QueryCommentRepository {
                 { $limit: pageSize }, // Ограничиваем количество комментариев
             ]);
 
+            if (comments.length === 0) return null;
+
             const totalCount: number = await CommentModel.countDocuments({ postId: postId });
             const pagesCount: number = countTotalPages(totalCount, pageSize);
 
             return getAllCommentByIdPagination({ pageNumber, pageSize, items: comments, pagesCount, totalCount });
         } catch (e) {
             console.log('[getAllCommentsByPostId]', e);
-            return getAllCommentByIdPagination({
-                items: [],
-                totalCount: 0,
-                pageNumber: 1,
-                pagesCount: 1,
-                pageSize: 10,
-            });
+            return null;
         }
     }
 }

@@ -25,7 +25,7 @@ PostSchema.set('toJSON', {
 
 PostSchema.post('findOneAndDelete', async function (doc) {
     if (doc) {
-        console.log(doc);
+        // console.log(doc);
         await CommentModel.deleteMany({ postId: doc._id.toString() });
     }
 });
