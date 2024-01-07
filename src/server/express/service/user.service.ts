@@ -1,18 +1,27 @@
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import { CommandUserRepository } from '../repositories/user/command-user.repository';
-import { AddUserDto } from '../types/user/input';
-import { IUser } from '../types/user/output';
-import { QueryUserRepository } from '../repositories/user/query-user.repository';
+import { UserWithConfirm } from '../types/user/output';
 import bcrypt from 'bcrypt';
+import { RegistrationUserDto } from '../types/auth/input';
+import { EmailRepository } from '../repositories/email/email.repository';
+import { EmailPayloadsBuilder } from '../repositories/email/messages/email-payloads';
 
 export class UserService {
-    static async create(dto: AddUserDto): PromiseNull<IUser> {
+    static async create(dto: RegistrationUserDto, isUserConfirmed: boolean = false): PromiseNull<UserWithConfirm> {
         const hashedPassword: string = await this.hashPassword(dto.password);
         dto.password = hashedPassword;
 
-        const createdUserId: Nullable<string> = await CommandUserRepository.create(dto);
-        if (!createdUserId) return null;
-        return QueryUserRepository.findById(createdUserId);
+        const createdUser: Nullable<UserWithConfirm> = await CommandUserRepository.create(dto, isUserConfirmed);
+        if (!createdUser) return null;
+
+        if (isUserConfirmed) return createdUser;
+
+        const isEmailSent = await EmailRepository.sendEmail(createdUser.email, EmailPayloadsBuilder.createRegistration(createdUser.confirmInfo.id));
+        console.log('isEmailSent', isEmailSent);
+        if (!isEmailSent) {
+            await UserService.removeById(createdUser.id);
+        }
+        return null;
     }
 
     static async removeById(userId: string): Promise<boolean> {

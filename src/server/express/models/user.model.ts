@@ -11,13 +11,13 @@ const UserSchema: Schema = new Schema(
     {},
 );
 
-//изменили _id на одекватный id
-UserSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: (doc, ret) => {
-        delete ret._id;
-    },
-});
+// //изменили _id на одекватный id
+// UserSchema.set('toJSON', {
+//     virtuals: true,
+//     versionKey: false,
+//     transform: (doc, ret) => {
+//         delete ret._id;
+//     },
+// });
 
 export const UserModel = mongoose.model<UserSchema>('User', UserSchema);

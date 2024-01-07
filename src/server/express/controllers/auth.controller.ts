@@ -1,13 +1,20 @@
 import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
-import { LoginDto } from '../types/auth/input';
+import { LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IMe } from '../types/auth/output';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { AuthService } from '../service/auth.service';
 
 class AuthController {
+    async registration(req: Request<{}, {}, RegistrationUserDto>, res: Response) {
+        const result: boolean = await AuthService.registration(req.body);
+
+        const response = new ApiResponse(res);
+        result ? response.send(HttpStatusCodes.NO_CONTENT) : response.badRequest();
+    }
+
     async login(req: Request<{}, {}, LoginDto>, res: Response) {
         const result: Nullable<{ accessToken: string }> = await AuthService.login(req.body);
         const response = new ApiResponse(res);

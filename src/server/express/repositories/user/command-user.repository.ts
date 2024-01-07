@@ -1,8 +1,10 @@
 import { PromiseNull } from '../../common/interfaces/optional.types';
-import { AddUserDto } from '../../types/user/input';
 import { UserModel } from '../../models/user.model';
 import { DeleteResult } from 'mongodb';
-import { UserSchema } from '../../types/user/output';
+import { ConfirmationUserSchema, IUser, UserSchema, UserWithConfirm } from '../../types/user/output';
+import { RegistrationUserDto } from '../../types/auth/input';
+import { userMapper, userWithConf } from '../../mappers/user.mapper';
+import { ConfirmationUserModel } from '../../models/confirmation-user.model';
 
 export class CommandUserRepository {
     static async removeById(id: string): Promise<boolean> {
@@ -10,17 +12,20 @@ export class CommandUserRepository {
             const result: DeleteResult = await UserModel.deleteOne({ _id: id });
             return !!result.deletedCount;
         } catch (e) {
-            console.error('[removeById]', e);
+            console.error('CommandUserRepository [removeById]', e);
             return false;
         }
     }
 
-    static async create(dto: AddUserDto): PromiseNull<string> {
+    static async create(dto: RegistrationUserDto, isConfirmed: boolean): PromiseNull<UserWithConfirm> {
         try {
             const createdUser: UserSchema = await UserModel.create(dto);
-            return createdUser._id.toString();
-        } catch (err) {
-            console.error('CommandUserRepository [create]', err);
+            const newUser: IUser = userMapper(createdUser);
+            const confInfo: ConfirmationUserSchema = await ConfirmationUserModel.create({ userId: newUser.id, isConfirmed: isConfirmed });
+
+            return userWithConf(newUser, confInfo);
+        } catch (e) {
+            console.error('CommandUserRepository [create]', e);
             return null;
         }
     }

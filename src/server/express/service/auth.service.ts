@@ -1,11 +1,12 @@
-import { IJwtPayload, LoginDto } from '../types/auth/input';
+import { IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import bcrypt from 'bcrypt';
-import { IUser } from '../types/user/output';
+import { IUser, UserWithConfirm } from '../types/user/output';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { userWithPasswordMapper } from '../mappers/user.mapper';
+import { UserService } from './user.service';
 
 dotenv.config();
 
@@ -22,15 +23,16 @@ export class AuthService {
         return { accessToken: newToken };
     }
 
-    // static async getUserIdByToken(token: string): PromiseNull<string> {
-    //     try {
-    //         const result = jwt.verify(token, process.env.JWT_SECRET as string) as IJwtPayload;
-    //         return result.userId;
-    //     } catch (e) {
-    //         console.log('[getUserIdByToken]', e);
-    //         return null;
-    //     }
-    // }
+    static async registration(dto: RegistrationUserDto): Promise<boolean> {
+        const registeredUser: Nullable<UserWithConfirm> = await UserService.create(dto);
+        if (!registeredUser) return false;
+
+        // const codeForConfirmation: string = registeredUser.confirmInfo.id;
+
+        // await EmailRepository.sendEmail(dto.email, EmailPayloadsBuilder.createRegistration(codeForConfirmation));
+
+        return true;
+    }
 
     static async verifyToken(token: string): PromiseNull<IJwtPayload> {
         try {
