@@ -3,14 +3,17 @@ import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { PostSchema } from '../../types/post/output';
 import { PostModel } from '../../models/post.model';
 import { UpdateWriteOpResult } from 'mongoose';
+import { postMapper } from '../../mappers/post.mapper';
 
 export class CommandPostRepository {
     static async create(dto: AddPostDto): PromiseNull<string> {
         try {
             const createdPost: Nullable<PostSchema> = await PostModel.create(dto);
-            return createdPost.id;
+            if (!createdPost) return null;
+
+            return postMapper(createdPost).id;
         } catch (e) {
-            console.error('[addPost]', e);
+            console.error('CommandPostRepository [create]', e);
             return null;
         }
     }

@@ -1,5 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import { UserSchema } from '../types/user/output';
+import { ConfirmationUserModel } from './confirmation-user.model';
+import { CommentModel } from './comment.model';
 
 const UserSchema: Schema = new Schema(
     {
@@ -10,6 +12,15 @@ const UserSchema: Schema = new Schema(
     },
     {},
 );
+
+//remove cascading after remove user, we remove all comments by user and confirmation data
+UserSchema.post('findOneAndDelete', async function (doc: UserSchema) {
+    if (doc) {
+        // console.log(doc);
+        await ConfirmationUserModel.deleteMany({ userId: doc._id.toString() });
+        await CommentModel.deleteMany({ postId: doc._id.toString() });
+    }
+});
 
 // //изменили _id на одекватный id
 // UserSchema.set('toJSON', {

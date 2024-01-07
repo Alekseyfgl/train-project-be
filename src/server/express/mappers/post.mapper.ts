@@ -1,4 +1,4 @@
-import { IPostModelOut, PostSchema } from '../types/post/output';
+import { IPost, IPostModelOut, PostSchema } from '../types/post/output';
 import { PostsByBlogQuery, PostsByBlogQueryOptional } from '../types/post/input';
 
 export const postsGetAllQueryMapper = (query: PostsByBlogQueryOptional): PostsByBlogQuery => {
@@ -19,5 +19,17 @@ export const pagePostMapper = (data: { totalCount: number; pagesCount: number; p
         pageSize,
         totalCount,
         items: posts,
+    };
+};
+
+export const postMapper = (data: PostSchema): IPost => {
+    return {
+        id: data._id.toString(),
+        blogId: data.blogId.toString(),
+        title: data.title,
+        content: data.content,
+        blogName: data.blogName,
+        createdAt: data.createdAt,
+        shortDescription: data.shortDescription,
     };
 };
