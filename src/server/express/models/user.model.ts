@@ -16,9 +16,8 @@ const UserSchema: Schema = new Schema(
 //remove cascading after remove user, we remove all comments by user and confirmation data
 UserSchema.post('findOneAndDelete', async function (doc: UserSchema) {
     if (doc) {
-        // console.log(doc);
         await ConfirmationUserModel.deleteMany({ userId: doc._id.toString() });
-        await CommentModel.deleteMany({ postId: doc._id.toString() });
+        await CommentModel.deleteMany({ userId: doc._id.toString() });
     }
 });
 
