@@ -1,9 +1,10 @@
-import { PromiseNull } from '../../common/interfaces/optional.types';
+import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
 import { UserModel } from '../../models/user.model';
 import { ConfirmationUserSchema, IUser, UserSchema, UserWithConfirm } from '../../types/user/output';
 import { RegistrationUserDto } from '../../types/auth/input';
 import { userMapper, userWithConf } from '../../mappers/user.mapper';
 import { ConfirmationUserModel } from '../../models/confirmation-user.model';
+import { JwtService } from '../../service/jwt.service';
 
 export class CommandUserRepository {
     static async removeById(id: string): Promise<boolean> {
@@ -20,7 +21,9 @@ export class CommandUserRepository {
         try {
             const createdUser: UserSchema = await UserModel.create(dto);
             const newUser: IUser = userMapper(createdUser);
-            const confInfo: ConfirmationUserSchema = await ConfirmationUserModel.create({ userId: newUser.id, isConfirmed: isConfirmed });
+
+            const confCode: Nullable<string> = isConfirmed ? null : await JwtService.createJwt(newUser, '5m');
+            const confInfo: ConfirmationUserSchema = await ConfirmationUserModel.create({ userId: newUser.id, isConfirmed: isConfirmed, code: confCode });
 
             return userWithConf(newUser, confInfo);
         } catch (e) {

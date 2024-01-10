@@ -1,6 +1,7 @@
 import { IUser, IUserPaginationOut, UserSchema, UserWithConfirm } from '../types/user/output';
 import { UserPaginationQuery, UserPaginationQueryOptional } from '../types/user/input';
 import { Types } from 'mongoose';
+import { Nullable } from '../common/interfaces/optional.types';
 
 export const userMapper = (user: UserSchema): IUser => {
     return {
@@ -42,7 +43,7 @@ export const pageUsersMapper = (data: { totalCount: number; pagesCount: number; 
     };
 };
 
-export const userWithConf = (user: IUser, confInfo: { _id: Types.ObjectId; isConfirmed: boolean }): UserWithConfirm => {
+export const userWithConf = (user: IUser, confInfo: { _id: Types.ObjectId; isConfirmed: boolean; code: Nullable<string> }): UserWithConfirm => {
     return {
         id: user.id,
         email: user.email,
@@ -51,6 +52,16 @@ export const userWithConf = (user: IUser, confInfo: { _id: Types.ObjectId; isCon
         confirmInfo: {
             id: confInfo._id.toString(),
             isConfirmed: confInfo.isConfirmed,
+            code: confInfo.code,
         },
+    };
+};
+
+export const userWithoutConf = (user: UserWithConfirm): IUser => {
+    return {
+        id: user.id,
+        email: user.email,
+        login: user.login,
+        createdAt: user.createdAt,
     };
 };

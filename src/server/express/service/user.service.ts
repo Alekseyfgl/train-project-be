@@ -3,25 +3,23 @@ import { CommandUserRepository } from '../repositories/user/command-user.reposit
 import { UserWithConfirm } from '../types/user/output';
 import bcrypt from 'bcrypt';
 import { RegistrationUserDto } from '../types/auth/input';
-import { EmailRepository } from '../repositories/email/email.repository';
-import { EmailPayloadsBuilder } from '../repositories/email/messages/email-payloads';
 
 export class UserService {
-    static async create(dto: RegistrationUserDto, isUserConfirmed: boolean = false): PromiseNull<UserWithConfirm> {
+    static async create(dto: RegistrationUserDto, isUserConfirmed: boolean): PromiseNull<UserWithConfirm> {
         const hashedPassword: string = await this.hashPassword(dto.password);
         dto.password = hashedPassword;
 
         const createdUser: Nullable<UserWithConfirm> = await CommandUserRepository.create(dto, isUserConfirmed);
-        if (!createdUser) return null;
+        return createdUser;
+        // if (!createdUser) return null;
+        // if (isUserConfirmed) return createdUser;
 
-        if (isUserConfirmed) return createdUser;
-
-        const isEmailSent = await EmailRepository.sendEmail(createdUser.email, EmailPayloadsBuilder.createRegistration(createdUser.confirmInfo.id));
-        console.log('isEmailSent', isEmailSent);
-        if (!isEmailSent) {
-            await UserService.removeById(createdUser.id);
-        }
-        return null;
+        // const isEmailSent = await EmailRepository.sendEmail(createdUser.email, EmailPayloadsBuilder.createRegistration(createdUser.confirmInfo.id));
+        // console.log('isEmailSent', isEmailSent);
+        // if (!isEmailSent) {
+        //     await UserService.removeById(createdUser.id);
+        // }
+        // return null;
     }
 
     static async removeById(userId: string): Promise<boolean> {

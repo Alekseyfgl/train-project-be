@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { Nullable } from '../../common/interfaces/optional.types';
 
 export interface UserSchema extends Document {
     _id: Types.ObjectId;
@@ -12,6 +13,7 @@ export interface ConfirmationUserSchema extends Document {
     _id: Types.ObjectId;
     userId: Types.ObjectId;
     isConfirmed: boolean;
+    code: Nullable<string>;
 }
 // export interface IConfirmationUser {
 //     id: string;
@@ -29,6 +31,7 @@ export interface UserWithConfirm extends IUser {
     confirmInfo: {
         id: string;
         isConfirmed: boolean;
+        code: Nullable<string>;
     };
 }
 

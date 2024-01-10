@@ -1,12 +1,14 @@
-import { IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
+import { LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import bcrypt from 'bcrypt';
-import { IUser, UserWithConfirm } from '../types/user/output';
-import jwt from 'jsonwebtoken';
+import { UserWithConfirm } from '../types/user/output';
 import dotenv from 'dotenv';
 import { userWithPasswordMapper } from '../mappers/user.mapper';
 import { UserService } from './user.service';
+import { JwtService } from './jwt.service';
+import { EmailRepository } from '../repositories/email/email.repository';
+import { EmailPayloadsBuilder } from '../repositories/email/messages/email-payloads';
 
 dotenv.config();
 
@@ -19,34 +21,24 @@ export class AuthService {
         const isPasswordCorrect: boolean = await this.checkPassword(password, user.password);
         if (!isPasswordCorrect) return null;
 
-        const newToken: string = await this.createJwt(user);
+        const newToken: string = await JwtService.createJwt(user, process.env.ACCESS_TOKEN_EXP as string);
         return { accessToken: newToken };
     }
 
     static async registration(dto: RegistrationUserDto): Promise<boolean> {
-        const registeredUser: Nullable<UserWithConfirm> = await UserService.create(dto);
+        const registeredUser: Nullable<UserWithConfirm> = await UserService.create(dto, false);
         if (!registeredUser) return false;
 
-        // const codeForConfirmation: string = registeredUser.confirmInfo.id;
+        const confCode: Nullable<string> = registeredUser.confirmInfo.code;
+        if (!confCode) return false;
 
-        // await EmailRepository.sendEmail(dto.email, EmailPayloadsBuilder.createRegistration(codeForConfirmation));
+        const isSendEmail = await EmailRepository.sendEmail(dto.email, EmailPayloadsBuilder.createRegistration(confCode));
+        if (!isSendEmail) {
+            await UserService.removeById(registeredUser.id);
+            return false;
+        }
 
         return true;
-    }
-
-    static async verifyToken(token: string): PromiseNull<IJwtPayload> {
-        try {
-            const dataFromToken = (await jwt.verify(token, process.env.JWT_SECRET as string)) as IJwtPayload;
-
-            return dataFromToken;
-        } catch (e) {
-            console.log('[getUserIdByToken]', e);
-            return null;
-        }
-    }
-
-    static async createJwt(user: IUser): Promise<string> {
-        return jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: process.env.ACCESS_TOKEN_EXP as string });
     }
 
     private static async checkPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {

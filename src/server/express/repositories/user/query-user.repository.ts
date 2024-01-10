@@ -12,7 +12,7 @@ export class QueryUserRepository {
     static async findAll(query: UserPaginationQuery): Promise<IUserPaginationOut> {
         const { pageSize, pageNumber, sortDirection, sortBy, searchEmailTerm, searchLoginTerm } = query;
 
-        let filter: { $or?: Array<{ email?: { $regex: RegExp }; login?: { $regex: RegExp } }> } = {};
+        let filter: { $or?: { email?: { $regex: RegExp }; login?: { $regex: RegExp } }[] } = {};
 
         if (searchEmailTerm || searchLoginTerm) {
             filter.$or = [];
@@ -56,7 +56,7 @@ export class QueryUserRepository {
     static async findByLoginOrEmail(loginOrEmail: string): PromiseNull<ReturnType<typeof userWithPasswordMapper>> {
         try {
             const condition: RegExp = new RegExp('^' + loginOrEmail + '$', 'i');
-            const user: UserSchema | null = await UserModel.findOne({ $or: [{ login: condition }, { email: condition }] });
+            const user: Nullable<UserSchema> = await UserModel.findOne({ $or: [{ login: condition }, { email: condition }] });
             if (!user) return null;
             return userWithPasswordMapper(user);
         } catch (e) {

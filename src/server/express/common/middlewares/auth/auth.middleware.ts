@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { Nullable, Optional } from '../../interfaces/optional.types';
 import { ApiResponse } from '../../api-response/api-response';
 import { IJwtPayload } from '../../../types/auth/input';
-import { AuthService } from '../../../service/auth.service';
+import { JwtService } from '../../../service/jwt.service';
 
 const login = 'admin';
 const password = 'qwerty';
@@ -42,7 +42,7 @@ export const authMiddleware_jwt = async (req: Request, res: Response, next: Next
         return;
     }
 
-    const userPayload: Nullable<IJwtPayload> = await AuthService.verifyToken(token);
+    const userPayload: Nullable<IJwtPayload> = await JwtService.verifyToken(token);
     if (!userPayload) {
         new ApiResponse(res).notAuthorized();
         return;
