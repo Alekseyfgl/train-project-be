@@ -21,6 +21,9 @@ export class AuthService {
         const isPasswordCorrect: boolean = await this.checkPassword(password, user.password);
         if (!isPasswordCorrect) return null;
 
+        const isUserConfirmed: boolean = user.confInfo.isConfirmed;
+        if (!isUserConfirmed) return null;
+
         const newToken: string = await JwtService.createJwt(user, process.env.ACCESS_TOKEN_EXP as string);
         return { accessToken: newToken };
     }

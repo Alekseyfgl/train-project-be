@@ -1,4 +1,4 @@
-import { IUser, IUserPaginationOut, UserSchema, UserWithConfirm } from '../types/user/output';
+import { ConfirmationUserSchema, IUser, IUserPaginationOut, UserSchema, UserWithConfirm } from '../types/user/output';
 import { UserPaginationQuery, UserPaginationQueryOptional } from '../types/user/input';
 import { Types } from 'mongoose';
 import { Nullable } from '../common/interfaces/optional.types';
@@ -11,13 +11,18 @@ export const userMapper = (user: UserSchema): IUser => {
         createdAt: user.createdAt,
     };
 };
-export const userWithPasswordMapper = (user: UserSchema) => {
+export const userWithPasswordMapper = (user: UserSchema, confStatus: ConfirmationUserSchema) => {
     return {
         id: user._id.toHexString(),
         email: user.email,
         login: user.login,
         password: user.password,
         createdAt: user.createdAt,
+        confInfo: {
+            id: confStatus._id.toString(),
+            isConfirmed: confStatus.isConfirmed,
+            code: confStatus.code,
+        },
     };
 };
 

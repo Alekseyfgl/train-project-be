@@ -1,11 +1,15 @@
+import { ConfirmationUserModel } from '../../models/confirmation-user.model';
+import { Nullable, PromiseNull } from '../../common/interfaces/optional.types';
+import { ConfirmationUserSchema } from '../../types/user/output';
+
 export class ConfirmationUserRepository {
-    // static async create(data: { userId: string }): Promise<boolean> {
-    //     try {
-    //         await ConfirmationUserModel.create(data);
-    //         return true;
-    //     } catch (err) {
-    //         console.error('ConfirmationUserRepository [create]', err);
-    //         return false;
-    //     }
-    // }
+    static async findConfStatusByUserId(userId: string): PromiseNull<ConfirmationUserSchema> {
+        try {
+            const confirmationStatus: Nullable<ConfirmationUserSchema> = await ConfirmationUserModel.findOne({ userId });
+            return confirmationStatus;
+        } catch (err) {
+            console.error('ConfirmationUserRepository [create]', err);
+            return null;
+        }
+    }
 }

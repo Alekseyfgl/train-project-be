@@ -8,7 +8,6 @@ import { CommentsByPostQuery } from '../../types/comment/input';
 import { countTotalPages } from '../../common/utils/count-total-pages/count-total-pages';
 import { Types } from 'mongoose';
 import { offsetPagination } from '../../common/utils/offset-for-pagination/offset-for-pagination';
-import { ObjectId } from 'mongodb';
 
 export class QueryCommentRepository {
     static async findById(commentId: string): PromiseNull<ICommentModel> {
@@ -68,22 +67,3 @@ export class QueryCommentRepository {
         }
     }
 }
-
-const x = [
-    {
-        _id: new ObjectId('6595907a8db8ea4ca7601548'),
-        postId: new ObjectId('659590478db8ea4ca760153f'),
-        userId: new ObjectId('659590038db8ea4ca7601537'),
-        content: 'stringstringstringst',
-        createdAt: '',
-        __v: 0,
-        user: {
-            _id: new ObjectId('659590038db8ea4ca7601537'),
-            login: 'qweeee1',
-            email: 'qwe1@gmail.com',
-            password: '$2b$10$F8ldbtPBNC.KNxvynSwhe.z5nRybZ6wbtM.mOMDrJxwZBJbzCmsjy',
-            createdAt: '',
-            __v: 0,
-        },
-    },
-];
