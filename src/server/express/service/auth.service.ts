@@ -62,11 +62,7 @@ export class AuthService {
         const { id, email, login, createdAt } = user;
         const newToken: string = await JwtService.createJwt({ id, email, login, createdAt }, process.env.ACCESS_TOKEN_EXP as string);
 
-        const isSendEmail = await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRegistration(newToken));
-        // if (!isSendEmail) {
-        //     await UserService.removeById();
-        //     return false;
-        // }
+        await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRegistration(newToken));
         return !!(await ConfirmationUserService.updateConfStatusByCode(id, newToken, false));
     }
 
