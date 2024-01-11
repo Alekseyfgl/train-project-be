@@ -9,11 +9,19 @@ import { AuthService } from '../service/auth.service';
 
 class AuthController {
     async confirmRegistration(req: Request<{}, {}, { code: string }>, res: Response) {
-        const result = await AuthService.confirmRegistration(req.body);
+        const result: boolean = await AuthService.confirmRegistration(req.body);
 
         const response = new ApiResponse(res);
         result ? response.send(HttpStatusCodes.NO_CONTENT) : response.badRequest();
     }
+
+    async resendEmail(req: Request<{}, {}, { email: string }>, res: Response) {
+        const result: boolean = await AuthService.resendEmail(req.body.email);
+
+        const response = new ApiResponse(res);
+        result ? response.send(HttpStatusCodes.NO_CONTENT) : response.badRequest();
+    }
+
     async registration(req: Request<{}, {}, RegistrationUserDto>, res: Response) {
         const result: boolean = await AuthService.registration(req.body);
 

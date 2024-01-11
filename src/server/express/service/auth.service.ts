@@ -49,8 +49,25 @@ export class AuthService {
         const isValid: Nullable<IJwtPayload> = await JwtService.verifyToken(code);
         if (!isValid) return false;
 
-        const confirmData: Nullable<ConfirmationUserSchema> = await ConfirmationUserService.updateConfStatusByCode(code, true);
+        const userId = isValid.userId;
+
+        const confirmData: Nullable<ConfirmationUserSchema> = await ConfirmationUserService.updateConfStatusByCode(userId, code, true);
         return !!confirmData;
+    }
+
+    static async resendEmail(toEmail: string) {
+        const user: Nullable<ReturnType<typeof userWithPasswordMapper>> = await QueryUserRepository.findByLoginOrEmail(toEmail);
+        if (!user) return false;
+
+        const { id, email, login, createdAt } = user;
+        const newToken: string = await JwtService.createJwt({ id, email, login, createdAt }, process.env.ACCESS_TOKEN_EXP as string);
+
+        const isSendEmail = await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRegistration(newToken));
+        // if (!isSendEmail) {
+        //     await UserService.removeById();
+        //     return false;
+        // }
+        return !!(await ConfirmationUserService.updateConfStatusByCode(id, newToken, false));
     }
 
     private static async checkPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
