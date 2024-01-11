@@ -49,7 +49,7 @@ export class AuthService {
         const isValid: Nullable<IJwtPayload> = await JwtService.verifyToken(code);
         if (!isValid) return false;
 
-        const confirmData: Nullable<ConfirmationUserSchema> = await ConfirmationUserService.updateConfStatusByCode(code);
+        const confirmData: Nullable<ConfirmationUserSchema> = await ConfirmationUserService.updateConfStatusByCode(code, true);
         return !!confirmData;
     }
 

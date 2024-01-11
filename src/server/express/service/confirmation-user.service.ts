@@ -3,7 +3,7 @@ import { CommandConfirmationUserRepository } from '../repositories/confirmation-
 import { ConfirmationUserSchema } from '../types/user/output';
 
 export class ConfirmationUserService {
-    static async updateConfStatusByCode(code: string): PromiseNull<ConfirmationUserSchema> {
-        return CommandConfirmationUserRepository.updateConfStatusByCode(code);
+    static async updateConfStatusByCode(code: string, isConfirmed: boolean): PromiseNull<ConfirmationUserSchema> {
+        return CommandConfirmationUserRepository.updateConfStatusByCode(code, isConfirmed);
     }
 }
