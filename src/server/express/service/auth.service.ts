@@ -74,7 +74,7 @@ export class AuthService {
         try {
             return bcrypt.compare(plainPassword, hashedPassword);
         } catch (error) {
-            console.error('Error when comparing passwords:', error);
+            console.error('AuthService [checkPassword]', error);
             return false;
         }
     }
