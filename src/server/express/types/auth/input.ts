@@ -6,6 +6,10 @@ export interface RegistrationUserDto {
     email: string;
 }
 
+export interface ConfirmRegistrationDto {
+    code: string;
+}
+
 export interface IJwtPayload extends JwtPayload {
     userId: string;
 }

@@ -7,11 +7,13 @@ export const authPath = {
     base: '/auth',
     login: 'login',
     registration: 'registration',
+    confirmation: 'registration-confirmation',
     me: 'me',
     id: ':id',
 };
-const { base, login, id, me, registration } = authPath;
+const { base, login, id, me, registration, confirmation } = authPath;
 export const authRouter = Router();
 authRouter.post(`${base}/${login}`, loginValidation(), userController.login);
 authRouter.post(`${base}/${registration}`, registrationValidation() as any, userController.registration);
+authRouter.post(`${base}/${confirmation}`, userController.confirmRegistration);
 authRouter.get(`${base}/${me}`, authMiddleware_jwt, userController.me);

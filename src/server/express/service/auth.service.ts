@@ -1,14 +1,15 @@
-import { LoginDto, RegistrationUserDto } from '../types/auth/input';
+import { ConfirmRegistrationDto, IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import bcrypt from 'bcrypt';
-import { UserWithConfirm } from '../types/user/output';
+import { ConfirmationUserSchema, UserWithConfirm } from '../types/user/output';
 import dotenv from 'dotenv';
 import { userWithPasswordMapper } from '../mappers/user.mapper';
 import { UserService } from './user.service';
 import { JwtService } from './jwt.service';
 import { EmailRepository } from '../repositories/email/email.repository';
 import { EmailPayloadsBuilder } from '../repositories/email/messages/email-payloads';
+import { ConfirmationUserService } from './confirmation-user.service';
 
 dotenv.config();
 
@@ -42,6 +43,14 @@ export class AuthService {
         }
 
         return true;
+    }
+
+    static async confirmRegistration({ code }: ConfirmRegistrationDto): Promise<boolean> {
+        const isValid: Nullable<IJwtPayload> = await JwtService.verifyToken(code);
+        if (!isValid) return false;
+
+        const confirmData: Nullable<ConfirmationUserSchema> = await ConfirmationUserService.updateConfStatusByCode(code);
+        return !!confirmData;
     }
 
     private static async checkPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {

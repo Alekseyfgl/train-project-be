@@ -7,7 +7,7 @@ import { IUser, IUserPaginationOut, UserSchema } from '../../types/user/output';
 import { UserPaginationQuery } from '../../types/user/input';
 import { meMapper } from '../../mappers/auth.mapper';
 import { IMe } from '../../types/auth/output';
-import { ConfirmationUserRepository } from '../confirmation-user/confirmation-user.repository';
+import { QueryConfirmationUserRepository } from '../confirmation-user/query-confirmation-user.repository';
 import { ObjectId } from 'mongodb';
 
 export class QueryUserRepository {
@@ -62,7 +62,7 @@ export class QueryUserRepository {
             const user: Nullable<UserSchema> = await UserModel.findOne({ $or: [{ login: condition }, { email: condition }] });
             if (!user) return null;
 
-            const confirmationStatus = await ConfirmationUserRepository.findConfStatusByUserId(user._id.toString());
+            const confirmationStatus = await QueryConfirmationUserRepository.findConfStatusByUserId(user._id.toString());
             if (!confirmationStatus) return null;
 
             return userWithPasswordMapper(user, confirmationStatus);
