@@ -12,14 +12,14 @@ class AuthController {
         const result: boolean = await AuthService.confirmRegistration(req.body);
 
         const response = new ApiResponse(res);
-        result ? response.send(HttpStatusCodes.NO_CONTENT) : response.badRequest();
+        result ? response.send(HttpStatusCodes.NO_CONTENT) : response.badRequest('code');
     }
 
     async resendEmail(req: Request<{}, {}, { email: string }>, res: Response) {
         const result: boolean = await AuthService.resendEmail(req.body.email);
 
         const response = new ApiResponse(res);
-        result ? response.send(HttpStatusCodes.NO_CONTENT) : response.badRequest();
+        result ? response.send(HttpStatusCodes.NO_CONTENT) : response.badRequest('email');
     }
 
     async registration(req: Request<{}, {}, RegistrationUserDto>, res: Response) {
