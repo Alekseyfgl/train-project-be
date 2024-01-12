@@ -10,6 +10,7 @@ import { JwtService } from './jwt.service';
 import { EmailRepository } from '../repositories/email/email.repository';
 import { EmailPayloadsBuilder } from '../repositories/email/messages/email-payloads';
 import { ConfirmationUserService } from './confirmation-user.service';
+import { QueryConfirmationUserRepository } from '../repositories/confirmation-user/query-confirmation-user.repository';
 
 dotenv.config();
 
@@ -51,6 +52,10 @@ export class AuthService {
 
         const userId = isValid.userId;
 
+        const isConfirmedUser: Nullable<ConfirmationUserSchema> = await QueryConfirmationUserRepository.findConfStatusByUserId(userId);
+        if (!isConfirmedUser) return false;
+        if (isConfirmedUser.isConfirmed) return false;
+
         const confirmData: Nullable<ConfirmationUserSchema> = await ConfirmationUserService.updateConfStatusByCode(userId, code, true);
         return !!confirmData;
     }
@@ -60,6 +65,11 @@ export class AuthService {
         if (!user) return false;
 
         const { id, email, login, createdAt } = user;
+
+        const isConfirmedUser: Nullable<ConfirmationUserSchema> = await QueryConfirmationUserRepository.findConfStatusByUserId(id);
+        if (!isConfirmedUser) return false;
+        if (isConfirmedUser.isConfirmed) return false;
+
         const newToken: string = await JwtService.createJwt({ id, email, login, createdAt }, process.env.ACCESS_TOKEN_EXP as string);
 
         await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRegistration(newToken));

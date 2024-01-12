@@ -4,10 +4,16 @@ import { HttpStatusCodes } from '../../constans/http-status-codes';
 
 export const inputModelValidator = (req: Request, res: Response, next: NextFunction): void => {
     const errors = validationResult(req).formatWith((error: ValidationError) => {
-        return {
-            message: error.msg,
-            field: error.type === 'field' ? error.path : '',
-        };
+        if (typeof error.msg === 'string') {
+            return {
+                message: error.msg,
+                field: error.type === 'field' ? error.path : '',
+            };
+        } else {
+            return {
+                ...error.msg, // распаковываем объект сообщения ошибки
+            };
+        }
     });
 
     if (!errors.isEmpty()) {

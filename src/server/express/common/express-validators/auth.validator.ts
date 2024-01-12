@@ -17,7 +17,18 @@ const isExistEmailOrLogin = [
 
         const isEmailExist: boolean = !!(await QueryUserRepository.findByLoginOrEmail(email));
         const isLoginExist: boolean = !!(await QueryUserRepository.findByLoginOrEmail(login));
-        if (isEmailExist || isLoginExist) return Promise.reject('Incorrect data');
+        if (isEmailExist) {
+            return Promise.reject({
+                message: 'Email is already exist',
+                field: 'email',
+            });
+        }
+        if (isLoginExist) {
+            return Promise.reject({
+                message: 'Login is already exist',
+                field: 'login',
+            });
+        }
         return true;
     }),
 ];

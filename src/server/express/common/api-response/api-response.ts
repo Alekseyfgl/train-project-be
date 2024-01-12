@@ -14,8 +14,8 @@ export class ApiResponse {
         this.res.status(HttpStatusCodes.NOT_FOUND).send(new ErrorCreator().add(HttpExceptionMessages.NOT_FOUND));
     }
 
-    badRequest() {
-        this.res.status(HttpStatusCodes.BAD_REQUEST).send(new ErrorCreator().add(HttpExceptionMessages.BAD_REQUEST));
+    badRequest(field: string = '') {
+        this.res.status(HttpStatusCodes.BAD_REQUEST).send(new ErrorCreator().add(HttpExceptionMessages.BAD_REQUEST, field));
     }
 
     notAuthorized() {
