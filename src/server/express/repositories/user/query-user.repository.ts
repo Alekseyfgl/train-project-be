@@ -8,7 +8,6 @@ import { UserPaginationQuery } from '../../types/user/input';
 import { meMapper } from '../../mappers/auth.mapper';
 import { IMe } from '../../types/auth/output';
 import { QueryConfirmationUserRepository } from '../confirmation-user/query-confirmation-user.repository';
-import { ObjectId } from 'mongodb';
 
 export class QueryUserRepository {
     static async findAll(query: UserPaginationQuery): Promise<IUserPaginationOut> {
@@ -83,18 +82,3 @@ export class QueryUserRepository {
         }
     }
 }
-
-const x = {
-    _id: new ObjectId('659edf8d2e4b9c27d7f06f6e'),
-    isConfirmed: false,
-    code: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTllZGY4ZDJlNGI5YzI3ZDdmMDZmNmMiLCJpYXQiOjE3MDQ5MTA3MzMsImV4cCI6MTcwNDkxMTAzM30.N3QDD9ftOrZNIKe1ChHmHHL_RjGX0B47dAIziEQTv_w',
-    __v: 0,
-    userId: {
-        _id: new ObjectId('659edf8d2e4b9c27d7f06f6c'),
-        login: 'cestador',
-        email: 'cestador@gmail.com',
-        password: '$2b$10$16iDLMxw1rPTDOUUAMmoEen0nmBPFB.SPw3lj2xJeZ7VZWdHKkm8C',
-        createdAt: '',
-        __v: 0,
-    },
-};

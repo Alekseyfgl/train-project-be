@@ -9,13 +9,15 @@ export const authPath = {
     registration: 'registration',
     confirmation: 'registration-confirmation',
     resendEmail: 'registration-email-resending',
+    refreshToken: 'refresh-token',
     me: 'me',
     id: ':id',
 };
-const { base, login, id, me, registration, confirmation, resendEmail } = authPath;
+const { base, login, id, me, registration, confirmation, resendEmail, refreshToken } = authPath;
 export const authRouter = Router();
 authRouter.post(`${base}/${login}`, loginValidation(), userController.login);
 authRouter.post(`${base}/${registration}`, registrationValidation() as any, userController.registration);
 authRouter.post(`${base}/${confirmation}`, userController.confirmRegistration);
 authRouter.post(`${base}/${resendEmail}`, userController.resendEmail);
+authRouter.post(`${base}/${refreshToken}`, userController.refreshToken);
 authRouter.get(`${base}/${me}`, authMiddleware_jwt, userController.me);

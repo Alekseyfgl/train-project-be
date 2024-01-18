@@ -2,7 +2,7 @@ import { ConfirmRegistrationDto, IJwtPayload, LoginDto, RegistrationUserDto } fr
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import bcrypt from 'bcrypt';
-import { ConfirmationUserSchema, UserWithConfirm } from '../types/user/output';
+import { ConfirmationUserSchema, IUser, UserWithConfirm } from '../types/user/output';
 import dotenv from 'dotenv';
 import { userWithPasswordMapper } from '../mappers/user.mapper';
 import { UserService } from './user.service';
@@ -11,11 +11,12 @@ import { EmailRepository } from '../repositories/email/email.repository';
 import { EmailPayloadsBuilder } from '../repositories/email/messages/email-payloads';
 import { ConfirmationUserService } from './confirmation-user.service';
 import { QueryConfirmationUserRepository } from '../repositories/confirmation-user/query-confirmation-user.repository';
+import { ITokens } from '../types/auth/output';
 
 dotenv.config();
 
 export class AuthService {
-    static async login(dto: LoginDto): PromiseNull<{ accessToken: string }> {
+    static async login(dto: LoginDto): PromiseNull<ITokens> {
         const { loginOrEmail, password } = dto;
         const user: Nullable<ReturnType<typeof userWithPasswordMapper>> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
         if (!user) return null;
@@ -26,8 +27,9 @@ export class AuthService {
         const isUserConfirmed: boolean = user.confInfo.isConfirmed;
         if (!isUserConfirmed) return null;
 
-        const newToken: string = await JwtService.createJwt(user, process.env.ACCESS_TOKEN_EXP as string);
-        return { accessToken: newToken };
+        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(user, process.env.ACCESS_TOKEN_EXP as string), JwtService.createJwt(user, process.env.REFRESH_TOKEN_EXP as string)]);
+
+        return { accessToken, refreshToken };
     }
 
     static async registration(dto: RegistrationUserDto): Promise<boolean> {
@@ -74,6 +76,17 @@ export class AuthService {
 
         await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRegistration(newToken));
         return !!(await ConfirmationUserService.updateConfStatusByCode(id, newToken, false));
+    }
+
+    static async refreshTokens(oldRefreshToken: string): PromiseNull<ITokens> {
+        const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(oldRefreshToken);
+        if (!verifiedToken) return null;
+
+        const userByToken: Nullable<IUser> = await QueryUserRepository.findById(verifiedToken.userId);
+        if (!userByToken) return null;
+
+        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(userByToken, process.env.ACCESS_TOKEN_EXP as string), JwtService.createJwt(userByToken, process.env.REFRESH_TOKEN_EXP as string)]);
+        return { accessToken, refreshToken };
     }
 
     private static async checkPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {

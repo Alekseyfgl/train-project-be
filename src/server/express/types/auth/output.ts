@@ -3,3 +3,8 @@ export interface IMe {
     login: string;
     userId: string;
 }
+
+export interface ITokens {
+    accessToken: string;
+    refreshToken: string;
+}

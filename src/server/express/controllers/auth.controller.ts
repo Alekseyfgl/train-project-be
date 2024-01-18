@@ -3,9 +3,10 @@ import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
-import { IMe } from '../types/auth/output';
+import { IMe, ITokens } from '../types/auth/output';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { AuthService } from '../service/auth.service';
+import { COOKIE_NAME } from '../common/constans/cookie';
 
 class AuthController {
     async confirmRegistration(req: Request<{}, {}, { code: string }>, res: Response) {
@@ -30,9 +31,13 @@ class AuthController {
     }
 
     async login(req: Request<{}, {}, LoginDto>, res: Response) {
-        const result: Nullable<{ accessToken: string }> = await AuthService.login(req.body);
-        const response = new ApiResponse(res);
-        result ? response.send(HttpStatusCodes.OK, result) : response.notAuthorized();
+        const result: Nullable<ITokens> = await AuthService.login(req.body);
+        if (!result) return new ApiResponse(res).notAuthorized();
+
+        const { refreshToken, accessToken } = result;
+
+        res.cookie(COOKIE_NAME.REFRESH_TOKEN, refreshToken, { httpOnly: true, secure: true });
+        new ApiResponse(res).send(HttpStatusCodes.OK, { accessToken });
     }
 
     async me(req: Request<{}, {}, LoginDto>, res: Response) {
@@ -42,6 +47,19 @@ class AuthController {
 
         const result: Nullable<IMe> = await QueryUserRepository.findMe(userId);
         result ? response.send(HttpStatusCodes.OK, result) : response.notAuthorized();
+    }
+
+    async refreshToken(req: Request<{}, {}, {}>, res: Response) {
+        const oldRefreshToken: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
+        if (!oldRefreshToken) return new ApiResponse(res).notAuthorized();
+
+        const result: Nullable<ITokens> = await AuthService.refreshTokens(oldRefreshToken);
+        if (!result) return new ApiResponse(res).notAuthorized();
+
+        const { accessToken, refreshToken } = result;
+
+        res.cookie(COOKIE_NAME.REFRESH_TOKEN, refreshToken, { httpOnly: true, secure: true });
+        new ApiResponse(res).send(HttpStatusCodes.OK, { accessToken });
     }
 }
 

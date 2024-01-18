@@ -8,6 +8,7 @@ import { logRequestsMiddleware } from './common/middlewares/log-requests/log-req
 import { userRouter } from './routes/user.router';
 import { authRouter } from './routes/auth.router';
 import { commentRouter } from './routes/comment.router';
+import cookieParser from 'cookie-parser';
 
 export const app = express();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 //     res.header('Access-Control-Allow-Credentials', 'true');
 //     next();
 // });
+app.use(cookieParser());
 app.use(requestCounterMiddleware);
 app.use(logRequestsMiddleware);
 
