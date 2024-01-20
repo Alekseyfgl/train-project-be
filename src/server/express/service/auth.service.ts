@@ -48,6 +48,10 @@ export class AuthService {
         return true;
     }
 
+    static async logout(refreshToken: string) {
+        return JwtService.verifyToken(refreshToken);
+    }
+
     static async confirmRegistration({ code }: ConfirmRegistrationDto): Promise<boolean> {
         const isValid: Nullable<IJwtPayload> = await JwtService.verifyToken(code);
         if (!isValid) return false;
