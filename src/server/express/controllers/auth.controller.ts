@@ -65,7 +65,7 @@ class AuthController {
         const refreshTokenFromCookie: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
         if (!refreshTokenFromCookie) return new ApiResponse(res).notAuthorized();
 
-        const isRefreshTokenVerified = await AuthService.logout(refreshTokenFromCookie);
+        const isRefreshTokenVerified: boolean = await AuthService.logout(refreshTokenFromCookie);
         if (!isRefreshTokenVerified) return new ApiResponse(res).notAuthorized();
 
         res.cookie(COOKIE_NAME.REFRESH_TOKEN, '', { maxAge: 0 });

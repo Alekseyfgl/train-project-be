@@ -12,6 +12,9 @@ import { EmailPayloadsBuilder } from '../repositories/email/messages/email-paylo
 import { ConfirmationUserService } from './confirmation-user.service';
 import { QueryConfirmationUserRepository } from '../repositories/confirmation-user/query-confirmation-user.repository';
 import { ITokens } from '../types/auth/output';
+import { TokenBlacklistService } from './token-blacklist.service';
+import { ITokenBlacklistSchema } from '../types/token-blacklist/output';
+import { QueryTokenBlacklistRepository } from '../repositories/token-blacklist/query-token-blacklist.repository';
 
 dotenv.config();
 
@@ -48,8 +51,15 @@ export class AuthService {
         return true;
     }
 
-    static async logout(refreshToken: string) {
-        return JwtService.verifyToken(refreshToken);
+    static async logout(refreshToken: string): Promise<boolean> {
+        const isTokenVerified: Nullable<IJwtPayload> = await JwtService.verifyToken(refreshToken);
+        if (!isTokenVerified) return false;
+
+        const isExistTokenInBlacklist: Nullable<ITokenBlacklistSchema> = await QueryTokenBlacklistRepository.findByToken(refreshToken);
+        if (isExistTokenInBlacklist) return false;
+
+        const isSaved: Nullable<ITokenBlacklistSchema> = await TokenBlacklistService.saveToken(refreshToken);
+        return !!isSaved;
     }
 
     static async confirmRegistration({ code }: ConfirmRegistrationDto): Promise<boolean> {
@@ -88,6 +98,11 @@ export class AuthService {
 
         const userByToken: Nullable<IUser> = await QueryUserRepository.findById(verifiedToken.userId);
         if (!userByToken) return null;
+
+        const isExistTokenInBlacklist: Nullable<ITokenBlacklistSchema> = await QueryTokenBlacklistRepository.findByToken(oldRefreshToken);
+        if (isExistTokenInBlacklist) return null;
+        const isSaved: Nullable<ITokenBlacklistSchema> = await TokenBlacklistService.saveToken(oldRefreshToken);
+        if (!isSaved) return null;
 
         const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(userByToken, process.env.ACCESS_TOKEN_EXP as string), JwtService.createJwt(userByToken, process.env.REFRESH_TOKEN_EXP as string)]);
         return { accessToken, refreshToken };
