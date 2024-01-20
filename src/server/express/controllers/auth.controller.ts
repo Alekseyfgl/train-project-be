@@ -61,6 +61,13 @@ class AuthController {
         res.cookie(COOKIE_NAME.REFRESH_TOKEN, refreshToken, { httpOnly: true, secure: true });
         new ApiResponse(res).send(HttpStatusCodes.OK, { accessToken });
     }
+    async logout(req: Request<{}, {}, {}>, res: Response) {
+        const oldRefreshToken: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
+        if (!oldRefreshToken) return new ApiResponse(res).notAuthorized();
+
+        res.cookie(COOKIE_NAME.REFRESH_TOKEN, '', { maxAge: 0 });
+        new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);
+    }
 }
 
 export const userController = new AuthController();
