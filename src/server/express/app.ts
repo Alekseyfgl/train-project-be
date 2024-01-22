@@ -9,6 +9,9 @@ import { authRouter } from './routes/auth.router';
 import { commentRouter } from './routes/comment.router';
 import cookieParser from 'cookie-parser';
 import { exceptionFilter } from './common/errors/exception-filter/exception-filter';
+import { saveCrashTime } from './common/crash-server-time/save-crash-server-time';
+import { readCrashTime } from './common/crash-server-time/get-crash-server-time';
+import { clearCrashTime } from './common/crash-server-time/clear-crash-server-time';
 
 export const app = express();
 
@@ -21,9 +24,9 @@ app.use(express.json());
 //     next();
 // });
 //
-// saveCrashTime();
-// readCrashTime();
-// clearCrashTime();
+saveCrashTime();
+readCrashTime();
+clearCrashTime();
 
 app.use(cookieParser());
 app.use(requestCounterMiddleware);
