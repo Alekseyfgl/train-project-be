@@ -15,6 +15,7 @@ const { base, id, all_data } = videoPath;
 export const testRouter: Router = Router();
 
 testRouter.get(`${base}`, testController.getRequestCounter);
+testRouter.get(`${base}/drop`, testController.dropApp);
 
 testRouter.delete(`${base}/${all_data}`, async (req: any, res: Response, next: NextFunction) => {
     await clearMongoCollections();

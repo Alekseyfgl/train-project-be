@@ -1,6 +1,5 @@
 import express from 'express';
 import { requestCounterMiddleware } from './common/middlewares/reques-counter/request-counter.middleware';
-import { exceptionFilter } from './common/errors/exception-filter/exception-filter';
 import { postRouter } from './routes/post.router';
 import { blogRouter } from './routes/blog.router';
 import { testRouter } from './routes/test.router';
@@ -9,6 +8,7 @@ import { userRouter } from './routes/user.router';
 import { authRouter } from './routes/auth.router';
 import { commentRouter } from './routes/comment.router';
 import cookieParser from 'cookie-parser';
+import { exceptionFilter } from './common/errors/exception-filter/exception-filter';
 
 export const app = express();
 
@@ -20,6 +20,11 @@ app.use(express.json());
 //     res.header('Access-Control-Allow-Credentials', 'true');
 //     next();
 // });
+//
+// saveCrashTime();
+// readCrashTime();
+// clearCrashTime();
+
 app.use(cookieParser());
 app.use(requestCounterMiddleware);
 app.use(logRequestsMiddleware);

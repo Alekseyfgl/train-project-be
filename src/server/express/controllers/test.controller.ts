@@ -7,6 +7,11 @@ class TestController {
     async getRequestCounter(req: Request, res: Response, next: NextFunction) {
         new ApiResponse(res).send(HttpStatusCodes.OK, `Request counter: ${requestCounter}`);
     }
+
+    async dropApp(req: Request, res: Response, next: NextFunction) {
+        throw new Error('Произошла ошибка, вы намеренно уронили сервис');
+        new ApiResponse(res).send(HttpStatusCodes.OK);
+    }
 }
 
 export const testController = new TestController();
