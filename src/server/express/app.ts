@@ -14,7 +14,8 @@ import { readCrashTime } from './common/crash-server-time/get-crash-server-time'
 import { clearCrashTime } from './common/crash-server-time/clear-crash-server-time';
 
 export const app = express();
-
+// const expressip = require('express-ip');
+// app.use(expressip().getIpInfoMiddleware);
 app.use(express.json());
 // app.use((req, res, next) => {
 //     res.header('Access-Control-Allow-Origin', '*');
