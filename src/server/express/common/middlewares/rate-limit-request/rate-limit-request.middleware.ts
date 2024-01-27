@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import UAParser, { IResult } from 'ua-parser-js';
 import { Optional } from '../../interfaces/optional.types';
 import { HttpStatusCodes } from '../../constans/http-status-codes';
 import { RateLimitRequestService } from '../../../service/rate-limit-request.service';
@@ -7,14 +6,6 @@ import { QueryRateLimitRequestRepository } from '../../../repositories/rate-limi
 import { ApiResponse } from '../../api-response/api-response';
 
 export const RateLimitReqMiddleware = async (req: Request, res: Response, next: NextFunction) => {
-    const parser = new UAParser();
-    const ua: Optional<string> = req.headers['user-agent']; // Get the user-agent string from headers
-    if (!ua) {
-        res.status(HttpStatusCodes.METHOD_NOT_ALLOWED).send(`You should set up user-agent for headers`);
-        return;
-    }
-    const agen: IResult = parser.setUA(ua).getResult(); // Parse the user-agent string
-    // Предполагаем, что req.headers['x-forwarded-for'] может быть string или string[].
     const xForwardedFor = req.headers['x-forwarded-for'];
     let clientIp: Optional<string>;
 
@@ -31,17 +22,16 @@ export const RateLimitReqMiddleware = async (req: Request, res: Response, next: 
     }
 
     if (!clientIp) {
-        res.status(HttpStatusCodes.METHOD_NOT_ALLOWED).send(`There isnt ip user-agent`);
+        res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(`There is a unknown ip`);
         return;
     }
 
     const url: string = `${req.method} ${req.url}`;
-
     const counterRequestsByTime: number = await QueryRateLimitRequestRepository.countReqByIpAndUrl(clientIp, url);
 
     console.log('counterRequestsByTime==>', counterRequestsByTime);
 
-    if (counterRequestsByTime > 5) {
+    if (counterRequestsByTime >= 5) {
         new ApiResponse(res).send(HttpStatusCodes.TOO_MANY_REQUESTS);
         return;
     }
