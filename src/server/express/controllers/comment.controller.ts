@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
-import { QueryCommentRepository } from '../repositories/comments/query-comment.repository';
 import { IComment } from '../types/comment/output';
 import { ErrorCreator } from '../common/errors/error-creator/error-creator';
 import { HttpExceptionMessages } from '../common/constans/http-exception-messages';
 import { CommentService } from '../service/comment.service';
+import { QueryCommentRepository } from '../repositories/comment/query-comment.repository';
 
 class CommentController {
     async getById(req: Request<{ id: string }>, res: Response) {

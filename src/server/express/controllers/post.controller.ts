@@ -11,7 +11,7 @@ import { IComment, ICommentPaginationOut } from '../types/comment/output';
 import { PostService } from '../service/post.service';
 import { CommentService } from '../service/comment.service';
 import { getAllCommentsByPostIdQueryMapper } from '../mappers/comment.mapper';
-import { QueryCommentRepository } from '../repositories/comments/query-comment.repository';
+import { QueryCommentRepository } from '../repositories/comment/query-comment.repository';
 
 class PostController {
     async getAll(req: Request<{}, {}, {}, PostsByBlogQueryOptional>, res: Response, next: NextFunction) {
