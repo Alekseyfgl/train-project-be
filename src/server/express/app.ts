@@ -13,6 +13,7 @@ import { saveCrashTime } from './common/crash-server-time/save-crash-server-time
 import { readCrashTime } from './common/crash-server-time/get-crash-server-time';
 import { clearCrashTime } from './common/crash-server-time/clear-crash-server-time';
 import { RateLimitReqMiddleware } from './common/middlewares/rate-limit-request/rate-limit-request.middleware';
+import { setUserAgentMiddleware } from './common/middlewares/user-agent/user-agent.middleware';
 
 export const app = express();
 // const expressip = require('express-ip');
@@ -34,6 +35,7 @@ app.use(cookieParser());
 app.use(requestCounterMiddleware);
 app.use(logRequestsMiddleware);
 app.use(RateLimitReqMiddleware);
+app.use(setUserAgentMiddleware);
 
 app.use('', blogRouter, postRouter, userRouter, authRouter, commentRouter, testRouter);
 // app.use('/videos', videoRouter);

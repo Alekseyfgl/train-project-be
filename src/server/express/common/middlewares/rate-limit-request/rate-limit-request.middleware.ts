@@ -29,12 +29,14 @@ export const RateLimitReqMiddleware = async (req: Request, res: Response, next: 
     const url: string = `${req.method} ${req.url}`;
     const counterRequestsByTime: number = await QueryRateLimitRequestRepository.countReqByIpAndUrl(clientIp, url);
 
-    console.log('counterRequestsByTime==>', counterRequestsByTime);
+    // console.log('counterRequestsByTime==>', counterRequestsByTime);
 
     if (counterRequestsByTime >= 5) {
         new ApiResponse(res).send(HttpStatusCodes.TOO_MANY_REQUESTS);
         return;
     }
+    req.networkInfo = {} as any;
+    req.networkInfo.ip = clientIp;
     await RateLimitRequestService.saveIpAndUrl(clientIp, url);
     next();
 };

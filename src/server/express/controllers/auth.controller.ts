@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
-import { LoginDto, RegistrationUserDto } from '../types/auth/input';
+import { IAgentInfo, LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IMe, ITokens } from '../types/auth/output';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
@@ -31,7 +31,9 @@ class AuthController {
     }
 
     async login(req: Request<{}, {}, LoginDto>, res: Response) {
-        const result: Nullable<ITokens> = await AuthService.login(req.body);
+        const userAgent: IAgentInfo = req.networkInfo;
+
+        const result: Nullable<ITokens> = await AuthService.login(req.body, userAgent);
         if (!result) return new ApiResponse(res).notAuthorized();
 
         const { refreshToken, accessToken } = result;

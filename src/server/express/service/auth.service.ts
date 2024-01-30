@@ -1,4 +1,4 @@
-import { ConfirmRegistrationDto, IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
+import { ConfirmRegistrationDto, IAgentInfo, IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import bcrypt from 'bcrypt';
@@ -15,14 +15,20 @@ import { ITokens } from '../types/auth/output';
 import { TokenBlacklistService } from './token-blacklist.service';
 import { ITokenBlacklistSchema } from '../types/token-blacklist/output';
 import { QueryTokenBlacklistRepository } from '../repositories/token-blacklist/query-token-blacklist.repository';
+import { v4 } from 'uuid';
+import { DeviceSessionService } from './device-session.service';
+import { QueryDeviceSessionRequestRepository } from '../repositories/device-session/query-device-session.repository';
+import { IDeviceSessionSchema } from '../types/device-session/output';
 
 dotenv.config();
 
 export class AuthService {
-    static async login(dto: LoginDto): PromiseNull<ITokens> {
+    static async login(dto: LoginDto, userAgent: IAgentInfo): PromiseNull<ITokens> {
         const { loginOrEmail, password } = dto;
+        const { os, loc, ip, browser } = userAgent;
         const user: Nullable<ReturnType<typeof userWithPasswordMapper>> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
         if (!user) return null;
+        const userId: string = user.id;
 
         const isPasswordCorrect: boolean = await this.checkPassword(password, user.password);
         if (!isPasswordCorrect) return null;
@@ -30,8 +36,15 @@ export class AuthService {
         const isUserConfirmed: boolean = user.confInfo.isConfirmed;
         if (!isUserConfirmed) return null;
 
-        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(user, process.env.ACCESS_TOKEN_EXP as string), JwtService.createJwt(user, process.env.REFRESH_TOKEN_EXP as string)]);
+        const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
+        const _refreshToken = +process.env.REFRESH_TOKEN_EXP! as number;
 
+        const creatAt: Date = new Date();
+        const deviceId: string = v4();
+        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(user, _accessToken, creatAt, deviceId), JwtService.createJwt(user, _refreshToken, creatAt, deviceId)]);
+
+        // const expAt: Date = addMilliseconds(creatAt, _refreshToken);
+        await DeviceSessionService.createRefreshSession({ deviceId, os, loc, ip, creatAt, userId });
         return { accessToken, refreshToken };
     }
 
@@ -86,7 +99,10 @@ export class AuthService {
         if (!isConfirmedUser) return false;
         if (isConfirmedUser.isConfirmed) return false;
 
-        const newToken: string = await JwtService.createJwt({ id, email, login, createdAt }, process.env.ACCESS_TOKEN_EXP as string);
+        const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
+        const newDate = new Date();
+        const deviceId: string = v4();
+        const newToken: string = await JwtService.createJwt({ id, email, login, createdAt }, _accessToken, newDate, deviceId);
 
         await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRegistration(newToken));
         return !!(await ConfirmationUserService.updateConfStatusByCode(id, newToken, false));
@@ -94,17 +110,26 @@ export class AuthService {
 
     static async refreshTokens(oldRefreshToken: string): PromiseNull<ITokens> {
         const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(oldRefreshToken);
+        // console.log('verifiedToken', verifiedToken);
         if (!verifiedToken) return null;
 
         const userByToken: Nullable<IUser> = await QueryUserRepository.findById(verifiedToken.userId);
         if (!userByToken) return null;
 
-        const isExistTokenInBlacklist: Nullable<ITokenBlacklistSchema> = await QueryTokenBlacklistRepository.findByToken(oldRefreshToken);
-        if (isExistTokenInBlacklist) return null;
-        const isSaved: Nullable<ITokenBlacklistSchema> = await TokenBlacklistService.saveToken(oldRefreshToken);
-        if (!isSaved) return null;
+        const refreshTokenInActiveSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(verifiedToken.deviceId);
+        // console.log('refreshTokenInActiveSession', refreshTokenInActiveSession);
+        if (!refreshTokenInActiveSession) return null;
 
-        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(userByToken, process.env.ACCESS_TOKEN_EXP as string), JwtService.createJwt(userByToken, process.env.REFRESH_TOKEN_EXP as string)]);
+        const deviceId: string = refreshTokenInActiveSession.deviceId;
+        const newDate: Date = new Date();
+
+        await DeviceSessionService.refreshSessionByDeviceId(deviceId, newDate);
+
+        const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
+        const _refreshToken = +process.env.REFRESH_TOKEN_EXP! as number;
+
+        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(userByToken, _accessToken, newDate, deviceId), JwtService.createJwt(userByToken, _refreshToken, newDate, deviceId)]);
+
         return { accessToken, refreshToken };
     }
 

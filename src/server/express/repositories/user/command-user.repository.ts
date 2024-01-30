@@ -5,6 +5,9 @@ import { RegistrationUserDto } from '../../types/auth/input';
 import { userMapper, userWithConf } from '../../mappers/user.mapper';
 import { ConfirmationUserModel } from '../../models/confirmation-user.model';
 import { JwtService } from '../../service/jwt.service';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export class CommandUserRepository {
     static async removeById(id: string): Promise<boolean> {
@@ -22,7 +25,9 @@ export class CommandUserRepository {
             const createdUser: UserSchema = await UserModel.create(dto);
             const newUser: IUser = userMapper(createdUser);
 
-            const confCode: Nullable<string> = isConfirmed ? null : await JwtService.createJwt(newUser, '5m');
+            const confirmToken = +process.env.CONFIRMATION_TOKEN_EXP! as number;
+
+            const confCode: Nullable<string> = isConfirmed ? null : await JwtService.createJwt(newUser, confirmToken, new Date(), null);
             const confInfo: ConfirmationUserSchema = await ConfirmationUserModel.create({ userId: newUser.id, isConfirmed: isConfirmed, code: confCode });
 
             return userWithConf(newUser, confInfo);

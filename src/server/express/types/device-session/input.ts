@@ -2,7 +2,8 @@ export interface DeviceSessionDto {
     deviceId: string;
     ip: string;
     os: string;
-    location: string;
+    loc: string;
     creatAt: Date;
-    expAt: Date;
+    // expAt: Date;
+    userId: string;
 }

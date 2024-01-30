@@ -11,8 +11,28 @@ export class CommandDeviceSessionRepository {
 
             return createdDeviceSession;
         } catch (e) {
-            console.error('CommandRateLimitRequestRepository [create]', e);
+            console.error('CommandDeviceSessionRepository [create]', e);
             return null;
+        }
+    }
+
+    static async updateDateByDeviceId(deviceId: string, issuedAt: Date) {
+        try {
+            const createdDeviceSession = await DeviceSessionModel.updateOne({ deviceId }, { creatAt: issuedAt });
+            return !!createdDeviceSession;
+        } catch (e) {
+            console.error('CommandDeviceSessionRepository [updateDate]', e);
+            return false;
+        }
+    }
+
+    static async deleteByDeviceIds(deviceIds: string[]): Promise<boolean> {
+        try {
+            const result = await DeviceSessionModel.deleteMany({ deviceId: { $in: deviceIds } });
+            return !!result.deletedCount;
+        } catch (e) {
+            console.error('CommandDeviceSessionRepository [deleteByDeviceIds]', e);
+            return false;
         }
     }
 }
