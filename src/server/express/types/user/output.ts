@@ -15,11 +15,6 @@ export interface ConfirmationUserSchema extends Document {
     isConfirmed: boolean;
     code: Nullable<string>;
 }
-// export interface IConfirmationUser {
-//     id: string;
-//     userId: string;
-//     isConfirmed: boolean;
-// }
 
 export interface IUser {
     id: string;

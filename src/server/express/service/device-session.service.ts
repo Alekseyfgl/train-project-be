@@ -14,4 +14,17 @@ export class DeviceSessionService {
     static refreshSessionByDeviceId(deviceId: string, createdAt: Date): Promise<boolean> {
         return CommandDeviceSessionRepository.updateDateByDeviceId(deviceId, createdAt);
     }
+
+    static async removeSessionByMany(deviceId: string[], refreshToken: string) {
+        return CommandDeviceSessionRepository.deleteByDeviceIds(deviceId);
+    }
+
+    static async removeSessionByOne(deviceId: string) {
+        return CommandDeviceSessionRepository.deleteByDeviceIds([deviceId]);
+    }
+
+    static checkAccessForSession(session: IDeviceSessionSchema, userId: string, deviceId: string) {
+        if (session.userId !== userId) return false;
+        return session.deviceId === deviceId;
+    }
 }

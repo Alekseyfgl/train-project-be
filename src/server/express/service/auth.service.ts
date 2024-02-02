@@ -12,9 +12,6 @@ import { EmailPayloadsBuilder } from '../repositories/email/messages/email-paylo
 import { ConfirmationUserService } from './confirmation-user.service';
 import { QueryConfirmationUserRepository } from '../repositories/confirmation-user/query-confirmation-user.repository';
 import { ITokens } from '../types/auth/output';
-import { TokenBlacklistService } from './token-blacklist.service';
-import { ITokenBlacklistSchema } from '../types/token-blacklist/output';
-import { QueryTokenBlacklistRepository } from '../repositories/token-blacklist/query-token-blacklist.repository';
 import { v4 } from 'uuid';
 import { DeviceSessionService } from './device-session.service';
 import { QueryDeviceSessionRequestRepository } from '../repositories/device-session/query-device-session.repository';
@@ -64,15 +61,14 @@ export class AuthService {
         return true;
     }
 
-    static async logout(refreshToken: string): Promise<boolean> {
-        const isTokenVerified: Nullable<IJwtPayload> = await JwtService.verifyToken(refreshToken);
-        if (!isTokenVerified) return false;
+    static async logout(deviceId: string, userId: string): Promise<boolean> {
+        const activeSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(deviceId);
+        if (!activeSession) return false;
 
-        const isExistTokenInBlacklist: Nullable<ITokenBlacklistSchema> = await QueryTokenBlacklistRepository.findByToken(refreshToken);
-        if (isExistTokenInBlacklist) return false;
+        const isAccess: boolean = DeviceSessionService.checkAccessForSession(activeSession, userId, deviceId);
+        if (!isAccess) return false;
 
-        const isSaved: Nullable<ITokenBlacklistSchema> = await TokenBlacklistService.saveToken(refreshToken);
-        return !!isSaved;
+        return DeviceSessionService.removeSessionByOne(deviceId);
     }
 
     static async confirmRegistration({ code }: ConfirmRegistrationDto): Promise<boolean> {
@@ -82,8 +78,8 @@ export class AuthService {
         const userId = isValid.userId;
 
         const isConfirmedUser: Nullable<ConfirmationUserSchema> = await QueryConfirmationUserRepository.findConfStatusByUserId(userId);
-        if (!isConfirmedUser) return false;
-        if (isConfirmedUser.isConfirmed) return false;
+        if (!isConfirmedUser || isConfirmedUser.isConfirmed) return false;
+        // if (isConfirmedUser.isConfirmed) return false;
 
         const confirmData: Nullable<ConfirmationUserSchema> = await ConfirmationUserService.updateConfStatusByCode(userId, code, true);
         return !!confirmData;
@@ -102,7 +98,17 @@ export class AuthService {
         const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
         const newDate = new Date();
         const deviceId: string = v4();
-        const newToken: string = await JwtService.createJwt({ id, email, login, createdAt }, _accessToken, newDate, deviceId);
+        const newToken: string = await JwtService.createJwt(
+            {
+                id,
+                email,
+                login,
+                createdAt,
+            },
+            _accessToken,
+            newDate,
+            deviceId,
+        );
 
         await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRegistration(newToken));
         return !!(await ConfirmationUserService.updateConfStatusByCode(id, newToken, false));

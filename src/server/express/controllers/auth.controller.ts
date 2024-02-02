@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
-import { IAgentInfo, LoginDto, RegistrationUserDto } from '../types/auth/input';
+import { IAgentInfo, IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IMe, ITokens } from '../types/auth/output';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { AuthService } from '../service/auth.service';
 import { COOKIE_NAME } from '../common/constans/cookie';
+import { JwtService } from '../service/jwt.service';
 
 class AuthController {
     async confirmRegistration(req: Request<{}, {}, { code: string }>, res: Response) {
@@ -67,8 +68,13 @@ class AuthController {
         const refreshTokenFromCookie: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
         if (!refreshTokenFromCookie) return new ApiResponse(res).notAuthorized();
 
-        const isRefreshTokenVerified: boolean = await AuthService.logout(refreshTokenFromCookie);
-        if (!isRefreshTokenVerified) return new ApiResponse(res).notAuthorized();
+        const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(refreshTokenFromCookie);
+        if (!verifiedToken) return false;
+
+        const { deviceId, userId } = verifiedToken;
+
+        const result = await AuthService.logout(deviceId, userId);
+        if (!result) return new ApiResponse(res).notAuthorized();
 
         res.cookie(COOKIE_NAME.REFRESH_TOKEN, '', { maxAge: 0 });
         new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);

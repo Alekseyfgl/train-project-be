@@ -4,6 +4,5 @@ export interface DeviceSessionDto {
     os: string;
     loc: string;
     creatAt: Date;
-    // expAt: Date;
     userId: string;
 }
