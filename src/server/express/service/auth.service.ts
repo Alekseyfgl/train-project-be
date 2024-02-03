@@ -16,6 +16,7 @@ import { v4 } from 'uuid';
 import { DeviceSessionService } from './device-session.service';
 import { QueryDeviceSessionRequestRepository } from '../repositories/device-session/query-device-session.repository';
 import { IDeviceSessionSchema } from '../types/device-session/output';
+import { HttpStatusCodes } from '../common/constans/http-status-codes';
 
 dotenv.config();
 
@@ -62,13 +63,8 @@ export class AuthService {
     }
 
     static async logout(deviceId: string, userId: string): Promise<boolean> {
-        // const activeSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(deviceId);
-        // if (!activeSession) return false;
-
-        // const isAccess: boolean = DeviceSessionService.checkAccessForSession(activeSession, userId, deviceId);
-        // if (!isAccess) return false;
-
-        return DeviceSessionService.removeSessionByMany([deviceId]);
+        const result = await DeviceSessionService.removeSessionByOne(deviceId, userId);
+        return result === HttpStatusCodes.OK;
     }
 
     static async confirmRegistration({ code }: ConfirmRegistrationDto): Promise<boolean> {

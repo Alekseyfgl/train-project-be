@@ -12,13 +12,19 @@ class DeviceSessionController {
         const activeSession: Optional<IDeviceSessionSchema> = req.deviceSession;
         if (!userId || !activeSession) return new ApiResponse(res).notAuthorized();
 
-        const checkAccess: boolean = userId === activeSession.userId;
-        if (!checkAccess) return new ApiResponse(res).forbidden();
-
-        const isRemoved: boolean = await DeviceSessionService.removeSessionByMany([req.params.id]);
-
+        const resultCode: HttpStatusCodes.OK | HttpStatusCodes.FORBIDDEN | HttpStatusCodes.NOT_FOUND = await DeviceSessionService.removeSessionByOne(req.params.id, userId);
         const response = new ApiResponse(res);
-        isRemoved ? response.send(HttpStatusCodes.NO_CONTENT) : response.notFound();
+
+        switch (resultCode) {
+            case HttpStatusCodes.OK:
+                return response.send(resultCode);
+            case HttpStatusCodes.NOT_FOUND:
+                return response.notFound();
+            case HttpStatusCodes.FORBIDDEN:
+                return response.forbidden();
+            default:
+                response.badRequest();
+        }
     }
 
     async getAll(req: Request<{}, {}, {}, {}>, res: Response) {
