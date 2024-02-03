@@ -35,4 +35,17 @@ export class CommandDeviceSessionRepository {
             return false;
         }
     }
+    static async deleteAllExpectCurrentSession(currentDeviceId: string, userId: string): Promise<boolean> {
+        try {
+            // Удаляем все сессии данного пользователя, кроме сессии с currentDeviceId
+            const result = await DeviceSessionModel.deleteMany({
+                userId: userId, // Убедитесь, что в модели есть поле userId для фильтрации по пользователю
+                deviceId: { $ne: currentDeviceId }, // Используем оператор $ne для исключения текущего deviceId
+            });
+            return result.deletedCount > 0; // Возвращаем true, если были удалены какие-то документы
+        } catch (e) {
+            console.error('CommandDeviceSessionRepository [deleteAllExpectCurrentSession]', e);
+            return false;
+        }
+    }
 }

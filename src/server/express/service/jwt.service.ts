@@ -19,12 +19,12 @@ export class JwtService {
         return jwt.sign({ userId, deviceId, iat }, secret, { expiresIn });
     }
 
-    static async verifyToken(token: string): PromiseNull<IJwtPayload> {
+    static async verifyToken(token: string, type: 'access' | 'refresh' | 'confirm-email'): PromiseNull<IJwtPayload> {
         try {
             const dataFromToken = (await jwt.verify(token, process.env.JWT_SECRET as string)) as IJwtPayload;
             if (!dataFromToken?.iat) return null;
 
-            const isExpired: boolean = this.isExpiredToken(dataFromToken.iat);
+            const isExpired: boolean = this.isExpiredToken(dataFromToken.iat, type);
             if (!isExpired) return null;
 
             return dataFromToken;
@@ -33,11 +33,25 @@ export class JwtService {
             return null;
         }
     }
-    private static isExpiredToken(tokenIssuedAt: number): boolean {
-        const iat: Date = new Date(tokenIssuedAt);
 
-        const _refreshToken = +process.env.REFRESH_TOKEN_EXP! as number;
-        const expAt: Date = addMilliseconds(iat, _refreshToken);
-        return new Date() <= expAt;
+    private static isExpiredToken(tokenIssuedAt: number, type: 'access' | 'refresh' | 'confirm-email'): boolean {
+        const iat: Date = new Date(tokenIssuedAt);
+        let duration;
+        switch (type) {
+            case 'access':
+                duration = +process.env.ACCESS_TOKEN_EXP! as number;
+                break;
+            case 'refresh':
+                duration = +process.env.REFRESH_TOKEN_EXP! as number;
+                break;
+            case 'confirm-email':
+                duration = +process.env.CONFIRMATION_TOKEN_EXP! as number;
+                break;
+        }
+
+        // console.log({ iat, _refreshToken });
+        const expAt: Date = addMilliseconds(iat, duration!);
+        // console.log(expAt);
+        return new Date() < expAt; //if true - token is valid
     }
 }

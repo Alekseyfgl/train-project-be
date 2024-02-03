@@ -15,16 +15,20 @@ export class DeviceSessionService {
         return CommandDeviceSessionRepository.updateDateByDeviceId(deviceId, createdAt);
     }
 
-    static async removeSessionByMany(deviceId: string[], refreshToken: string) {
+    static removeSessionByMany(deviceId: string[]) {
         return CommandDeviceSessionRepository.deleteByDeviceIds(deviceId);
     }
 
-    static async removeSessionByOne(deviceId: string) {
-        return CommandDeviceSessionRepository.deleteByDeviceIds([deviceId]);
+    static deleteAllExpectCurrentSession(currentDeviceId: string, userId: string) {
+        return CommandDeviceSessionRepository.deleteAllExpectCurrentSession(currentDeviceId, userId);
     }
 
-    static checkAccessForSession(session: IDeviceSessionSchema, userId: string, deviceId: string) {
-        if (session.userId !== userId) return false;
-        return session.deviceId === deviceId;
-    }
+    // static async removeSessionByOne(deviceId: string) {
+    //     return CommandDeviceSessionRepository.deleteByDeviceIds([deviceId]);
+    // }
+
+    // static checkAccessForSession(session: IDeviceSessionSchema, userId: string, deviceId: string) {
+    //     if (session.userId !== userId) return false;
+    //     return session.deviceId === deviceId;
+    // }
 }

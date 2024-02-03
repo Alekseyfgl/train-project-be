@@ -7,14 +7,16 @@ import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import geoip, { Lookup } from 'geoip-lite';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
+import { DeviceSessionModel } from '../models/device-session.model';
 
 export const videoPath = {
     base: '/testing',
     id: ':id',
     all_data: 'all-data',
+    sessions: 'sessions',
 };
 
-const { base, id, all_data } = videoPath;
+const { base, id, all_data, sessions } = videoPath;
 export const testRouter: Router = Router();
 
 testRouter.get(`${base}`, testController.getRequestCounter);
@@ -22,6 +24,11 @@ testRouter.get(`${base}/drop`, testController.dropApp);
 
 testRouter.delete(`${base}/${all_data}`, async (req: any, res: Response, next: NextFunction) => {
     await clearMongoCollections();
+    new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);
+});
+
+testRouter.delete(`${base}/${all_data}/${sessions}`, async (req: any, res: Response, next: NextFunction) => {
+    await DeviceSessionModel.deleteMany({});
     new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);
 });
 

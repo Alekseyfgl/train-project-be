@@ -62,17 +62,17 @@ export class AuthService {
     }
 
     static async logout(deviceId: string, userId: string): Promise<boolean> {
-        const activeSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(deviceId);
-        if (!activeSession) return false;
+        // const activeSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(deviceId);
+        // if (!activeSession) return false;
 
-        const isAccess: boolean = DeviceSessionService.checkAccessForSession(activeSession, userId, deviceId);
-        if (!isAccess) return false;
+        // const isAccess: boolean = DeviceSessionService.checkAccessForSession(activeSession, userId, deviceId);
+        // if (!isAccess) return false;
 
-        return DeviceSessionService.removeSessionByOne(deviceId);
+        return DeviceSessionService.removeSessionByMany([deviceId]);
     }
 
     static async confirmRegistration({ code }: ConfirmRegistrationDto): Promise<boolean> {
-        const isValid: Nullable<IJwtPayload> = await JwtService.verifyToken(code);
+        const isValid: Nullable<IJwtPayload> = await JwtService.verifyToken(code, 'confirm-email');
         if (!isValid) return false;
 
         const userId = isValid.userId;
@@ -115,7 +115,7 @@ export class AuthService {
     }
 
     static async refreshTokens(oldRefreshToken: string): PromiseNull<ITokens> {
-        const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(oldRefreshToken);
+        const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(oldRefreshToken, 'refresh');
         // console.log('verifiedToken', verifiedToken);
         if (!verifiedToken) return null;
 

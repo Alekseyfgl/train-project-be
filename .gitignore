@@ -1,5 +1,6 @@
 node_modules
 .idea
+.clinic
 dist
 yarn-error.log
 .env

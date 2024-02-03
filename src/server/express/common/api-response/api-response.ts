@@ -22,6 +22,10 @@ export class ApiResponse {
         this.res.status(HttpStatusCodes.UNAUTHORIZED).send(new ErrorCreator().add(HttpExceptionMessages.UNAUTHORIZED));
     }
 
+    forbidden() {
+        this.res.status(HttpStatusCodes.FORBIDDEN).send(new ErrorCreator().add(HttpExceptionMessages.FORBIDDEN));
+    }
+
     serverError() {
         this.res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(new ErrorCreator().add(HttpExceptionMessages.INTERNAL_SERVER_ERROR));
     }

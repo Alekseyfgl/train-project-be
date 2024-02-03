@@ -20,7 +20,7 @@ export class EmailRepository {
                 text: text, // plain text body
                 html: html,
             });
-            console.log('sendEmail', result);
+            // console.log('sendEmail', result);
             return true;
         } catch (error) {
             return false;

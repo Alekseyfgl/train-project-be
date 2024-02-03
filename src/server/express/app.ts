@@ -9,9 +9,6 @@ import { authRouter } from './routes/auth.router';
 import { commentRouter } from './routes/comment.router';
 import cookieParser from 'cookie-parser';
 import { exceptionFilter } from './common/errors/exception-filter/exception-filter';
-import { saveCrashTime } from './common/crash-server-time/save-crash-server-time';
-import { readCrashTime } from './common/crash-server-time/get-crash-server-time';
-import { clearCrashTime } from './common/crash-server-time/clear-crash-server-time';
 import { RateLimitReqMiddleware } from './common/middlewares/rate-limit-request/rate-limit-request.middleware';
 import { setUserAgentMiddleware } from './common/middlewares/user-agent/user-agent.middleware';
 import { deviceSessionRouter } from './routes/device-session.router';
@@ -28,9 +25,10 @@ app.use(express.json());
 //     next();
 // });
 //
-saveCrashTime();
-readCrashTime();
-clearCrashTime();
+// saveCrashTime();
+// readCrashTime();
+// clearCrashTime();
+app.set('trust proxy', true);
 
 app.use(cookieParser());
 app.use(requestCounterMiddleware);

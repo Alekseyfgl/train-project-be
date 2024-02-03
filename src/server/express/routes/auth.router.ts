@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { userController } from '../controllers/auth.controller';
 import { loginValidation, registrationValidation } from '../common/express-validators/auth.validator';
-import { authMiddleware_jwt } from '../common/middlewares/auth/auth.middleware';
+import { checkAccessTokenMiddleware, checkRefreshTokenMiddleware } from '../common/middlewares/auth/auth.middleware';
 
 export const authPath = {
     base: '/auth',
@@ -15,11 +15,12 @@ export const authPath = {
     id: ':id',
 };
 const { base, login, id, me, registration, confirmation, resendEmail, refreshToken, logout } = authPath;
+
 export const authRouter = Router();
 authRouter.post(`${base}/${login}`, loginValidation(), userController.login);
 authRouter.post(`${base}/${registration}`, registrationValidation() as any, userController.registration);
 authRouter.post(`${base}/${confirmation}`, userController.confirmRegistration);
 authRouter.post(`${base}/${resendEmail}`, userController.resendEmail);
 authRouter.post(`${base}/${refreshToken}`, userController.refreshToken);
-authRouter.post(`${base}/${logout}`, userController.logout);
-authRouter.get(`${base}/${me}`, authMiddleware_jwt, userController.me);
+authRouter.post(`${base}/${logout}`, checkRefreshTokenMiddleware, userController.logout);
+authRouter.get(`${base}/${me}`, checkAccessTokenMiddleware, userController.me);

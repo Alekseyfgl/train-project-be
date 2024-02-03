@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { commentController } from '../controllers/comment.controller';
-import { authMiddleware_jwt } from '../common/middlewares/auth/auth.middleware';
+import { checkAccessTokenMiddleware } from '../common/middlewares/auth/auth.middleware';
 import { commentToPostValidation } from '../common/express-validators/comment.validator';
 
 export const commentPath = {
@@ -11,5 +11,5 @@ const { base, id } = commentPath;
 export const commentRouter = Router();
 
 commentRouter.get(`${base}/${id}`, commentController.getById);
-commentRouter.put(`${base}/${id}`, authMiddleware_jwt, commentToPostValidation(), commentController.update);
-commentRouter.delete(`${base}/${id}`, authMiddleware_jwt, commentController.delete);
+commentRouter.put(`${base}/${id}`, checkAccessTokenMiddleware, commentToPostValidation(), commentController.update);
+commentRouter.delete(`${base}/${id}`, checkAccessTokenMiddleware, commentController.delete);

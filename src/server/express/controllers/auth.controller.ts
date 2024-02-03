@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
-import { IAgentInfo, IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
+import { IAgentInfo, LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IMe, ITokens } from '../types/auth/output';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { AuthService } from '../service/auth.service';
 import { COOKIE_NAME } from '../common/constans/cookie';
-import { JwtService } from '../service/jwt.service';
 
 class AuthController {
     async confirmRegistration(req: Request<{}, {}, { code: string }>, res: Response) {
@@ -65,13 +64,10 @@ class AuthController {
         new ApiResponse(res).send(HttpStatusCodes.OK, { accessToken });
     }
     async logout(req: Request<{}, {}, {}>, res: Response) {
-        const refreshTokenFromCookie: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
-        if (!refreshTokenFromCookie) return new ApiResponse(res).notAuthorized();
+        const userId: Optional<string> = req.user?.userId;
+        const deviceId = req.deviceSession?.deviceId;
 
-        const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(refreshTokenFromCookie);
-        if (!verifiedToken) return false;
-
-        const { deviceId, userId } = verifiedToken;
+        if (!userId || !deviceId) return new ApiResponse(res).notAuthorized();
 
         const result = await AuthService.logout(deviceId, userId);
         if (!result) return new ApiResponse(res).notAuthorized();
