@@ -62,7 +62,7 @@ export class AuthService {
 
     static async logout(deviceId: string, userId: string): Promise<boolean> {
         const result = await DeviceSessionService.removeSessionByOne(deviceId, userId);
-        return result === HttpStatusCodes.OK;
+        return result === HttpStatusCodes.NO_CONTENT;
     }
 
     static async confirmRegistration({ code }: ConfirmRegistrationDto): Promise<boolean> {

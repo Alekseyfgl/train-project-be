@@ -12,11 +12,11 @@ class DeviceSessionController {
         const activeSession: Optional<IDeviceSessionSchema> = req.deviceSession;
         if (!userId || !activeSession) return new ApiResponse(res).notAuthorized();
 
-        const resultCode: HttpStatusCodes.OK | HttpStatusCodes.FORBIDDEN | HttpStatusCodes.NOT_FOUND = await DeviceSessionService.removeSessionByOne(req.params.id, userId);
+        const resultCode: HttpStatusCodes.NO_CONTENT | HttpStatusCodes.FORBIDDEN | HttpStatusCodes.NOT_FOUND = await DeviceSessionService.removeSessionByOne(req.params.id, userId);
         const response = new ApiResponse(res);
 
         switch (resultCode) {
-            case HttpStatusCodes.OK:
+            case HttpStatusCodes.NO_CONTENT:
                 return response.send(resultCode);
             case HttpStatusCodes.NOT_FOUND:
                 return response.notFound();
@@ -44,7 +44,7 @@ class DeviceSessionController {
         const result: boolean = await DeviceSessionService.deleteAllExpectCurrentSession(currentDeviceId, userId);
 
         const response = new ApiResponse(res);
-        result ? response.send(HttpStatusCodes.OK, result) : response.notAuthorized();
+        result ? response.send(HttpStatusCodes.NO_CONTENT, result) : response.notAuthorized();
     }
 }
 

@@ -17,10 +17,6 @@ export class DeviceSessionService {
         return CommandDeviceSessionRepository.updateDateByDeviceId(deviceId, createdAt);
     }
 
-    static removeSessionByMany(deviceId: string[]) {
-        return CommandDeviceSessionRepository.deleteByDeviceIds(deviceId);
-    }
-
     static deleteAllExpectCurrentSession(currentDeviceId: string, userId: string) {
         return CommandDeviceSessionRepository.deleteAllExpectCurrentSession(currentDeviceId, userId);
     }
@@ -33,11 +29,6 @@ export class DeviceSessionService {
         if (!checkAccess) return HttpStatusCodes.FORBIDDEN;
 
         const result = await CommandDeviceSessionRepository.deleteByDeviceIds([deviceId]);
-        return result ? HttpStatusCodes.OK : HttpStatusCodes.NOT_FOUND;
+        return result ? HttpStatusCodes.NO_CONTENT : HttpStatusCodes.NOT_FOUND;
     }
-
-    // static checkAccessForSession(session: IDeviceSessionSchema, userId: string, deviceId: string) {
-    //     if (session.userId !== userId) return false;
-    //     return session.deviceId === deviceId;
-    // }
 }
