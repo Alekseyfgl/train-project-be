@@ -75,7 +75,6 @@ export class AuthService {
 
         const isConfirmedUser: Nullable<ConfirmationUserSchema> = await QueryConfirmationUserRepository.findConfStatusByUserId(userId);
         if (!isConfirmedUser || isConfirmedUser.isConfirmed) return false;
-        // if (isConfirmedUser.isConfirmed) return false;
 
         const confirmData: Nullable<ConfirmationUserSchema> = await ConfirmationUserService.updateConfStatusByCode(userId, code, true);
         return !!confirmData;
