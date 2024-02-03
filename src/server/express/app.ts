@@ -9,9 +9,9 @@ import { authRouter } from './routes/auth.router';
 import { commentRouter } from './routes/comment.router';
 import cookieParser from 'cookie-parser';
 import { exceptionFilter } from './common/errors/exception-filter/exception-filter';
-import { RateLimitReqMiddleware } from './common/middlewares/rate-limit-request/rate-limit-request.middleware';
 import { setUserAgentMiddleware } from './common/middlewares/user-agent/user-agent.middleware';
 import { deviceSessionRouter } from './routes/device-session.router';
+import { saveIpMiddleware } from './common/middlewares/save-ip/save-ip.middleware';
 
 export const app = express();
 // const expressip = require('express-ip');
@@ -31,9 +31,11 @@ app.use(express.json());
 app.set('trust proxy', true);
 
 app.use(cookieParser());
+app.use(saveIpMiddleware);
 app.use(requestCounterMiddleware);
 app.use(logRequestsMiddleware);
-app.use(RateLimitReqMiddleware);
+
+// app.use(rateLimitReqMiddleware);
 app.use(setUserAgentMiddleware);
 
 app.use('', blogRouter, postRouter, userRouter, authRouter, commentRouter, deviceSessionRouter, testRouter);

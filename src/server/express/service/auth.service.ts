@@ -21,7 +21,7 @@ dotenv.config();
 export class AuthService {
     static async login(dto: LoginDto, userAgent: IAgentInfo): PromiseNull<ITokens> {
         const { loginOrEmail, password } = dto;
-        const { os, loc, ip, browser } = userAgent;
+        const { os, loc, ip } = userAgent;
         const user: Nullable<ReturnType<typeof userWithPasswordMapper>> = await QueryUserRepository.findByLoginOrEmail(loginOrEmail);
         if (!user) return null;
         const userId: string = user.id;

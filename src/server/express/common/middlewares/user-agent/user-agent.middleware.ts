@@ -7,6 +7,7 @@ import { IAgentInfo, UserBrowserType, UserLocationType, UserOsType } from '../..
 
 export const setUserAgentMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const ip: string = req.networkInfo.ip;
+
     const parser = new UAParser();
     const ua: Optional<string> = req.headers['user-agent']; // Get the user-agent string from headers
     if (!ua) {
@@ -22,7 +23,6 @@ export const setUserAgentMiddleware = (req: Request, res: Response, next: NextFu
     const os: UserOsType = agen.os.name ? agen.os.name : 'Unknown';
 
     const agentInfo: IAgentInfo = { browser, ip, loc, os };
-
     req.networkInfo = agentInfo;
     next();
 };
