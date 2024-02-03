@@ -24,7 +24,7 @@ export class JwtService {
             const dataFromToken = (await jwt.verify(token, process.env.JWT_SECRET as string)) as IJwtPayload;
             if (!dataFromToken?.iat) return null;
 
-            const isExpired: boolean = this.isExpiredToken(dataFromToken.iat, type);
+            const isExpired: boolean = await this.isExpiredToken(dataFromToken, type);
             if (!isExpired) return null;
 
             return dataFromToken;
@@ -34,7 +34,10 @@ export class JwtService {
         }
     }
 
-    private static isExpiredToken(tokenIssuedAt: number, type: 'access' | 'refresh' | 'confirm-email'): boolean {
+    private static async isExpiredToken(prevToken: IJwtPayload, type: 'access' | 'refresh' | 'confirm-email'): Promise<boolean> {
+        const tokenIssuedAt = prevToken.iat;
+        if (!tokenIssuedAt) return false;
+
         const iat: Date = new Date(tokenIssuedAt);
         let duration;
         switch (type) {
@@ -42,6 +45,9 @@ export class JwtService {
                 duration = +process.env.ACCESS_TOKEN_EXP! as number;
                 break;
             case 'refresh':
+                // const isEqualCreatedAt: boolean = await this.compareCreatedDate(prevToken);
+                // if (!isEqualCreatedAt) return false;
+
                 duration = +process.env.REFRESH_TOKEN_EXP! as number;
                 break;
             case 'confirm-email':
@@ -49,9 +55,7 @@ export class JwtService {
                 break;
         }
 
-        // console.log({ iat, _refreshToken });
         const expAt: Date = addMilliseconds(iat, duration!);
-        // console.log(expAt);
         return new Date() < expAt; //if true - token is valid
     }
 }

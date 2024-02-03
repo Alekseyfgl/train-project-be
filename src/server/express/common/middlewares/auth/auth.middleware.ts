@@ -72,6 +72,8 @@ export const checkRefreshTokenMiddleware = async (req: Request, res: Response, n
     const activeSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(verifiedToken.deviceId);
     if (!activeSession) return new ApiResponse(res).notAuthorized();
 
+    if (verifiedToken.iat !== +activeSession.creatAt) return new ApiResponse(res).notAuthorized();
+
     req.deviceSession = activeSession;
     req.user = verifiedToken;
     next();

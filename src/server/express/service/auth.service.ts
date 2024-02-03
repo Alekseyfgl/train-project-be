@@ -14,8 +14,6 @@ import { QueryConfirmationUserRepository } from '../repositories/confirmation-us
 import { ITokens } from '../types/auth/output';
 import { v4 } from 'uuid';
 import { DeviceSessionService } from './device-session.service';
-import { QueryDeviceSessionRequestRepository } from '../repositories/device-session/query-device-session.repository';
-import { IDeviceSessionSchema } from '../types/device-session/output';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 
 dotenv.config();
@@ -109,19 +107,11 @@ export class AuthService {
         return !!(await ConfirmationUserService.updateConfStatusByCode(id, newToken, false));
     }
 
-    static async refreshTokens(oldRefreshToken: string): PromiseNull<ITokens> {
-        const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(oldRefreshToken, 'refresh');
-        // console.log('verifiedToken', verifiedToken);
-        if (!verifiedToken) return null;
-
-        const userByToken: Nullable<IUser> = await QueryUserRepository.findById(verifiedToken.userId);
+    // static async refreshTokens(oldRefreshToken: string): PromiseNull<ITokens> {
+    static async refreshTokens(deviceId: string, userId: string): PromiseNull<ITokens> {
+        const userByToken: Nullable<IUser> = await QueryUserRepository.findById(userId);
         if (!userByToken) return null;
 
-        const refreshTokenInActiveSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(verifiedToken.deviceId);
-        // console.log('refreshTokenInActiveSession', refreshTokenInActiveSession);
-        if (!refreshTokenInActiveSession) return null;
-
-        const deviceId: string = refreshTokenInActiveSession.deviceId;
         const newDate: Date = new Date();
 
         await DeviceSessionService.refreshSessionByDeviceId(deviceId, newDate);

@@ -52,10 +52,15 @@ class AuthController {
     }
 
     async refreshToken(req: Request<{}, {}, {}>, res: Response) {
-        const oldRefreshToken: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
-        if (!oldRefreshToken) return new ApiResponse(res).notAuthorized();
+        const userId: Optional<string> = req.user?.userId;
+        const deviceId = req.deviceSession?.deviceId;
 
-        const result: Nullable<ITokens> = await AuthService.refreshTokens(oldRefreshToken);
+        if (!userId || !deviceId) return new ApiResponse(res).notAuthorized();
+        // const oldRefreshToken: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
+        // if (!oldRefreshToken) return new ApiResponse(res).notAuthorized();
+
+        // const result: Nullable<ITokens> = await AuthService.refreshTokens(oldRefreshToken);
+        const result: Nullable<ITokens> = await AuthService.refreshTokens(deviceId, userId);
         if (!result) return new ApiResponse(res).notAuthorized();
 
         const { accessToken, refreshToken } = result;

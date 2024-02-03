@@ -21,6 +21,6 @@ authRouter.post(`${base}/${login}`, loginValidation(), userController.login);
 authRouter.post(`${base}/${registration}`, registrationValidation() as any, userController.registration);
 authRouter.post(`${base}/${confirmation}`, userController.confirmRegistration);
 authRouter.post(`${base}/${resendEmail}`, userController.resendEmail);
-authRouter.post(`${base}/${refreshToken}`, userController.refreshToken);
+authRouter.post(`${base}/${refreshToken}`, checkRefreshTokenMiddleware, userController.refreshToken);
 authRouter.post(`${base}/${logout}`, checkRefreshTokenMiddleware, userController.logout);
 authRouter.get(`${base}/${me}`, checkAccessTokenMiddleware, userController.me);
