@@ -25,9 +25,11 @@ export class CommandUserRepository {
             const createdUser: UserSchema = await UserModel.create(dto);
             const newUser: IUser = userMapper(createdUser);
 
-            const confirmToken = +process.env.CONFIRMATION_TOKEN_EXP! as number;
+            const confirmToken = +process.env.CONFIRMATION_TOKEN_EMAIL_EXP! as number;
 
-            const confCode: Nullable<string> = isConfirmed ? null : await JwtService.createJwt(newUser, confirmToken, new Date(), null);
+            const createdAt: Date = JwtService.iat;
+
+            const confCode: Nullable<string> = isConfirmed ? null : await JwtService.createJwt(newUser, confirmToken, createdAt, null);
             const confInfo: ConfirmationUserSchema = await ConfirmationUserModel.create({ userId: newUser.id, isConfirmed: isConfirmed, code: confCode });
 
             return userWithConf(newUser, confInfo);

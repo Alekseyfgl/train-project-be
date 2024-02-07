@@ -11,15 +11,6 @@ export class UserService {
 
         const createdUser: Nullable<UserWithConfirm> = await CommandUserRepository.create(dto, isUserConfirmed);
         return createdUser;
-        // if (!createdUser) return null;
-        // if (isUserConfirmed) return createdUser;
-
-        // const isEmailSent = await EmailRepository.sendEmail(createdUser.email, EmailPayloadsBuilder.createRegistration(createdUser.confirmInfo.id));
-        // console.log('isEmailSent', isEmailSent);
-        // if (!isEmailSent) {
-        //     await UserService.removeById(createdUser.id);
-        // }
-        // return null;
     }
 
     static async removeById(userId: string): Promise<boolean> {
@@ -29,12 +20,4 @@ export class UserService {
     private static async hashPassword(pass: string): Promise<string> {
         return bcrypt.hash(pass, +(process.env.SALT_ROUNDS as string));
     }
-
-    // static async updateById(id: string, dto: UpdatePostDto) {
-    //     return CommandPostRepository.updateById(id, dto);
-    // }
-    //
-    // static async removeById(id: string) {
-    //     return CommandPostRepository.removeById(id);
-    // }
 }

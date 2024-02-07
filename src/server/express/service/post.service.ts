@@ -11,11 +11,11 @@ export class PostService {
         return QueryPostRepository.findById(createdPostId);
     }
 
-    static async updateById(id: string, dto: UpdatePostDto) {
+    static updateById(id: string, dto: UpdatePostDto) {
         return CommandPostRepository.updateById(id, dto);
     }
 
-    static async removeById(id: string) {
+    static removeById(id: string) {
         return CommandPostRepository.removeById(id);
     }
 }

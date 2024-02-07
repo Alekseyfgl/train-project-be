@@ -48,7 +48,7 @@ export const checkAccessTokenMiddleware = async (req: Request, res: Response, ne
         return;
     }
 
-    const userPayload: Nullable<IJwtPayload> = await JwtService.verifyToken(token, 'access');
+    const userPayload: Nullable<IJwtPayload> = await JwtService.verifyToken(token);
     if (!userPayload) {
         new ApiResponse(res).notAuthorized();
         return;
@@ -66,15 +66,21 @@ export const checkRefreshTokenMiddleware = async (req: Request, res: Response, n
     const refreshTokenFromCookie: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
     if (!refreshTokenFromCookie) return new ApiResponse(res).notAuthorized();
 
-    const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(refreshTokenFromCookie, 'refresh');
+    const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(refreshTokenFromCookie);
+
     if (!verifiedToken) return new ApiResponse(res).notAuthorized();
 
-    const activeSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(verifiedToken.deviceId);
-    if (!activeSession) return new ApiResponse(res).notAuthorized();
+    const currentSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(verifiedToken.deviceId);
 
-    if (verifiedToken.iat !== +activeSession.creatAt) return new ApiResponse(res).notAuthorized();
+    if (!currentSession) return new ApiResponse(res).notAuthorized();
+    if (!verifiedToken.iat) return new ApiResponse(res).notAuthorized();
 
-    req.deviceSession = activeSession;
+    if (!JwtService.compareDate(verifiedToken.iat, +currentSession.creatAt)) {
+        return new ApiResponse(res).notAuthorized();
+    }
+    // if (verifiedToken.iat !== +currentSession.creatAt) return new ApiResponse(res).notAuthorized();
+
+    req.deviceSession = currentSession;
     req.user = verifiedToken;
     next();
 };

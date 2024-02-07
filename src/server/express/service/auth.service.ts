@@ -35,11 +35,11 @@ export class AuthService {
         const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
         const _refreshToken = +process.env.REFRESH_TOKEN_EXP! as number;
 
-        const creatAt: Date = new Date();
+        // const creatAt: Date = new Date();
+        const creatAt: Date = JwtService.iat;
         const deviceId: string = v4();
         const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(user, _accessToken, creatAt, deviceId), JwtService.createJwt(user, _refreshToken, creatAt, deviceId)]);
 
-        // const expAt: Date = addMilliseconds(creatAt, _refreshToken);
         await DeviceSessionService.createRefreshSession({ deviceId, os, loc, ip, creatAt, userId });
         return { accessToken, refreshToken };
     }
@@ -66,7 +66,7 @@ export class AuthService {
     }
 
     static async confirmRegistration({ code }: ConfirmRegistrationDto): Promise<boolean> {
-        const isValid: Nullable<IJwtPayload> = await JwtService.verifyToken(code, 'confirm-email');
+        const isValid: Nullable<IJwtPayload> = await JwtService.verifyToken(code);
         if (!isValid) return false;
 
         const userId = isValid.userId;
@@ -89,7 +89,7 @@ export class AuthService {
         if (isConfirmedUser.isConfirmed) return false;
 
         const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
-        const newDate = new Date();
+        const creatAt: Date = JwtService.iat;
         const deviceId: string = v4();
         const newToken: string = await JwtService.createJwt(
             {
@@ -99,7 +99,7 @@ export class AuthService {
                 createdAt,
             },
             _accessToken,
-            newDate,
+            creatAt,
             deviceId,
         );
 
@@ -112,14 +112,14 @@ export class AuthService {
         const userByToken: Nullable<IUser> = await QueryUserRepository.findById(userId);
         if (!userByToken) return null;
 
-        const newDate: Date = new Date();
+        const creatAt = JwtService.iat;
 
-        await DeviceSessionService.refreshSessionByDeviceId(deviceId, newDate);
+        await DeviceSessionService.refreshSessionByDeviceId(deviceId, creatAt);
 
         const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
         const _refreshToken = +process.env.REFRESH_TOKEN_EXP! as number;
 
-        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(userByToken, _accessToken, newDate, deviceId), JwtService.createJwt(userByToken, _refreshToken, newDate, deviceId)]);
+        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(userByToken, _accessToken, creatAt, deviceId), JwtService.createJwt(userByToken, _refreshToken, creatAt, deviceId)]);
 
         return { accessToken, refreshToken };
     }
