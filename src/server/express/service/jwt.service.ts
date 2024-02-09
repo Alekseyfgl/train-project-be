@@ -1,4 +1,3 @@
-import { IUser } from '../types/user/output';
 import jwt from 'jsonwebtoken';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import { IJwtPayload } from '../types/auth/input';
@@ -12,10 +11,10 @@ export class JwtService {
      * @param issuedAt - in seconds
      * @param deviceId
      */
-    static async createJwt(user: IUser, expiresIn: number, issuedAt: Date, deviceId: Nullable<string>): Promise<string> {
+    static async createJwt(userId: string, expiresIn: number, issuedAt: Date, deviceId: Nullable<string>): Promise<string> {
         const secret = process.env.JWT_SECRET as string;
         const iat: number = Math.floor(+issuedAt / 1000); // remove milliseconds
-        const userId: string = user.id;
+        // const userId: string = user.id;
         return jwt.sign({ userId, deviceId, iat }, secret, { expiresIn });
     }
 

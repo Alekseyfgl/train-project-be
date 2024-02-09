@@ -35,5 +35,11 @@ const isExistEmailOrLogin = [
 
 const passwordForRegField = body('password').isString().trim().isLength({ min: 6, max: 20 }).withMessage('Incorrect password');
 //===============
+
+//======= for change password ========
+const newPasswordField = body('newPassword').isString().trim().isLength({ min: 6, max: 20 }).withMessage('Incorrect password');
+const recoveryCodeField = body('recoveryCode').isString().withMessage('Incorrect recoveryCode');
 export const loginValidation = () => [loginOrEmailField, passwordField, inputModelValidator];
 export const registrationValidation = () => [loginForRegisterField, emailForRegisterField, passwordForRegField, isExistEmailOrLogin, inputModelValidator];
+export const recoveryPasswordValidation = () => [emailForRegisterField, inputModelValidator];
+export const setNewPasswordValidation = () => [newPasswordField, recoveryCodeField, inputModelValidator];

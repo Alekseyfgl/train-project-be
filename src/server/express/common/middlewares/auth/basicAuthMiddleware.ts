@@ -5,7 +5,7 @@ import { ApiResponse } from '../../api-response/api-response';
 import { IJwtPayload } from '../../../types/auth/input';
 import { JwtService } from '../../../service/jwt.service';
 import { COOKIE_NAME } from '../../constans/cookie';
-import { IDeviceSessionSchema } from '../../../types/device-session/output';
+import { IDeviceSessionModel } from '../../../types/device-session/output';
 import { QueryDeviceSessionRequestRepository } from '../../../repositories/device-session/query-device-session.repository';
 import dotenv from 'dotenv';
 
@@ -13,7 +13,7 @@ dotenv.config();
 const login = 'admin';
 const password = 'qwerty';
 
-export const authMiddleware = (req: any, res: Response, next: NextFunction) => {
+export const BasicAuthMiddleware = (req: any, res: Response, next: NextFunction) => {
     const auth: Optional<string> = req.headers['authorization'];
 
     if (!auth) {
@@ -70,7 +70,7 @@ export const checkRefreshTokenMiddleware = async (req: Request, res: Response, n
 
     if (!verifiedToken) return new ApiResponse(res).notAuthorized();
 
-    const currentSession: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(verifiedToken.deviceId);
+    const currentSession: Nullable<IDeviceSessionModel> = await QueryDeviceSessionRequestRepository.findByDeviceId(verifiedToken.deviceId);
 
     if (!currentSession) return new ApiResponse(res).notAuthorized();
     if (!verifiedToken.iat) return new ApiResponse(res).notAuthorized();

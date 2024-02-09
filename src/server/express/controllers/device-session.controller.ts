@@ -2,14 +2,14 @@ import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { QueryDeviceSessionRequestRepository } from '../repositories/device-session/query-device-session.repository';
-import { IDeviceSession, IDeviceSessionSchema } from '../types/device-session/output';
+import { IDeviceSession, IDeviceSessionModel } from '../types/device-session/output';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 import { DeviceSessionService } from '../service/device-session.service';
 
 class DeviceSessionController {
     async removeByDeviceId(req: Request<{ id: string }>, res: Response) {
         const userId: Optional<string> = req.user?.userId;
-        const activeSession: Optional<IDeviceSessionSchema> = req.deviceSession;
+        const activeSession: Optional<IDeviceSessionModel> = req.deviceSession;
         if (!userId || !activeSession) return new ApiResponse(res).notAuthorized();
 
         const resultCode: HttpStatusCodes.NO_CONTENT | HttpStatusCodes.FORBIDDEN | HttpStatusCodes.NOT_FOUND = await DeviceSessionService.removeSessionByOne(req.params.id, userId);

@@ -26,6 +26,7 @@ export interface UserWithConfirm extends IUser {
     confirmInfo: {
         id: string;
         isConfirmed: boolean;
+        userId: string;
         code: Nullable<string>;
     };
 }

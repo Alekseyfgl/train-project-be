@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { userController } from '../controllers/user.controller';
-import { authMiddleware } from '../common/middlewares/auth/auth.middleware';
+import { BasicAuthMiddleware } from '../common/middlewares/auth/basicAuthMiddleware';
 import { createUserLikeAdminValidation } from '../common/express-validators/users.validator';
 
 export const userPath = {
@@ -9,6 +9,6 @@ export const userPath = {
 };
 const { base, id } = userPath;
 export const userRouter = Router();
-userRouter.get(`${base}`, authMiddleware, userController.getAll);
-userRouter.post(`${base}`, authMiddleware, createUserLikeAdminValidation(), userController.createUser);
-userRouter.delete(`${base}/${id}`, authMiddleware, userController.removeById);
+userRouter.get(`${base}`, BasicAuthMiddleware, userController.getAll);
+userRouter.post(`${base}`, BasicAuthMiddleware, createUserLikeAdminValidation(), userController.createUser);
+userRouter.delete(`${base}/${id}`, BasicAuthMiddleware, userController.removeById);

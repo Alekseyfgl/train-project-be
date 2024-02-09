@@ -10,6 +10,7 @@ export class UserService {
         dto.password = hashedPassword;
 
         const createdUser: Nullable<UserWithConfirm> = await CommandUserRepository.create(dto, isUserConfirmed);
+
         return createdUser;
     }
 
@@ -17,7 +18,7 @@ export class UserService {
         return await CommandUserRepository.removeById(userId);
     }
 
-    private static async hashPassword(pass: string): Promise<string> {
+    static async hashPassword(pass: string): Promise<string> {
         return bcrypt.hash(pass, +(process.env.SALT_ROUNDS as string));
     }
 }

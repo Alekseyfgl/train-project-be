@@ -2,6 +2,8 @@ import mongoose, { Schema } from 'mongoose';
 import { UserSchema } from '../types/user/output';
 import { ConfirmationUserModel } from './confirmation-user.model';
 import { CommentModel } from './comment.model';
+import { RecoveryPasswordModel } from './recovery-password.model';
+import { DeviceSessionModel } from './device-session.model';
 
 const UserSchema: Schema = new Schema(
     {
@@ -18,6 +20,8 @@ UserSchema.post('findOneAndDelete', async function (doc: UserSchema) {
     if (doc) {
         await ConfirmationUserModel.deleteMany({ userId: doc._id.toString() });
         await CommentModel.deleteMany({ userId: doc._id.toString() });
+        await RecoveryPasswordModel.deleteMany({ userId: doc._id.toString() });
+        await DeviceSessionModel.deleteMany({ userId: doc._id.toString() });
     }
 });
 

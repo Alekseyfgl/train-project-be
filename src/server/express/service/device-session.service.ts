@@ -2,7 +2,7 @@ import { CommandDeviceSessionRepository } from '../repositories/device-session/c
 import { DeviceSessionDto } from '../types/device-session/input';
 import dotenv from 'dotenv';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
-import { IDeviceSessionSchema } from '../types/device-session/output';
+import { IDeviceSessionModel, IDeviceSessionSchema } from '../types/device-session/output';
 import { QueryDeviceSessionRequestRepository } from '../repositories/device-session/query-device-session.repository';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
 
@@ -22,7 +22,7 @@ export class DeviceSessionService {
     }
 
     static async removeSessionByOne(deviceId: string, userId: string) {
-        const sessionForRemove: Nullable<IDeviceSessionSchema> = await QueryDeviceSessionRequestRepository.findByDeviceId(deviceId);
+        const sessionForRemove: Nullable<IDeviceSessionModel> = await QueryDeviceSessionRequestRepository.findByDeviceId(deviceId);
         if (!sessionForRemove) return HttpStatusCodes.NOT_FOUND;
 
         const checkAccess: boolean = userId === sessionForRemove.userId;

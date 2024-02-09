@@ -1,4 +1,4 @@
-import { ConfirmRegistrationDto, IAgentInfo, IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
+import { ChangePasswordDto, ConfirmRegistrationDto, IAgentInfo, IJwtPayload, LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
 import { Nullable, PromiseNull } from '../common/interfaces/optional.types';
 import bcrypt from 'bcrypt';
@@ -15,6 +15,10 @@ import { ITokens } from '../types/auth/output';
 import { v4 } from 'uuid';
 import { DeviceSessionService } from './device-session.service';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
+import { PasswordRecoveryService } from './password-recovery.service';
+import { QueryRecoveryPasswordRepository } from '../repositories/recovery-password/query-recovery-password.repository';
+import { IRecoveryPassword } from '../types/recovery-password/output';
+import { CommandUserRepository } from '../repositories/user/command-user.repository';
 
 dotenv.config();
 
@@ -38,7 +42,7 @@ export class AuthService {
         // const creatAt: Date = new Date();
         const creatAt: Date = JwtService.iat;
         const deviceId: string = v4();
-        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(user, _accessToken, creatAt, deviceId), JwtService.createJwt(user, _refreshToken, creatAt, deviceId)]);
+        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(user.id, _accessToken, creatAt, deviceId), JwtService.createJwt(user.id, _refreshToken, creatAt, deviceId)]);
 
         await DeviceSessionService.createRefreshSession({ deviceId, os, loc, ip, creatAt, userId });
         return { accessToken, refreshToken };
@@ -57,6 +61,7 @@ export class AuthService {
             return false;
         }
 
+        await PasswordRecoveryService.createRowPasswordRecovery(registeredUser.id);
         return true;
     }
 
@@ -82,29 +87,17 @@ export class AuthService {
         const user: Nullable<ReturnType<typeof userWithPasswordMapper>> = await QueryUserRepository.findByLoginOrEmail(toEmail);
         if (!user) return false;
 
-        const { id, email, login, createdAt } = user;
-
-        const isConfirmedUser: Nullable<ConfirmationUserSchema> = await QueryConfirmationUserRepository.findConfStatusByUserId(id);
+        const isConfirmedUser: Nullable<ConfirmationUserSchema> = await QueryConfirmationUserRepository.findConfStatusByUserId(user.id);
         if (!isConfirmedUser) return false;
         if (isConfirmedUser.isConfirmed) return false;
 
         const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
         const creatAt: Date = JwtService.iat;
         const deviceId: string = v4();
-        const newToken: string = await JwtService.createJwt(
-            {
-                id,
-                email,
-                login,
-                createdAt,
-            },
-            _accessToken,
-            creatAt,
-            deviceId,
-        );
+        const newToken: string = await JwtService.createJwt(user.id, _accessToken, creatAt, deviceId);
 
-        await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRegistration(newToken));
-        return !!(await ConfirmationUserService.updateConfStatusByCode(id, newToken, false));
+        await EmailRepository.sendEmail(user.email, EmailPayloadsBuilder.createRegistration(newToken));
+        return !!(await ConfirmationUserService.updateConfStatusByCode(user.id, newToken, false));
     }
 
     // static async refreshTokens(oldRefreshToken: string): PromiseNull<ITokens> {
@@ -119,9 +112,48 @@ export class AuthService {
         const _accessToken = +process.env.ACCESS_TOKEN_EXP! as number;
         const _refreshToken = +process.env.REFRESH_TOKEN_EXP! as number;
 
-        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(userByToken, _accessToken, creatAt, deviceId), JwtService.createJwt(userByToken, _refreshToken, creatAt, deviceId)]);
+        const [accessToken, refreshToken] = await Promise.all([JwtService.createJwt(userByToken.id, _accessToken, creatAt, deviceId), JwtService.createJwt(userByToken.id, _refreshToken, creatAt, deviceId)]);
 
         return { accessToken, refreshToken };
+    }
+
+    static async sendRecoveryPasswordMsg(email: string) {
+        const user: Nullable<ReturnType<typeof userWithPasswordMapper>> = await QueryUserRepository.findByLoginOrEmail(email);
+        if (!user) return false;
+
+        const expiresIn: number = +process.env.CONFIRMATION_TOKEN_PASSWORD_EXP!; // in seconds
+        const issuedAt: Date = JwtService.iat;
+
+        const recoveryCode: string = await JwtService.createJwt(user.id, expiresIn, issuedAt, v4());
+
+        const isSentEmail = await EmailRepository.sendEmail(email, EmailPayloadsBuilder.createRecoveryPassword(recoveryCode));
+        if (!isSentEmail) return false;
+
+        return PasswordRecoveryService.updateCode(recoveryCode, user.id);
+    }
+
+    static async changePassword(dto: ChangePasswordDto): Promise<boolean> {
+        const { recoveryCode, newPassword } = dto;
+
+        const recoveryModel: Nullable<IRecoveryPassword> = await QueryRecoveryPasswordRepository.findCode(recoveryCode);
+        if (!recoveryModel) return false;
+
+        const userId: string = recoveryModel.userId;
+
+        const verifiedToken: Nullable<IJwtPayload> = await JwtService.verifyToken(recoveryModel.code);
+        // console.log('verifiedToken', verifiedToken);
+        if (!verifiedToken) {
+            // await PasswordRecoveryService.updateCode(null, userId);
+            return false;
+        }
+
+        const hashedPassword: string = await UserService.hashPassword(newPassword);
+
+        const isPasswordChanged: boolean = await CommandUserRepository.changePassword(userId, hashedPassword);
+        if (!isPasswordChanged) return false;
+
+        // await PasswordRecoveryService.updateCode(null, userId);
+        return true;
     }
 
     private static async checkPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {

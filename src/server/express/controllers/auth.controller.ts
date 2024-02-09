@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ApiResponse } from '../common/api-response/api-response';
 import { HttpStatusCodes } from '../common/constans/http-status-codes';
-import { IAgentInfo, LoginDto, RegistrationUserDto } from '../types/auth/input';
+import { ChangePasswordDto, IAgentInfo, LoginDto, RegistrationUserDto } from '../types/auth/input';
 import { Nullable, Optional } from '../common/interfaces/optional.types';
 import { IMe, ITokens } from '../types/auth/output';
 import { QueryUserRepository } from '../repositories/user/query-user.repository';
@@ -56,10 +56,7 @@ class AuthController {
         const deviceId = req.deviceSession?.deviceId;
 
         if (!userId || !deviceId) return new ApiResponse(res).notAuthorized();
-        // const oldRefreshToken: Optional<string> = req.cookies[COOKIE_NAME.REFRESH_TOKEN];
-        // if (!oldRefreshToken) return new ApiResponse(res).notAuthorized();
 
-        // const result: Nullable<ITokens> = await AuthService.refreshTokens(oldRefreshToken);
         const result: Nullable<ITokens> = await AuthService.refreshTokens(deviceId, userId);
         if (!result) return new ApiResponse(res).notAuthorized();
 
@@ -80,6 +77,17 @@ class AuthController {
         res.cookie(COOKIE_NAME.REFRESH_TOKEN, '', { maxAge: 0 });
         new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);
     }
+
+    async recoveryPassword(req: Request<{}, {}, { email: string }>, res: Response) {
+        const result: boolean = await AuthService.sendRecoveryPasswordMsg(req.body.email);
+        new ApiResponse(res).send(HttpStatusCodes.NO_CONTENT);
+    }
+
+    async changePassword(req: Request<{}, {}, ChangePasswordDto>, res: Response) {
+        const result: boolean = await AuthService.changePassword(req.body);
+        const response = new ApiResponse(res);
+        result ? response.send(HttpStatusCodes.NO_CONTENT) : response.badRequest('recoveryCode');
+    }
 }
 
-export const userController = new AuthController();
+export const authController = new AuthController();

@@ -12,4 +12,17 @@ export class EmailPayloadsBuilder {
                 </p>`,
         };
     }
+
+    static createRecoveryPassword(recoveryCode: string) {
+        return {
+            subject: 'Recovery password',
+            // text: 'text',
+            html: `
+             <h1>Password recovery</h1>
+             <p>To finish password recovery please follow the link below:
+                  <a href='https://somesite.com/password-recovery?recoveryCode=${recoveryCode}'>recovery password</a>
+             </p>
+    `,
+        };
+    }
 }

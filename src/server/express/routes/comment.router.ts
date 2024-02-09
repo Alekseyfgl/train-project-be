@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { commentController } from '../controllers/comment.controller';
-import { checkAccessTokenMiddleware } from '../common/middlewares/auth/auth.middleware';
+import { checkAccessTokenMiddleware } from '../common/middlewares/auth/basicAuthMiddleware';
 import { commentToPostValidation } from '../common/express-validators/comment.validator';
 
 export const commentPath = {

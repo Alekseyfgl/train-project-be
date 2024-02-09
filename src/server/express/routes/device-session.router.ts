@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { deviceSessionController } from '../controllers/device-session.controller';
-import { checkRefreshTokenMiddleware } from '../common/middlewares/auth/auth.middleware';
+import { checkRefreshTokenMiddleware } from '../common/middlewares/auth/basicAuthMiddleware';
 
 export const deviceSessionPath = {
     base: '/security',
