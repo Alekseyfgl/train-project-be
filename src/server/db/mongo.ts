@@ -7,7 +7,7 @@ dotenv.config();
 
 export class MongooseInstance {
     private static instance: Nullable<Mongoose> = null;
-    private static uri: string = (process.env.MONGODB_URI as string) || 'mongodb://localhost:27017/train_project_be_local';
+    private static uri: string = (process.env.MONGO_LOCAL as string) || 'mongodb://localhost:27017/train_project_be_local';
 
     private constructor() {}
 

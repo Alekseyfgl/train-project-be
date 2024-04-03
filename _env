@@ -18,7 +18,7 @@ EMAIL_PASSWORD=****
 
 
 #only for tests
-MONGODB_URI_TEST=mongodb://localhost:27017/test
+MONGO_LOCAL=mongodb://localhost:27017/train_project_be_local
 #only for prod
 #MONGODB_URI=mongodb+srv:****
 

@@ -1639,13 +1639,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/maxmind@^2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@types/maxmind/-/maxmind-2.0.5.tgz#3a4eccc63b042088d71c70273e34d05e30cf5a47"
-  integrity sha512-fGqeOLsZI189WqKrAvaGfLzaLg5T8NNenAHrvmRuIg6lLfQCMICw4kg9wxyxzLAJnxwN89CJhTq6DZQ/w1K5hw==
-  dependencies:
-    maxmind "*"
-
 "@types/mime@*":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-3.0.4.tgz#2198ac274de6017b44d941e00261d5bc6a0e0a45"
@@ -2474,13 +2467,6 @@ expect@^29.0.0, expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
-express-ip@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/express-ip/-/express-ip-1.0.4.tgz#0a3887e337d93c03f94c22ab5d9280d0497b6276"
-  integrity sha512-PP9s2kg1+GHhJGtRqwoVHkBHi8glbL5wXXSj2p2+3qcxUNALwXoNhjtY2eLuNchcnWPkmJGyZcqAWUUpd9ecpA==
-  dependencies:
-    geoip-lite "^1.2.2"
-
 express-validator@*, express-validator@^7.0.1:
   version "7.0.1"
   resolved "https://registry.yarnpkg.com/express-validator/-/express-validator-7.0.1.tgz#435fac6b5fa838763f78eca05d2206317b92106e"
@@ -2656,7 +2642,7 @@ gensync@^1.0.0-beta.2:
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
   integrity sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==
 
-geoip-lite@^1.2.2, geoip-lite@^1.4.9:
+geoip-lite@^1.4.9:
   version "1.4.9"
   resolved "https://registry.yarnpkg.com/geoip-lite/-/geoip-lite-1.4.9.tgz#9f88b5fe3f64a69940c5cb3c4a7a22fb4bb1d217"
   integrity sha512-Yo8wPGCd+Z001dpGX8Bd99JvAi1d731Y5wkJnzFVHXUQG+C1cQlEtUuBl6fExMjHzFpnGbQo86fs9GOzB8Gutg==
@@ -2862,15 +2848,15 @@ inherits@2, inherits@2.0.4, inherits@^2.0.3:
     lodash "^4.17.15"
     sprintf-js "1.1.2"
 
-ip@^1.1.8:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.8.tgz#ae05948f6b075435ed3307acce04629da8cdbf48"
-  integrity sha512-PuExPYUiu6qMBQb4l06ecm6T6ujzhmh+MeJcW9wa89PoAz5pvd4zPgN5WJV104mb6S2T1AwNIAaB70JNrLQWhg==
-
 ip@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ip/-/ip-2.0.0.tgz#4cf4ab182fee2314c75ede1276f8c80b479936da"
   integrity sha512-WKa+XuLG1A1R0UWhl2+1XQSi+fZWMsYKffMZTTYsiZaUD8k2yDAj5atimTUD2TZkyCkNEeYE5NhFZmupOGtjYQ==
+
+ip@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ip/-/ip-2.0.1.tgz#e8f3595d33a3ea66490204234b77636965307105"
+  integrity sha512-lJUL9imLTNi1ZfXT+DU6rBBdbiKGBuay9B6xGSPVjUeQwaH1RIGqef8RZkUtHioLmSNpPR5M4HVKJGm1j8FWVQ==
 
 ipaddr.js@1.9.1:
   version "1.9.1"
@@ -3527,14 +3513,6 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
-maxmind@*, maxmind@^4.3.18:
-  version "4.3.18"
-  resolved "https://registry.yarnpkg.com/maxmind/-/maxmind-4.3.18.tgz#ad83f38d718ca5395c5d722933a109b7cb009226"
-  integrity sha512-5b9utU7ZxcGYTBaO7hCF0FXyfw3IpankLn+FnLW4RZS1zi97RBeSdfXJFJlk5UxNsMiFZlsdMT3lzvD+bD8MLQ==
-  dependencies:
-    mmdb-lib "2.1.0"
-    tiny-lru "11.2.5"
-
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
@@ -3626,11 +3604,6 @@ mkdirp@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
-
-mmdb-lib@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/mmdb-lib/-/mmdb-lib-2.1.0.tgz#c2456caaf4c7ffa056f77575da6d40988e9e878b"
-  integrity sha512-tdDTZmnI5G4UoSctv2KxM/3VQt2XRj4CmR5R4VsAWsOUcS3LysHR34wtixWm/pXxXdkBDuN92auxkC0T2+qd1Q==
 
 mongodb-connection-string-url@^2.6.0:
   version "2.6.0"
@@ -4349,11 +4322,6 @@ test-exclude@^6.0.0:
     "@istanbuljs/schema" "^0.1.2"
     glob "^7.1.4"
     minimatch "^3.0.4"
-
-tiny-lru@11.2.5:
-  version "11.2.5"
-  resolved "https://registry.yarnpkg.com/tiny-lru/-/tiny-lru-11.2.5.tgz#b138b99022aa26c567fa51a8dbf9e3e2959b2b30"
-  integrity sha512-JpqM0K33lG6iQGKiigcwuURAKZlq6rHXfrgeL4/I8/REoyJTGU+tEMszvT/oTRVHG2OiylhGDjqPp1jWMlr3bw==
 
 tmpl@1.0.5:
   version "1.0.5"

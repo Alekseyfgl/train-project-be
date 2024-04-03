@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: app-container-express
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGO_LOCAL=mongodb://mongo-mongo-1/train_project_be_local
+    volumes:
+      - .:/code
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    external: true

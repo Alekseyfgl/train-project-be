@@ -23,6 +23,7 @@ export const saveIpMiddleware = async (req: Request, res: Response, next: NextFu
         return;
     }
 
+    console.log('clientIp', clientIp);
     req.networkInfo = {} as any;
     req.networkInfo.ip = clientIp;
 
