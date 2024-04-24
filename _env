@@ -1,8 +1,8 @@
 NODE_ENV=development
 
-SERVER_PORT=3001
+SERVER_PORT=3000
 SALT_ROUNDS=10
-JWT_SECRET=****
+JWT_SECRET=QWerfaxcved
 
 
 
@@ -12,13 +12,14 @@ CONFIRMATION_TOKEN_EMAIL_EXP=180
 CONFIRMATION_TOKEN_PASSWORD_EXP=180
 RATE_REQ_LIMIT=5
 
-EMAIL_HOST=****
-EMAIL_LOGIN=****
-EMAIL_PASSWORD=****
+EMAIL_HOST=***
+EMAIL_LOGIN=***
+EMAIL_PASSWORD=***
 
 
 #only for tests
-MONGO_LOCAL=mongodb://localhost:27017/train_project_be_local
+MONGODB_URI_TEST=mongodb://localhost:27017/test
+#MONGO_LOCAL=mongodb://localhost:27017/train_project_be_local
 #only for prod
-#MONGODB_URI=mongodb+srv:****
+#MONGODB_URI=mongodb+srv://alex:qwert1234@cluster0.40gsh.mongodb.net/train_project_be?retryWrites=true&w=majority
 

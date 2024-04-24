@@ -21,6 +21,7 @@ export const setUserAgentMiddleware = (req: Request, res: Response, next: NextFu
     const loc: UserLocationType = geo ? `Country:${geo.country}, city:${geo.city}` : 'Unknown';
     const browser: UserBrowserType = geo ? `Browser:${agen.browser.name}, version:${agen.browser.version}` : 'Unknown';
     const os: UserOsType = agen.os.name ? agen.os.name : 'Unknown';
+    const type = agen.device.type;
 
     const agentInfo: IAgentInfo = { browser, ip, loc, os };
     req.networkInfo = agentInfo;
